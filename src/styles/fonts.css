@@ -1,0 +1,22 @@
+/* DSEG by Keshikan — SIL Open Font License 1.1 (see src/assets/fonts/DSEG-LICENSE.txt) */
+@font-face {
+  font-family: 'DSEG7 Classic';
+  src: url('../assets/fonts/DSEG7Classic-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+  font-display: block;
+}
+@font-face {
+  font-family: 'DSEG14 Classic';
+  src: url('../assets/fonts/DSEG14Classic-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+  font-display: block;
+}
+@font-face {
+  font-family: 'DSEG14 Classic';
+  src: url('../assets/fonts/DSEG14Classic-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: block;
+}

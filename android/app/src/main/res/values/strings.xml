@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Rollover</string>
+    <string name="title_activity_main">Rollover</string>
+    <string name="package_name">app.rollover.clock</string>
+    <string name="custom_url_scheme">app.rollover.clock</string>
+</resources>
