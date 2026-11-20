@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { DEFAULT_MOMENT, type Moment } from './model/moment'
 import { IDLE_RUN, jumpStartedAt, type RunState } from './model/engine'
 
-export type View = 'studio' | 'run' | 'camera' | 'remote'
+export type View = 'studio' | 'run' | 'remote'
 
 export interface SavedMoment {
   id: string

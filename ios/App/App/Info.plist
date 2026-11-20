@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Rollover records your moment with the clock burned into the video.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Rollover records sound together with your moment.</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
   <key>CAPACITOR_DEBUG</key>

@@ -15,25 +15,8 @@ function out(): AudioContext | null {
   return ctx
 }
 
-/** Recording destination (camera mode mixes the chime into the video). */
-let extraDest: MediaStreamAudioDestinationNode | null = null
-let micSource: MediaStreamAudioSourceNode | null = null
-export function audioStreamForRecording(mic?: MediaStreamTrack): MediaStream | null {
-  const c = out()
-  if (!c) return null
-  extraDest ??= c.createMediaStreamDestination()
-  micSource?.disconnect()
-  micSource = null
-  if (mic) {
-    micSource = c.createMediaStreamSource(new MediaStream([mic]))
-    micSource.connect(extraDest) // to the recording only — never to the speakers
-  }
-  return extraDest.stream
-}
-
 function connect(node: AudioNode, c: AudioContext) {
   node.connect(c.destination)
-  if (extraDest) node.connect(extraDest)
 }
 
 export function tick(accent = false) {

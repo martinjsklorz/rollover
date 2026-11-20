@@ -21,7 +21,7 @@ scene is right, and you can repeat it until the take is perfect.
 |---|---|---|
 | **Parents of babies & toddlers** (core) | Capture "she's officially one" while she sleeps | Night-safe dim display that won't wake anyone, no sound, a big legible clock on camera, birthday date roll, a message reveal, looping for retakes |
 | **Families on New Year's Eve** | "Fake midnight" countdown for kids who can't stay up until 00:00 | Dec 31 → Jan 1 rollover at 19:30, big 10-second countdown, celebration burst, chime |
-| **Birthday surprises & content creators** | "It's officially my birthday" reels, surprise videos, transitions | Stylish themes that look great on camera, built-in camera recording with a clock overlay, retakes |
+| **Birthday surprises & content creators** | "It's officially my birthday" reels, surprise videos, transitions | Stylish themes that look great when filmed, retakes |
 | **Couples & milestones** | Anniversaries, sobriety "1 year" days, due dates, retirement, last day at work | Custom message, any date, share a prepared moment via link |
 | **Theatre, film & escape rooms** | A prop clock that hits midnight on cue (hello, Cinderella) | Any target time (not only midnight), remote trigger from another device, fullscreen, no UI chrome |
 | **Night owls & real-midnight fans** | Watch/record the real rollover | Live mode with the true time and the same celebration at the real 00:00 |
@@ -50,7 +50,7 @@ and the message fades in.
 - **Neon** — glowing pink/cyan tubes for parties and reels.
 - **Keepsake** — warm paper, elegant serif. Looks like a printed memory.
 
-**Screens:** Studio (setup + preview) → Run (fullscreen clock) · Camera (record with overlay) · Remote (controller on second device).
+**Screens:** Studio (setup + preview) → Run (fullscreen clock) · Remote (controller on second device).
 
 ## 4. Scope
 
@@ -62,7 +62,6 @@ and the message fades in.
 - **Six themes**, 12/24h, seconds on/off, date line on/off.
 - **Celebration:** confetti / glow burst, optional synthesized chime and ticks, optional 10-second big countdown.
 - **Hands-off start:** "Start in 5/10/30s", screen wake lock, fullscreen, auto-hiding controls, dimmer, burn-in pixel shift.
-- **Camera mode:** record video with the rolling clock burned in (camcorder-timestamp or clean style), download/share.
 - **Remote:** pair a second phone via QR code (peer-to-peer) to start/restart/pause/dim.
 - **Saved moments & share links:** the whole setup lives in the URL.
 - **Platforms:** installable offline PWA (iOS, Android, desktop) + Capacitor shells for the App Store / Play Store.
@@ -73,3 +72,33 @@ and the message fades in.
 
 ### Explicitly out
 - Accounts, cloud storage, analytics, ads. Unit tests are deprioritised for v1.
+- **Built-in camera recording** (removed 2026-11-20, see below).
+
+## 5. Decisions
+
+### 2026-11-20 — Camera mode removed
+v1 shipped a camera mode that filmed through the app and burned the clock into the video.
+We removed it:
+- **It works against the product's magic.** The emotional shot is a *real* clock lying next
+  to the sleeping baby. A clock pasted onto the video looks like an edit.
+- **It's a crowded category.** Timestamp and retro date-stamp camera apps are everywhere (DateStamp
+  has a live VHS-style running clock; TimeStamp Video Cam lets you choose the start date).
+- **The web can't do it well.** Recording through a canvas in the browser loses quality compared with the
+  phone's own camera, and that gets worse in a dark nursery.
+
+Rollover is the clock *in* the shot. People film it with the camera they already have. Effort
+goes into looking great when filmed (brightness, no flicker, no moiré) instead.
+
+### Competitive landscape (researched 2026-11-20)
+- **Staged/fake clock apps:** no serious player. Only niche "fake time" apps and hobby projects exist.
+  This is Rollover's open space.
+- **Fake midnight for kids:** proven demand, with Netflix as the incumbent. Netflix has offered
+  on-demand kids' NYE countdowns since 2014; it reported ~5M members watching them each year and
+  that 41% of US parents use or plan a fake countdown. Rollover's angle is a believable clock in
+  your own room with a personal message, not a cartoon video. This is the growth opportunity.
+- **Remote-controlled timers** (Stage Timer, Remote Stage Timer, CueTime, Until.at): remote control
+  is expected here, and some work offline over local networks. None shows a staged time.
+  Our remote stays, aimed at stage and party hosts. A same-Wi-Fi mode that needs no internet
+  is the follow-up.
+- **"Baby turns one at midnight" videos:** no visible trend found. This is the founder's insight
+  and brand story, not a proven behaviour.

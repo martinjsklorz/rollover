@@ -208,9 +208,6 @@ importers:
       dseg:
         specifier: ^0.46.0
         version: 0.46.0
-      fix-webm-duration:
-        specifier: ^1.0.6
-        version: 1.0.6
       lucide-react:
         specifier: ^1.76.0
         version: 1.76.0(@types/react@19.3.0)(react@19.3.1)
@@ -1814,9 +1811,6 @@ packages:
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
     engines: {node: '>=8'}
-
-  fix-webm-duration@1.0.6:
-    resolution: {integrity: sha512-zVAqi4gE+8ywxJuAyV/rlJVX6CMtvyapEbQx6jyoeX9TMjdqAlt/FdG5d7rXSSkDVzTvS0H7CtwzHcH/vh4FPA==}
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -4447,8 +4441,6 @@ snapshots:
     dependencies:
       locate-path: 5.0.0
       path-exists: 4.0.0
-
-  fix-webm-duration@1.0.6: {}
 
   for-each@0.3.5:
     dependencies:

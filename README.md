@@ -20,8 +20,6 @@ See [PRODUCT.md](PRODUCT.md) for audience, design principles and scope.
   optional synthesized chime / ticks, big 10-second countdown.
 - **Hands-off** – start delay to place your phone, screen wake lock, fullscreen, auto-hiding controls,
   dimmer, burn-in drift.
-- **Camera mode** – record video with the rolling clock burned in (camcorder timestamp or theme style),
-  mic + chime mixed in, save or share.
 - **Remote control** – scan a QR code with a second phone to start, pause, “roll now”, dim and switch themes
   (peer-to-peer via PeerJS).
 - **Saved moments & share links** – the whole setup is encoded in the link.
@@ -57,8 +55,8 @@ qrcode, lucide-react, Fontsource fonts + DSEG (OFL), Capacitor 8.
 ```
 src/
   model/      moment (presets, share links), themes, engine (all timing derives from wall time)
-  lib/        frame loop, audio synth, wake lock/fullscreen, remote (PeerJS), camera overlay renderer
-  components/ Studio, RunView, CameraView, RemoteView, Clock, PairModal, ui
+  lib/        frame loop, audio synth, wake lock/fullscreen, remote (PeerJS)
+  components/ Studio, RunView, RemoteView, Clock, PairModal, ui
   styles/     app.css (UI), clock.css (clock + themes, sized with container queries)
 ```
 
@@ -78,8 +76,8 @@ pnpm ios                 # build, sync and open Xcode (macOS)
 `VITE_PUBLIC_URL` matters for the native builds: inside the app the page lives at
 `capacitor://localhost`, so remote-control QR codes and share links must point at the hosted web app.
 Icons and splash screens are generated from `resources/icon.png` with `npx @capacitor/assets generate`.
-Native builds use `@capacitor-community/keep-awake` and `@capacitor/status-bar`; camera and
-microphone permissions are declared in `AndroidManifest.xml` and `Info.plist`.
+Native builds use `@capacitor-community/keep-awake` and `@capacitor/status-bar`. The app asks for
+no camera, microphone or location permissions.
 
 ## Notes
 

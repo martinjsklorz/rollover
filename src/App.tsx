@@ -3,7 +3,6 @@ import { useStore } from './store'
 import { decodeMoment, DEFAULT_MOMENT } from './model/moment'
 import Studio from './components/Studio'
 import RunView from './components/RunView'
-import CameraView from './components/CameraView'
 import RemoteView from './components/RemoteView'
 
 function readRemoteCode(): string | null {
@@ -47,6 +46,5 @@ export default function App() {
 
   if (remoteCode !== null) return <RemoteView code={remoteCode} />
   if (view === 'run') return <RunView />
-  if (view === 'camera') return <CameraView />
   return <Studio />
 }

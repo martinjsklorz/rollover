@@ -31,13 +31,6 @@ export function formatDate(t: number, withYear: boolean, style: 'long' | 'short'
   return f.format(new Date(t))
 }
 
-/** Camcorder-style date: "NOV.19 2026" */
-export function camcorderDate(t: number): string {
-  const d = new Date(t)
-  const mon = d.toLocaleString('en-US', { month: 'short' }).toUpperCase()
-  return `${mon}.${pad(d.getDate())} ${d.getFullYear()}`
-}
-
 export function humanDuration(sec: number): string {
   if (sec < 60) return `${sec}s`
   const m = Math.floor(sec / 60)

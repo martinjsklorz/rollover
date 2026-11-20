@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bookmark, Camera, Download, Play, Radio, Share2, Trash2, Moon, BellOff, BatteryCharging, Video } from 'lucide-react'
+import { Bookmark, Download, Play, Radio, Share2, Trash2, Moon, BellOff, BatteryCharging, Video } from 'lucide-react'
 import { useStore } from '../store'
 import { PRESETS, presetById, shareUrl, type Moment } from '../model/moment'
 import { THEMES, themeById } from '../model/themes'
@@ -266,7 +266,7 @@ export default function Studio() {
               <li><BellOff size={16} /> Turn on Do Not Disturb — no notifications in your shot.</li>
               <li><BatteryCharging size={16} /> Plug in the charger for long loops.</li>
               <li><Moon size={16} /> Tap the running clock to dim it. Rollover keeps the screen awake.</li>
-              <li><Video size={16} /> Start the camera first, then the clock — or use the built-in camera.</li>
+              <li><Video size={16} /> Start recording first, then the clock — Start in 5 s gives you time to step back.</li>
             </ul>
           </Section>
           <p className="fineprint center">Rollover works offline · nothing leaves your device</p>
@@ -276,9 +276,6 @@ export default function Studio() {
           <button className="btn ghost" onClick={() => setPairOpen(true)} title="Control from another phone">
             <Radio size={18} /> <span className="hide-xs">Remote</span>
             {connected > 0 && <span className="badge">{connected}</span>}
-          </button>
-          <button className="btn ghost" onClick={() => { unlockAudio(); setView('camera') }} title="Record with your camera">
-            <Camera size={18} /> <span className="hide-xs">Camera</span>
           </button>
           <button className="btn primary grow" onClick={go}>
             <Play size={18} fill="currentColor" /> Start{staged && m.startDelay ? ` in ${m.startDelay}s` : ''}
