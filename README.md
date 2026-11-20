@@ -43,11 +43,12 @@ See [PRODUCT.md](PRODUCT.md) for audience, design principles and scope.
 ## Develop
 
 ```bash
-npm install
-npm run dev        # http://localhost:5173 (also on your LAN for phone testing)
-npm run build      # type-check + production build into dist/
-npm run preview    # serve the production build
-npm run lint
+corepack enable  # once; provides the pnpm version pinned in package.json
+pnpm install
+pnpm dev         # http://localhost:5173 (also on your LAN for phone testing)
+pnpm build       # type-check + production build into dist/
+pnpm preview     # serve the production build
+pnpm lint
 ```
 
 Stack: Vite, React 19, TypeScript, Zustand, vite-plugin-pwa (Workbox), canvas-confetti, PeerJS,
@@ -70,8 +71,8 @@ src/
 
 ```bash
 cp .env.example .env     # set VITE_PUBLIC_URL to your hosted web app
-npm run android          # build, sync and open Android Studio
-npm run ios              # build, sync and open Xcode (macOS)
+pnpm android             # build, sync and open Android Studio
+pnpm ios                 # build, sync and open Xcode (macOS)
 ```
 
 `VITE_PUBLIC_URL` matters for the native builds: inside the app the page lives at

@@ -3,14 +3,15 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@12.21.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint src",
     "preview": "vite preview",
-    "native:sync": "npm run build && cap sync",
-    "android": "npm run native:sync && cap open android",
-    "ios": "npm run native:sync && cap open ios"
+    "native:sync": "pnpm build && cap sync",
+    "android": "pnpm native:sync && cap open android",
+    "ios": "pnpm native:sync && cap open ios"
   },
   "dependencies": {
     "@capacitor-community/keep-awake": "^8.0.1",
@@ -45,5 +46,5 @@
     "vite": "^8.3.6",
     "vite-plugin-pwa": "^2.0.0"
   },
-  "description": "Rollover \u2014 midnight, whenever you need it. A clock that rolls over to the day that matters, again and again."
+  "description": "Rollover — midnight, whenever you need it. A clock that rolls over to the day that matters, again and again."
 }

@@ -1,0 +1,3 @@
+# Capacitor writes node_modules paths into the native projects (Package.swift,
+# capacitor.settings.gradle). A flat, npm-style layout keeps those paths stable.
+nodeLinker: hoisted
