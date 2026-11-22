@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Rollover",
+    "slug": "rollover",
+    "scheme": "rollover",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#000000",
+    "ios": {
+      "bundleIdentifier": "app.rollover.clock",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "app.rollover.clock",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/android-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#000000"
+        }
+      ],
+      "expo-router"
+    ]
+  }
+}

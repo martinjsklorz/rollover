@@ -1,0 +1,49 @@
+# Rollover
+
+A clock that rolls over midnight, again and again.
+
+The first screen shows the logo and Start, which runs the clock with your last settings,
+or starts the setup wizard. The first time, only the wizard is offered.
+
+The wizard has one page per setting, with a live preview on every page:
+24-hour or 12-hour, simple or flip-clock style, how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10).
+Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
+and a tap goes back to the setup.
+
+Built with [Expo](https://expo.dev) (React Native) and Expo Router for iOS and Android.
+
+```
+src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
+src/wizard/steps.ts the wizard steps; add a setting by adding a step
+src/wizard/ui.tsx   wizard page layout, option cards, buttons
+src/clock/          the clock face (simple / flip) and the loop timing
+src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
+```
+
+## Run
+
+```bash
+corepack enable   # once; provides the pnpm version pinned in package.json
+pnpm install
+pnpm start        # scan the QR code with Expo Go on your iPhone or Android phone
+pnpm typecheck
+```
+
+Add Expo modules with `pnpm exec expo install <package>`, so the versions match the Expo SDK.
+
+## Builds and over-the-air updates
+
+Store builds and OTA updates go through [EAS](https://docs.expo.dev/eas/) and need an Expo account:
+
+```bash
+pnpm dlx eas-cli@latest login
+pnpm dlx eas-cli@latest init               # links the project to your account
+pnpm dlx eas-cli@latest update:configure   # sets up OTA updates
+pnpm dlx eas-cli@latest build              # iOS / Android builds in the cloud
+pnpm dlx eas-cli@latest update             # ship JS changes to installed apps
+```
+
+OTA updates cover JavaScript and assets. A change to native code (a new native module,
+a permission) needs a new store build.
+
+`ios/` and `android/` are generated (`expo prebuild`) and not committed. Native settings live in `app.json`.
