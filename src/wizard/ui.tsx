@@ -148,7 +148,12 @@ export function Button({ title, onPress, primary, style }: { title: string; onPr
       onPress={onPress}
       accessibilityRole="button"
       hitSlop={8}
-      style={({ pressed }) => [styles.button, primary ? styles.buttonPrimary : styles.buttonPlain, style, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.button,
+        primary ? styles.buttonPrimary : styles.buttonPlain,
+        style,
+        pressed && (primary ? styles.buttonPrimaryPressed : styles.pressed),
+      ]}
     >
       <Text style={[styles.buttonText, primary && styles.buttonTextPrimary]}>{title}</Text>
     </Pressable>
@@ -208,9 +213,11 @@ const styles = StyleSheet.create({
   },
   // minHeight, not height: a fixed height collapses when buttons are stacked in a column
   button: { minHeight: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
-  buttonPrimary: { flex: 1, backgroundColor: colors.text },
+  // Drawn like the mark: a thin white stroke with round ends, no fill
+  buttonPrimary: { flex: 1, borderWidth: 1.5, borderColor: colors.text },
+  buttonPrimaryPressed: { backgroundColor: colors.surface },
   buttonPlain: { paddingHorizontal: 20 },
-  buttonText: { color: colors.muted, fontSize: 17, fontWeight: '500' },
-  buttonTextPrimary: { color: colors.bg, fontWeight: '600' },
+  buttonText: { color: colors.muted, fontSize: 17, fontWeight: '400', letterSpacing: 0.2 },
+  buttonTextPrimary: { color: colors.text },
   pressed: { opacity: 0.6 },
 })

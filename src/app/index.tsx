@@ -10,7 +10,11 @@ import { Button, colors } from '../wizard/ui'
 export default function Home() {
   const { saved, beginSetup, restoreSaved } = useSettings()
   const { width, height } = useWindowDimensions()
-  const wide = width > height
+  // Phone on its side: too short to stack, so brand and actions sit side by side.
+  const sideBySide = width > height && height < 500
+  // Phone upright keeps the actions at the bottom, within thumb reach.
+  // Larger screens (tablet, browser) show brand and actions as one centered group.
+  const centered = !sideBySide && width >= 600
 
   const start = () => {
     restoreSaved()
@@ -22,25 +26,27 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={[styles.page, wide && styles.pageWide]}>
+    <SafeAreaView style={[styles.page, sideBySide && styles.pageSide, centered && styles.pageCentered]}>
       <StatusBar style="light" />
-      <View style={styles.brand}>
+      <View style={[styles.brand, !centered && styles.fill]}>
         <Image source={require('../../assets/brand/mark.png')} style={styles.logo} accessibilityIgnoresInvertColors />
         <Text style={styles.name} accessibilityLabel="Rollover">
           rollover
         </Text>
         <Text style={styles.tagline}>Midnight, again and again.</Text>
       </View>
-      <View style={[styles.actions, wide && styles.actionsWide]}>
-        {saved ? (
-          <>
-            <Text style={styles.summary}>{describe(saved)}</Text>
-            <Button title="Start" primary onPress={start} style={styles.button} />
-            <Button title="New setup" onPress={setup} style={styles.button} />
-          </>
-        ) : (
-          <Button title="Set up the clock" primary onPress={setup} style={styles.button} />
-        )}
+      <View style={[styles.actionsArea, sideBySide && styles.actionsSide, centered && styles.actionsCentered]}>
+        <View style={styles.actions}>
+          {saved ? (
+            <>
+              <Text style={styles.summary}>{describe(saved)}</Text>
+              <Button title="Start" primary onPress={start} style={styles.button} />
+              <Button title="New setup" onPress={setup} style={styles.button} />
+            </>
+          ) : (
+            <Button title="Set up the clock" primary onPress={setup} style={styles.button} />
+          )}
+        </View>
       </View>
     </SafeAreaView>
   )
@@ -48,13 +54,17 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: colors.bg, padding: 24 },
-  pageWide: { flexDirection: 'row', alignItems: 'center', gap: 32 },
-  brand: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  pageSide: { flexDirection: 'row', alignItems: 'center', gap: 32 },
+  pageCentered: { justifyContent: 'center' },
+  brand: { alignItems: 'center', justifyContent: 'center' },
+  fill: { flex: 1 },
   logo: { width: 88, height: 88 },
   name: { color: colors.text, fontSize: 40, fontWeight: '300', letterSpacing: -0.8, marginTop: 28 },
   tagline: { color: colors.muted, fontSize: 16, marginTop: 8 },
-  actions: { width: '100%', maxWidth: 420, alignSelf: 'center', gap: 12, paddingBottom: 8 },
-  actionsWide: { flex: 1, width: undefined },
+  actionsArea: { alignItems: 'center', paddingBottom: 8 },
+  actionsSide: { flex: 1, paddingBottom: 0 },
+  actionsCentered: { marginTop: 56 },
+  actions: { width: '100%', maxWidth: 340, gap: 12 },
   summary: { color: colors.muted, fontSize: 15, textAlign: 'center', marginBottom: 4, fontVariant: ['tabular-nums'] },
   button: { alignSelf: 'stretch' },
 })
