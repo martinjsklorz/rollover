@@ -1,0 +1,14 @@
+{
+  "name": "rollover-brand-tools",
+  "private": true,
+  "type": "module",
+  "description": "Generates the logo SVGs, app icons, splash image and social card from one geometry. Not part of the app.",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.1.0",
+    "@resvg/resvg-js": "2.6.2",
+    "opentype.js": "1.3.4"
+  }
+}

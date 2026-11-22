@@ -1,20 +1,17 @@
 import type { ReactNode } from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import Clock from '../clock/Clock'
 import { useSettings } from '../settings'
+import { colors } from '../theme'
 
-export const colors = {
-  bg: '#000',
-  surface: '#111113',
-  border: '#2c2c2e',
-  text: '#fff',
-  muted: '#8e8e93',
-}
+export { colors }
 
-/** Layout shared by every wizard page: progress, live preview, content, footer buttons. */
+const pad2 = (n: number) => String(n).padStart(2, '0')
+
+/** Layout shared by every wizard page: mark and step count, live preview, question, options, footer buttons. */
 export function WizardPage({
   index,
   count,
@@ -33,16 +30,20 @@ export function WizardPage({
   const { settings } = useSettings()
   const { width, height } = useWindowDimensions()
 
-  const progress = (
-    <View style={styles.progress} accessibilityLabel={`Step ${index + 1} of ${count}`}>
-      {Array.from({ length: count }, (_, i) => (
-        <View key={i} style={[styles.dot, i <= index && styles.dotDone]} />
-      ))}
+  const header = (
+    <View style={styles.header}>
+      <Image source={require('../../assets/brand/mark.png')} style={styles.mark} accessibilityLabel="Rollover" />
+      <Text style={styles.step} accessibilityLabel={`Step ${index + 1} of ${count}`}>
+        {pad2(index + 1)}
+        <Text style={styles.stepOf}> / {pad2(count)}</Text>
+      </Text>
     </View>
   )
   const text = (
     <>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} accessibilityRole="header">
+        {title}
+      </Text>
       {!!subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       <View style={styles.body}>{children}</View>
     </>
@@ -55,7 +56,7 @@ export function WizardPage({
       <SafeAreaView style={[styles.page, styles.wide]}>
         <StatusBar style="light" />
         <View style={styles.wideLeft}>
-          {progress}
+          {header}
           <View style={[styles.preview, styles.previewWide]}>
             <Clock settings={settings} />
           </View>
@@ -68,12 +69,12 @@ export function WizardPage({
     )
   }
 
-  const previewHeight = Math.min(width * 0.5, height * 0.32)
+  const previewHeight = Math.min(width * 0.5, height * 0.3)
   return (
     <SafeAreaView style={styles.page}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
-        {progress}
+        {header}
         <View style={[styles.preview, { height: previewHeight }]}>
           <Clock settings={settings} />
         </View>
@@ -84,20 +85,60 @@ export function WizardPage({
   )
 }
 
-export function OptionCard({ label, hint, selected, onPress }: { label: string; hint?: string; selected: boolean; onPress: () => void }) {
+/** Rows in a list separated by hairlines. */
+export function List({ children }: { children: ReactNode }) {
+  return <View style={styles.list}>{children}</View>
+}
+
+/** One row of a List: label, optional hint, and whatever goes on the right. */
+export function Row({
+  label,
+  hint,
+  right,
+  onPress,
+  first,
+  role,
+  selected,
+  accessibilityHint,
+}: {
+  label: string
+  hint?: string
+  right?: ReactNode
+  onPress: () => void
+  first?: boolean
+  role: 'radio' | 'button'
+  selected?: boolean
+  accessibilityHint?: string
+}) {
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="radio"
-      aria-checked={selected}
-      style={({ pressed }) => [styles.option, selected && styles.optionSelected, pressed && styles.pressed]}
+      accessibilityRole={role}
+      aria-checked={role === 'radio' ? selected : undefined}
+      accessibilityHint={accessibilityHint}
+      style={({ pressed }) => [styles.row, !first && styles.rowLine, pressed && styles.rowPressed]}
     >
-      <View style={[styles.radio, selected && styles.radioSelected]}>{selected && <View style={styles.radioDot} />}</View>
-      <View style={styles.optionText}>
-        <Text style={styles.optionLabel}>{label}</Text>
-        {!!hint && <Text style={styles.optionHint}>{hint}</Text>}
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>{label}</Text>
+        {!!hint && <Text style={styles.rowHint}>{hint}</Text>}
       </View>
+      {right}
     </Pressable>
+  )
+}
+
+/** A choice in a list. The selected one carries the brand's midnight dot. */
+export function OptionRow({ label, hint, selected, onPress, first }: { label: string; hint?: string; selected: boolean; onPress: () => void; first?: boolean }) {
+  return (
+    <Row
+      label={label}
+      hint={hint}
+      onPress={onPress}
+      first={first}
+      role="radio"
+      selected={selected}
+      right={<View style={[styles.radio, selected && styles.radioOn]}>{selected && <View style={styles.radioDot} />}</View>}
+    />
   )
 }
 
@@ -106,7 +147,8 @@ export function Button({ title, onPress, primary, style }: { title: string; onPr
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      style={({ pressed }) => [styles.button, primary ? styles.buttonPrimary : styles.buttonSecondary, style, pressed && styles.pressed]}
+      hitSlop={8}
+      style={({ pressed }) => [styles.button, primary ? styles.buttonPrimary : styles.buttonPlain, style, pressed && styles.pressed]}
     >
       <Text style={[styles.buttonText, primary && styles.buttonTextPrimary]}>{title}</Text>
     </Pressable>
@@ -115,59 +157,60 @@ export function Button({ title, onPress, primary, style }: { title: string; onPr
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: colors.bg },
-  wide: { flexDirection: 'row', gap: 24, paddingHorizontal: 20 },
-  wideLeft: { flex: 1, paddingTop: 16, paddingBottom: 12 },
+  wide: { flexDirection: 'row', gap: 32, paddingHorizontal: 24 },
+  wideLeft: { flex: 1, paddingTop: 16, paddingBottom: 16 },
   wideRight: { flex: 1, maxWidth: 520 },
-  wideScroll: { paddingTop: 12, paddingBottom: 8 },
+  wideScroll: { paddingTop: 52, paddingBottom: 8 },
   previewWide: { flex: 1, marginBottom: 0 },
   footerWide: { paddingHorizontal: 0 },
-  content: { padding: 20, paddingBottom: 8, width: '100%', maxWidth: 560, alignSelf: 'center' },
-  progress: { flexDirection: 'row', gap: 6, marginBottom: 16 },
-  dot: { flex: 1, height: 3, borderRadius: 2, backgroundColor: colors.border },
-  dotDone: { backgroundColor: colors.text },
+  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 8, width: '100%', maxWidth: 560, alignSelf: 'center' },
+
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: 28, marginBottom: 20 },
+  mark: { width: 24, height: 24 },
+  step: { color: colors.text, fontSize: 13, fontWeight: '500', letterSpacing: 1, fontVariant: ['tabular-nums'] },
+  stepOf: { color: colors.muted },
+
   preview: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: '#000',
+    borderRadius: 24,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.line,
+    backgroundColor: colors.bg,
     overflow: 'hidden',
     padding: 12,
-    marginBottom: 24,
+    marginBottom: 36,
   },
-  title: { color: colors.text, fontSize: 28, fontWeight: '700' },
-  subtitle: { color: colors.muted, fontSize: 16, marginTop: 6, lineHeight: 22 },
-  body: { marginTop: 20, gap: 10 },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    padding: 16,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-  optionSelected: { borderColor: colors.text },
-  optionText: { flex: 1 },
-  optionLabel: { color: colors.text, fontSize: 17, fontWeight: '600' },
-  optionHint: { color: colors.muted, fontSize: 14, marginTop: 3, fontVariant: ['tabular-nums'] },
-  radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
-  radioSelected: { borderColor: colors.text },
-  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.text },
+  title: { color: colors.text, fontSize: 30, fontWeight: '300', letterSpacing: -0.4, lineHeight: 36 },
+  subtitle: { color: colors.muted, fontSize: 16, marginTop: 8, lineHeight: 22 },
+  body: { marginTop: 28 },
+
+  list: { borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.line },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 16, paddingVertical: 16, paddingHorizontal: 4, minHeight: 64 },
+  rowLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line },
+  rowPressed: { backgroundColor: colors.surface },
+  rowText: { flex: 1 },
+  rowLabel: { color: colors.text, fontSize: 17 },
+  rowHint: { color: colors.muted, fontSize: 14, marginTop: 3, fontVariant: ['tabular-nums'] },
+
+  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: colors.line, alignItems: 'center', justifyContent: 'center' },
+  radioOn: { borderColor: colors.ember },
+  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.ember },
+
   footer: {
     flexDirection: 'row',
-    gap: 12,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 24,
     paddingTop: 8,
     paddingBottom: 12,
     width: '100%',
     maxWidth: 560,
     alignSelf: 'center',
   },
-  button: { flex: 1, minHeight: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center' },
-  buttonPrimary: { backgroundColor: colors.text },
-  buttonSecondary: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
-  buttonText: { color: colors.text, fontSize: 17, fontWeight: '600' },
-  buttonTextPrimary: { color: '#000' },
-  pressed: { opacity: 0.7 },
+  // minHeight, not height: a fixed height collapses when buttons are stacked in a column
+  button: { minHeight: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  buttonPrimary: { flex: 1, backgroundColor: colors.text },
+  buttonPlain: { paddingHorizontal: 20 },
+  buttonText: { color: colors.muted, fontSize: 17, fontWeight: '500' },
+  buttonTextPrimary: { color: colors.bg, fontWeight: '600' },
+  pressed: { opacity: 0.6 },
 })

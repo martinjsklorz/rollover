@@ -1,0 +1,357 @@
+<title>Rollover Brand</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500&display=swap">
+<style>
+/* Layout: one narrow column on true black, like the app. Every section is a plate with a label rail on the left. */
+:root {
+  --black: #000000;
+  --white: #FFFFFF;
+  --ember: #FF5A36;
+  --gray: #8E8E93;
+  --graphite: #1C1C1E;
+  --line: #2C2C2E;
+  --paper: #F4F3EF;
+  --font: "Inter", -apple-system, "SF Pro Text", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font: 400 16px/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 96px;
+}
+a { color: var(--white); }
+:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
+
+/* hero */
+.hero { padding-block: 72px 64px; display: grid; gap: 28px; border-bottom: 1px solid var(--line); }
+.hero .lockup { width: min(520px, 100%); height: auto; }
+.hero p { margin: 0; color: var(--gray); font-size: 20px; font-weight: 300; max-width: 34ch; }
+.hero .tag { color: var(--white); }
+
+/* sections */
+section { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding-block: 56px; border-bottom: 1px solid var(--line); }
+section > h2 { margin: 0; font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--gray); }
+.body { display: grid; gap: 28px; min-width: 0; }
+.lede { margin: 0; font-size: 22px; font-weight: 300; line-height: 1.4; max-width: 38ch; text-wrap: balance; }
+.note { margin: 0; color: var(--gray); max-width: 62ch; }
+@media (max-width: 760px) {
+  section { grid-template-columns: 1fr; gap: 20px; padding-block: 44px; }
+  .hero { padding-block: 48px; }
+}
+
+/* plates */
+.plates { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.plate { border: 1px solid var(--line); border-radius: 20px; aspect-ratio: 1; display: grid; place-items: center; position: relative; max-width: 100%; }
+.plate.paper { background: var(--paper); border-color: var(--paper); }
+.plate.wide { aspect-ratio: 2.2; }
+.plate svg { width: 46%; height: auto; }
+.plate.wide svg { width: 72%; }
+.plate figcaption { position: absolute; left: 16px; bottom: 12px; font-size: 12px; color: var(--gray); }
+.plate.paper figcaption { color: #6b6a66; }
+figure { margin: 0; }
+
+/* construction */
+.construct { border: 1px solid var(--line); border-radius: 20px; padding: 24px; overflow-x: auto; }
+.construct svg { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
+.construct text { font: 500 13px var(--mono); fill: var(--gray); }
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.specs div { background: var(--black); padding: 14px 16px; }
+.specs dt { font-size: 12px; color: var(--gray); }
+.specs dd { margin: 2px 0 0; font: 400 15px var(--mono); }
+
+/* colors */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.sw { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.sw .chip { height: 96px; }
+.sw .meta { padding: 12px 14px 14px; display: grid; gap: 2px; }
+.sw b { font-weight: 500; }
+.sw code { font: 13px var(--mono); color: var(--gray); }
+.sw small { color: var(--gray); font-size: 13px; line-height: 1.4; }
+.rule { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; }
+.rule .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--ember); }
+
+/* type */
+.specimen { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.specimen > div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 16px; align-items: baseline; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.specimen .k { font-size: 12px; color: var(--gray); }
+.specimen .k span { display: block; font-family: var(--mono); }
+.t-clock { font-weight: 100; font-size: clamp(48px, 10vw, 96px); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.t-word { font-weight: 300; font-size: 48px; letter-spacing: -.02em; line-height: 1; }
+.t-title { font-weight: 300; font-size: 30px; letter-spacing: -.013em; }
+.t-body { font-size: 17px; }
+.t-hint { font-size: 14px; color: var(--gray); font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .specimen > div { grid-template-columns: 1fr; gap: 8px; } }
+
+/* icons */
+.icons { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-end; }
+.icons figure { display: grid; gap: 10px; justify-items: center; font-size: 12px; color: var(--gray); }
+.ios { width: 120px; aspect-ratio: 1; border-radius: 27px; background: var(--black); box-shadow: inset 0 0 0 1px var(--line); display: grid; place-items: center; }
+.ios.small { width: 60px; border-radius: 14px; }
+.ios.tiny { width: 29px; border-radius: 7px; }
+.ios.tinted { background: #101010; }
+.droid { width: 120px; aspect-ratio: 1; border-radius: 50%; background: var(--black); box-shadow: inset 0 0 0 1px var(--line); display: grid; place-items: center; }
+.droid.themed { background: #2b3a2f; box-shadow: none; }
+.ios svg, .droid svg { width: 100%; height: 100%; }
+
+/* phones */
+.phones { display: flex; flex-wrap: wrap; gap: 24px; }
+.phone { width: 280px; max-width: 100%; aspect-ratio: 9 / 19.5; border-radius: 40px; border: 1px solid var(--line); background: var(--black); padding: 18px 18px 16px; display: flex; flex-direction: column; overflow: hidden; }
+.phone.land { width: 520px; aspect-ratio: 19.5 / 9; padding: 18px; display: grid; place-items: center; }
+.ph-head { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+.ph-head svg { width: 18px; height: 18px; }
+.ph-step { font-size: 10px; font-weight: 500; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.ph-step span { color: var(--gray); }
+.ph-prev { margin-top: 14px; border: 1px solid var(--line); border-radius: 16px; height: 104px; display: grid; place-items: center; }
+.ph-prev span { font-weight: 100; font-size: 40px; font-variant-numeric: tabular-nums; }
+.ph-title { font-weight: 300; font-size: 22px; letter-spacing: -.01em; margin-top: 24px; }
+.ph-list { margin-top: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ph-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 2px; }
+.ph-row + .ph-row { border-top: 1px solid var(--line); }
+.ph-row b { display: block; font-weight: 400; font-size: 13px; }
+.ph-row i { font-style: normal; font-size: 11px; color: var(--gray); }
+.radio { width: 15px; height: 15px; border-radius: 50%; border: 1.25px solid var(--line); display: grid; place-items: center; }
+.radio.on { border-color: var(--ember); }
+.radio.on::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); }
+.ph-foot { margin-top: auto; display: flex; gap: 6px; align-items: center; }
+.ph-foot .back { color: var(--gray); font-size: 13px; font-weight: 500; padding: 0 14px; }
+.ph-foot .next { flex: 1; background: var(--white); color: var(--black); border-radius: 99px; height: 38px; display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+.land span { font-weight: 100; font-size: clamp(40px, 11vw, 96px); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+
+/* do / don't */
+.dd { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.dd figure { border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 14px; }
+.dd .art { aspect-ratio: 1.6; display: grid; place-items: center; }
+.dd .art svg { height: 70%; width: auto; }
+.dd figcaption { font-size: 14px; }
+.dd figcaption b { display: block; font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gray); }
+.dd .no figcaption b { color: var(--ember); }
+.glow svg { filter: drop-shadow(0 0 10px #ff6a3d) drop-shadow(0 0 22px #ff2d6f); }
+
+/* files */
+.social img { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); display: block; }
+.files { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.files li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding-block: 12px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.files code { font: 14px var(--mono); overflow-wrap: anywhere; }
+.files span { color: var(--gray); text-align: right; }
+@media (max-width: 520px) { .files li { grid-template-columns: 1fr; gap: 2px; } .files span { text-align: left; } }
+
+footer { padding-top: 40px; color: var(--gray); font-size: 14px; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <svg class="lockup" viewBox="0 0 790 240" role="img" aria-label="rollover" data-lockup></svg>
+    <p><span class="tag">Midnight, again and again.</span> A clock that rolls over midnight on a loop. Black screen, thin white digits, one moment in ember.</p>
+  </header>
+
+  <section id="mark">
+    <h2>The mark</h2>
+    <div class="body">
+      <p class="lede">A ring with a gap at 12 o'clock and one dot in the gap. The ring is the loop. The dot is midnight.</p>
+      <div class="plates">
+        <figure class="plate"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FF5A36" aria-label="Mark on black"></svg><figcaption>mark.svg</figcaption></figure>
+        <figure class="plate paper"><svg viewBox="0 0 512 512" data-mark="#000000,#FF5A36" aria-label="Mark on paper"></svg><figcaption>mark-on-light.svg</figcaption></figure>
+        <figure class="plate"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FFFFFF" aria-label="One-color mark"></svg><figcaption>mark-mono-white.svg</figcaption></figure>
+      </div>
+      <div class="construct">
+        <svg viewBox="0 0 560 520" data-construct aria-label="Construction of the mark"></svg>
+      </div>
+      <dl class="specs">
+        <div><dt>Ring stroke</dt><dd>0.14 r</dd></div>
+        <div><dt>Dot radius</dt><dd>0.95 × stroke</dd></div>
+        <div><dt>Gap to dot</dt><dd>0.75 × stroke</dd></div>
+        <div><dt>Clear space</dt><dd>≥ r</dd></div>
+        <div><dt>Minimum size</dt><dd>16 px</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="lockup">
+    <h2>Lockup</h2>
+    <div class="body">
+      <p class="note">The wordmark is <b>rollover</b>, lowercase, in Inter Light with −2 % tracking. Next to the type the ring gets heavier (0.19 r) so it matches the letter stems.</p>
+      <div class="plates">
+        <figure class="plate wide"><svg viewBox="0 0 790 240" data-lockup aria-label="Lockup on black"></svg><figcaption>lockup.svg</figcaption></figure>
+        <figure class="plate wide paper"><svg viewBox="0 0 790 240" data-lockup="#000000" aria-label="Lockup on paper"></svg><figcaption>lockup-on-light.svg</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="color">
+    <h2>Color</h2>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:var(--black)"></div><div class="meta"><b>Black</b><code>#000000</code><small>Background, always. OLED pixels off.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--white)"></div><div class="meta"><b>White</b><code>#FFFFFF</code><small>Digits, ring, primary button.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--ember)"></div><div class="meta"><b>Ember</b><code>#FF5A36</code><small>Midnight and the current choice.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--gray)"></div><div class="meta"><b>Gray</b><code>#8E8E93</code><small>Hints, secondary text, Back.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--graphite)"></div><div class="meta"><b>Graphite</b><code>#1C1C1E</code><small>Pressed rows, flip cards.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--line)"></div><div class="meta"><b>Line</b><code>#2C2C2E</code><small>Hairlines and borders.</small></div></div>
+        <div class="sw"><div class="chip" style="background:var(--paper)"></div><div class="meta"><b>Paper</b><code>#F4F3EF</code><small>Print and documents only.</small></div></div>
+      </div>
+      <div class="rule"><span class="dot"></span><span>One ember element per screen, at most. If two things want it, neither gets it.</span></div>
+    </div>
+  </section>
+
+  <section id="type">
+    <h2>Type</h2>
+    <div class="body">
+      <p class="note">In the app: the system font (SF Pro on iOS, Roboto on Android). Shown here in Inter, the brand face for the wordmark, marketing and documents.</p>
+      <div class="specimen">
+        <div><p class="k">Clock<span>Thin 100 · tabular</span></p><div class="t-clock">23:59:58</div></div>
+        <div><p class="k">Wordmark<span>Light 300 · −2 %</span></p><div class="t-word">rollover</div></div>
+        <div><p class="k">Title<span>Light 300 · 30</span></p><div class="t-title">How long before midnight?</div></div>
+        <div><p class="k">Body<span>Regular 400 · 17</span></p><div class="t-body">Place your phone, then tap Start.</div></div>
+        <div><p class="k">Hint<span>Regular 400 · 14</span></p><div class="t-hint">Starts at 23:59:50</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="icon">
+    <h2>App icon</h2>
+    <div class="body">
+      <p class="note">Flat, full-bleed black. No glow, no gradient. iOS gets dark and tinted variants; Android gets an adaptive icon with the mark inside the safe zone and a monochrome layer for themed icons.</p>
+      <div class="icons">
+        <figure><div class="ios"><svg viewBox="0 0 1024 1024" data-mark="#FFFFFF,#FF5A36" data-r="262"></svg></div>iOS</figure>
+        <figure><div class="ios tinted"><svg viewBox="0 0 1024 1024" data-mark="#E8E8E8,#9A9A9A" data-r="262"></svg></div>iOS tinted</figure>
+        <figure><div class="droid"><svg viewBox="0 0 1024 1024" data-mark="#FFFFFF,#FF5A36" data-r="205"></svg></div>Android</figure>
+        <figure><div class="droid themed"><svg viewBox="0 0 1024 1024" data-mark="#CFE8D4,#CFE8D4" data-r="205"></svg></div>Themed</figure>
+        <figure><div class="ios small"><svg viewBox="0 0 1024 1024" data-mark="#FFFFFF,#FF5A36" data-r="262"></svg></div>60 pt</figure>
+        <figure><div class="ios tiny"><svg viewBox="0 0 1024 1024" data-mark="#FFFFFF,#FF5A36" data-r="262"></svg></div>29 pt</figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="app">
+    <h2>In the app</h2>
+    <div class="body">
+      <p class="note">The wizard drops the boxed cards for a hairline list. The selected choice carries the ember dot, the brand's one accent. Back is plain text; the one filled button is the next step.</p>
+      <div class="phones">
+        <div class="phone" aria-label="Wizard step: pick a style">
+          <div class="ph-head"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FF5A36" data-r="190"></svg><div class="ph-step">02 <span>/ 05</span></div></div>
+          <div class="ph-prev"><span data-tick>23:59:52</span></div>
+          <div class="ph-title">Pick a style</div>
+          <div class="ph-list">
+            <div class="ph-row"><div><b>Simple</b><i>Thin white digits</i></div><span class="radio on"></span></div>
+            <div class="ph-row"><div><b>Flip clock</b><i>Split-flap cards</i></div><span class="radio"></span></div>
+          </div>
+          <div class="ph-foot"><span class="back">Back</span><span class="next">Next</span></div>
+        </div>
+        <div class="phone land" aria-label="The clock, full screen"><span data-tick>23:59:52</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <h2>Do and don't</h2>
+    <div class="body">
+      <div class="dd">
+        <figure><div class="art"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FF5A36" data-r="190"></svg></div><figcaption><b>Do</b>Flat shapes on black.</figcaption></figure>
+        <figure class="no"><div class="art glow"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FF5A36" data-r="190"></svg></div><figcaption><b>Don't</b>Add glow, gradients or shadows.</figcaption></figure>
+        <figure class="no"><div class="art"><svg viewBox="0 0 512 512" data-mark="#FF5A36,#FFFFFF" data-r="190"></svg></div><figcaption><b>Don't</b>Recolor the ring. Only the dot is ember.</figcaption></figure>
+        <figure class="no"><div class="art"><svg viewBox="0 0 512 512" data-mark="#FFFFFF,#FF5A36" data-r="190" data-rotate="90"></svg></div><figcaption><b>Don't</b>Rotate it. Midnight is at 12 o'clock.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="files">
+    <h2>Files</h2>
+    <div class="body social">
+      <img alt="Link preview card: the rollover lockup on black with the line Midnight, again and again." src="social/og-1200x630.png">
+      <ul class="files">
+        <li><code>brand/logo/</code><span>Mark, lockup and wordmark SVGs, dark and light</span></li>
+        <li><code>brand/png/</code><span>1024 px PNG exports</span></li>
+        <li><code>brand/social/</code><span>Link preview, Play Store banner, square post</span></li>
+        <li><code>assets/icon*.png</code><span>iOS icon, dark and tinted</span></li>
+        <li><code>assets/android-icon*.png</code><span>Adaptive and themed Android icon</span></li>
+        <li><code>assets/splash-icon.png</code><span>Splash screen</span></li>
+        <li><code>brand/tools/build.mjs</code><span>Generates all of the above</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>Rollover brand · November 2026</footer>
+</div>
+
+<script>
+// Same geometry as brand/tools/build.mjs
+const RATIO = { stroke: 0.14, dot: 0.95, clear: 0.75 }
+const NS = 'http://www.w3.org/2000/svg'
+const n = (v) => +v.toFixed(2)
+function markParts(cx, cy, r, ring, dot, stroke = RATIO.stroke) {
+  const sw = r * stroke, dr = sw * RATIO.dot
+  const half = (dr + RATIO.clear * sw + sw / 2) / r
+  const pt = (a) => [n(cx + r * Math.sin(a)), n(cy - r * Math.cos(a))]
+  const [x0, y0] = pt(half), [x1, y1] = pt(-half)
+  return `<path d="M${x0} ${y0}A${r} ${r} 0 1 1 ${x1} ${y1}" fill="none" stroke="${ring}" stroke-width="${n(sw)}" stroke-linecap="round"/>` +
+    `<circle cx="${cx}" cy="${n(cy - r)}" r="${n(dr)}" fill="${dot}"/>`
+}
+const offset = (r) => (r * RATIO.stroke * RATIO.dot - r * RATIO.stroke / 2) / 2
+
+document.querySelectorAll('[data-mark]').forEach((el) => {
+  const [ring, dot] = el.dataset.mark.split(',')
+  const size = el.viewBox.baseVal.width
+  const r = +(el.dataset.r || 190)
+  const c = size / 2
+  const rot = el.dataset.rotate ? ` transform="rotate(${el.dataset.rotate} ${c} ${c})"` : ''
+  el.innerHTML = `<g${rot}>${markParts(c, c + offset(r), r, ring, dot)}</g>`
+})
+
+document.querySelectorAll('[data-lockup]').forEach((el) => {
+  const color = el.dataset.lockup || '#FFFFFF'
+  // matches build.mjs: font size 160, padding 40, baseline 156.8
+  const size = 160, pad = 40, base = pad + size * 0.73
+  const r = size * 0.34, cx = pad + r * 1.07, cy = base - size * 0.36
+  const tx = cx + r * 1.07 + size * 0.34
+  el.innerHTML = markParts(n(cx), n(cy), n(r), color, '#FF5A36', 0.19) +
+    `<text x="${n(tx)}" y="${base}" fill="${color}" font-family="Inter, -apple-system, Roboto, sans-serif" font-weight="300" font-size="${size}" letter-spacing="-3.2">rollover</text>`
+})
+
+// construction drawing
+{
+  const el = document.querySelector('[data-construct]')
+  const cx = 280, cy = 280, r = 190, sw = r * RATIO.stroke, dr = sw * RATIO.dot
+  const half = (dr + RATIO.clear * sw + sw / 2) / r
+  const endX = n(cx + r * Math.sin(half)), endY = n(cy - r * Math.cos(half))
+  el.innerHTML =
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2C2C2E" stroke-dasharray="3 5"/>` +
+    `<line x1="${cx}" y1="${cy}" x2="${cx + r}" y2="${cy}" stroke="#2C2C2E"/>` +
+    `<line x1="${cx}" y1="40" x2="${cx}" y2="${cy}" stroke="#2C2C2E" stroke-dasharray="3 5"/>` +
+    markParts(cx, cy, r, '#FFFFFF', '#FF5A36') +
+    `<circle cx="${cx}" cy="${cy}" r="3" fill="#8E8E93"/>` +
+    `<text x="${cx + r / 2}" y="${cy - 10}" text-anchor="middle">r</text>` +
+    `<text x="${cx + r + sw / 2 + 12}" y="${cy + 4}">stroke 0.14 r</text>` +
+    `<text x="${cx}" y="${cy - r - dr - 16}" text-anchor="middle">12 o'clock · midnight</text>` +
+    `<line x1="${cx + dr}" y1="${cy - r + dr + 22}" x2="${endX - sw / 2}" y2="${cy - r + dr + 22}" stroke="#8E8E93"/>` +
+    `<text x="${endX + 14}" y="${cy - r + dr + 26}">gap 0.75 × stroke</text>` +
+    `<text x="${cx}" y="${cy + r + sw / 2 + 30}" text-anchor="middle">loop</text>`
+}
+
+// the mockups tick through the loop, like the app: 23:59:50 → 00:00:10
+{
+  const ticks = document.querySelectorAll('[data-tick]')
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  let t = -8
+  const pad = (v) => String(v).padStart(2, '0')
+  const show = () => {
+    const s = (86400 + t) % 86400
+    const txt = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`
+    ticks.forEach((el) => (el.textContent = txt))
+  }
+  show()
+  if (!reduce) setInterval(() => { t = t >= 10 ? -10 : t + 1; show() }, 1000)
+}
+</script>

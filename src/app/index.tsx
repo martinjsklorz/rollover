@@ -25,8 +25,10 @@ export default function Home() {
     <SafeAreaView style={[styles.page, wide && styles.pageWide]}>
       <StatusBar style="light" />
       <View style={styles.brand}>
-        <Image source={require('../../assets/icon.png')} style={styles.logo} accessibilityIgnoresInvertColors />
-        <Text style={styles.name}>Rollover</Text>
+        <Image source={require('../../assets/brand/mark.png')} style={styles.logo} accessibilityIgnoresInvertColors />
+        <Text style={styles.name} accessibilityLabel="Rollover">
+          rollover
+        </Text>
         <Text style={styles.tagline}>Midnight, again and again.</Text>
       </View>
       <View style={[styles.actions, wide && styles.actionsWide]}>
@@ -48,9 +50,9 @@ const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: colors.bg, padding: 24 },
   pageWide: { flexDirection: 'row', alignItems: 'center', gap: 32 },
   brand: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  logo: { width: 128, height: 128, borderRadius: 30 },
-  name: { color: colors.text, fontSize: 34, fontWeight: '700', marginTop: 20 },
-  tagline: { color: colors.muted, fontSize: 16, marginTop: 6 },
+  logo: { width: 88, height: 88 },
+  name: { color: colors.text, fontSize: 40, fontWeight: '300', letterSpacing: -0.8, marginTop: 28 },
+  tagline: { color: colors.muted, fontSize: 16, marginTop: 8 },
   actions: { width: '100%', maxWidth: 420, alignSelf: 'center', gap: 12, paddingBottom: 8 },
   actionsWide: { flex: 1, width: undefined },
   summary: { color: colors.muted, fontSize: 15, textAlign: 'center', marginBottom: 4, fontVariant: ['tabular-nums'] },

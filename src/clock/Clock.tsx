@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native'
 import type { Settings } from '../settings'
+import { colors } from '../theme'
 import { loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 type Size = { width: number; height: number }
@@ -74,10 +75,10 @@ function FlipCard({ value, width, corner }: { value: string; width: number; corn
 const styles = StyleSheet.create({
   fill: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' },
-  simple: { color: '#fff', fontWeight: '100', fontVariant: ['tabular-nums'] },
-  simpleAmPm: { color: '#fff', fontWeight: '300' },
-  card: { backgroundColor: '#1c1c1e', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  cardDigits: { color: '#f2f2f2', fontWeight: '600', fontVariant: ['tabular-nums'], includeFontPadding: false },
-  hinge: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: '#000' },
-  corner: { position: 'absolute', color: '#8e8e93', fontWeight: '600' },
+  simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'] },
+  simpleAmPm: { color: colors.text, fontWeight: '300' },
+  card: { backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  cardDigits: { color: colors.text, fontWeight: '400', fontVariant: ['tabular-nums'], includeFontPadding: false },
+  hinge: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: colors.bg },
+  corner: { position: 'absolute', color: colors.muted, fontWeight: '600' },
 })

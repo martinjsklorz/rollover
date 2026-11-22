@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { router } from 'expo-router'
 import { useSettings } from '../settings'
 import { STEPS } from '../wizard/steps'
-import { Button, WizardPage, colors } from '../wizard/ui'
+import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
 
 /** Last wizard page: a summary of the choices and the Start button. */
 export default function Ready() {
@@ -27,31 +27,29 @@ export default function Ready() {
         </>
       }
     >
-      <View style={styles.summary}>
+      <List>
         {STEPS.map((step, i) => (
-          <Pressable
+          <Row
             key={step.id}
-            onPress={() => router.dismissTo(`/setup/${step.id}`)}
-            accessibilityRole="button"
+            first={i === 0}
+            role="button"
+            label={step.name}
             accessibilityHint={`Change ${step.name}`}
-            style={({ pressed }) => [styles.row, i > 0 && styles.rowBorder, pressed && styles.pressed]}
-          >
-            <Text style={styles.name}>{step.name}</Text>
-            <Text style={styles.value}>{step.summary(settings)}</Text>
-            <Text style={styles.chevron}>›</Text>
-          </Pressable>
+            onPress={() => router.dismissTo(`/setup/${step.id}`)}
+            right={
+              <>
+                <Text style={styles.value}>{step.summary(settings)}</Text>
+                <Text style={styles.chevron}>›</Text>
+              </>
+            }
+          />
         ))}
-      </View>
+      </List>
     </WizardPage>
   )
 }
 
 const styles = StyleSheet.create({
-  summary: { borderRadius: 14, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface },
-  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 15, gap: 8 },
-  rowBorder: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
-  name: { flex: 1, color: colors.muted, fontSize: 16 },
-  value: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  chevron: { color: colors.muted, fontSize: 22, marginLeft: 4 },
-  pressed: { opacity: 0.7 },
+  value: { color: colors.muted, fontSize: 17, fontVariant: ['tabular-nums'] },
+  chevron: { color: colors.line, fontSize: 24, marginLeft: -6 },
 })
