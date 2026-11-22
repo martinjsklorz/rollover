@@ -44,7 +44,7 @@ App icons and the splash image live in `../assets/` and are wired up in `app.jso
 | Name | Hex | Use |
 | --- | --- | --- |
 | Black | `#000000` | Background, always. True black so OLED screens switch the pixels off. |
-| White | `#FFFFFF` | Digits, the ring, primary text, the primary button. |
+| White | `#FFFFFF` | Digits, the ring, primary text, the outline of the primary button. |
 | Ember | `#FF5A36` | Midnight. The dot in the mark, the selected choice in the app. **One ember element per screen, at most.** |
 | Gray | `#8E8E93` | Secondary text, hints, the Back button. |
 | Graphite | `#1C1C1E` | Pressed rows, flip-clock cards. |
@@ -56,7 +56,7 @@ The same values are in `src/theme.ts`.
 ## Type
 
 - **Wordmark:** `rollover`, lowercase, Inter Light (300), tracking −2 %. Outlined in the SVGs, so no font is needed to use them.
-- **In the app:** the system font (SF Pro on iOS, Roboto on Android). Clock digits Thin (100) with tabular figures. Titles Light (300). Body Regular.
+- **In the app:** the system font (SF Pro on iOS, Roboto on Android). Clock digits Thin (100) with tabular figures. Titles Light (300). Body and buttons Regular.
 - **Marketing and documents:** Inter. Light for large headlines, Regular for text.
 
 ## Voice
@@ -67,6 +67,7 @@ Tagline: **Midnight, again and again.**
 ## Don't
 
 - No glow, no gradients, no shadows. Flat shapes on black.
+- No filled buttons. The primary button is a thin white outline, like the ring; secondary buttons are gray text.
 - Don't recolor the ring. Only the dot is ember.
 - Don't use ember for anything other than midnight or the current selection.
 - Don't rotate the mark. The gap is always at 12 o'clock.
