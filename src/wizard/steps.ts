@@ -1,5 +1,6 @@
 import type { Settings } from '../settings'
 import { formatTime, loopTime } from '../clock/time'
+import { THEMES, THEME_IDS, themeOf } from '../theme'
 
 export type Choice = {
   label: string
@@ -45,6 +46,14 @@ export const STEPS: Step[] = [
     summary: (s) => (s.style === 'flip' ? 'Flip clock' : 'Simple'),
   },
   {
+    id: 'theme',
+    name: 'Theme',
+    title: 'Pick a theme',
+    subtitle: "Colors for New Year's Eve, or any midnight.",
+    choices: THEME_IDS.map((id) => ({ label: THEMES[id].name, hint: THEMES[id].hint, value: { theme: id } })),
+    summary: (s) => themeOf(s.theme).name,
+  },
+  {
     id: 'before',
     name: 'Before midnight',
     title: 'How long before midnight?',
@@ -67,6 +76,17 @@ export const STEPS: Step[] = [
       value: { after: sec },
     })),
     summary: (s) => `+${s.after} s`,
+  },
+  {
+    id: 'fireworks',
+    name: 'Fireworks',
+    title: 'Fireworks at midnight?',
+    subtitle: 'They light up the seconds after midnight, every time the clock rolls over.',
+    choices: [
+      { label: 'Fireworks', hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`, value: { fireworks: true } },
+      { label: 'No fireworks', hint: 'Just the clock', value: { fireworks: false } },
+    ],
+    summary: (s) => (s.fireworks ? 'Fireworks' : 'No fireworks'),
   },
 ]
 
