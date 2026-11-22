@@ -28,6 +28,17 @@
         }
       ],
       "expo-router"
-    ]
+    ],
+    "web": {
+      "output": "single",
+      "favicon": "./assets/icon.png",
+      "name": "Rollover",
+      "description": "A clock that rolls over midnight, again and again.",
+      "themeColor": "#000000",
+      "backgroundColor": "#000000"
+    },
+    "experiments": {
+      "baseUrl": "/rollover"
+    }
   }
 }

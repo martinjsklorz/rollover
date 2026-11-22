@@ -1,0 +1,66 @@
+name: CI
+
+# Every push and pull request: typecheck, Expo checks, and a build for iOS, Android and web.
+# Pushes to main also publish the web app to GitHub Pages.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6 # pnpm version comes from "packageManager" in package.json
+        with:
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Expo doctor
+        run: pnpm dlx expo-doctor@latest
+
+      - name: Bundle iOS and Android
+        run: pnpm exec expo export --platform ios --platform android --output-dir ${{ runner.temp }}/native
+
+      - name: Build web
+        run: |
+          pnpm exec expo export --platform web
+          # GitHub Pages serves 404.html for unknown paths; the app then routes itself (deep links, reloads)
+          cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  pages:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

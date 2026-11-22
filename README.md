@@ -1,6 +1,9 @@
 # Rollover
 
-A clock that rolls over midnight, again and again.
+[![CI](https://github.com/martinjsklorz/rollover/actions/workflows/ci.yml/badge.svg)](https://github.com/martinjsklorz/rollover/actions/workflows/ci.yml)
+
+A clock that rolls over midnight, again and again. Try it in the browser:
+**https://martinjsklorz.github.io/rollover/**
 
 The first screen shows the logo and Start, which runs the clock with your last settings,
 or starts the setup wizard. The first time, only the wizard is offered.
@@ -30,6 +33,14 @@ pnpm typecheck
 ```
 
 Add Expo modules with `pnpm exec expo install <package>`, so the versions match the Expo SDK.
+
+## CI and GitHub Pages
+
+`.github/workflows/ci.yml` runs on every push and pull request: typecheck, `expo-doctor`, and a
+build for iOS, Android and web. Pushes to `main` publish the web build to GitHub Pages.
+
+The web build lives under `/rollover` (`experiments.baseUrl` in `app.json`). `public/index.html` is
+the page template and keeps the page black before the app loads.
 
 ## Builds and over-the-air updates
 
