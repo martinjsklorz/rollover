@@ -10,12 +10,18 @@
     "backgroundColor": "#000000",
     "ios": {
       "bundleIdentifier": "app.rollover.clock",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": {
+        "light": "./assets/icon.png",
+        "dark": "./assets/icon-dark.png",
+        "tinted": "./assets/icon-tinted.png"
+      }
     },
     "android": {
       "package": "app.rollover.clock",
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png",
         "backgroundColor": "#000000"
       },
       "predictiveBackGestureEnabled": false
@@ -24,6 +30,8 @@
       [
         "expo-splash-screen",
         {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
           "backgroundColor": "#000000"
         }
       ],

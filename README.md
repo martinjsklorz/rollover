@@ -18,6 +18,8 @@ src/wizard/steps.ts the wizard steps; add a setting by adding a step
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
 src/clock/          the clock face (simple / flip) and the loop timing
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
+src/theme.ts        brand colors used by the app
+brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 ```
 
 ## Run

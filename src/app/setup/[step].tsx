@@ -1,7 +1,7 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router'
 import { useSettings } from '../../settings'
 import { STEPS, hintText, isSelected, stepIndex } from '../../wizard/steps'
-import { Button, OptionCard, WizardPage } from '../../wizard/ui'
+import { Button, List, OptionRow, WizardPage } from '../../wizard/ui'
 
 /** One wizard page per setting, defined in src/wizard/steps.ts. */
 export default function SetupStep() {
@@ -26,15 +26,18 @@ export default function SetupStep() {
         </>
       }
     >
-      {step.choices.map((choice) => (
-        <OptionCard
-          key={choice.label}
-          label={choice.label}
-          hint={hintText(choice, settings)}
-          selected={isSelected(choice, settings)}
-          onPress={() => update(choice.value)}
-        />
-      ))}
+      <List>
+        {step.choices.map((choice, i) => (
+          <OptionRow
+            key={choice.label}
+            first={i === 0}
+            label={choice.label}
+            hint={hintText(choice, settings)}
+            selected={isSelected(choice, settings)}
+            onPress={() => update(choice.value)}
+          />
+        ))}
+      </List>
     </WizardPage>
   )
 }
