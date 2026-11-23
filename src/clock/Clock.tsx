@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import type { Settings } from '../settings'
-import { colors } from '../theme'
+import { colors, themeOf, type ClockTheme } from '../theme'
+import Fireworks from './Fireworks'
 import { loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 type Size = { width: number; height: number }
@@ -27,34 +28,44 @@ export default function Clock({ settings }: { settings: Settings }) {
 function LoopingFace({ settings, size }: { settings: Settings; size: Size }) {
   const elapsed = useLoop(settings.before + settings.after)
   const parts = timeParts(loopTime(settings.before, elapsed), settings.hour12)
-  return settings.style === 'flip' ? <FlipFace parts={parts} size={size} /> : <SimpleFace parts={parts} size={size} />
+  const theme = themeOf(settings.theme)
+  // from 00:00:00 until the loop starts over
+  const afterMidnight = elapsed >= settings.before
+  return (
+    <>
+      {settings.fireworks && afterMidnight && <Fireworks size={size} colors={theme.fireworks} />}
+      {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
+    </>
+  )
 }
 
 /* ---------- simple: thin white digits ---------- */
 
-function SimpleFace({ parts, size }: { parts: TimeParts; size: Size }) {
+function SimpleFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
   const fontSize = Math.min(size.width / (parts.ampm ? 6.2 : 5), size.height * 0.5)
+  const color = { color: theme.text }
+  const glow = theme.glow && { textShadowColor: theme.text, textShadowRadius: fontSize * 0.12, textShadowOffset: { width: 0, height: 0 } }
   return (
     <View style={styles.row}>
-      <Text style={[styles.simple, { fontSize }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.3}>
+      <Text style={[styles.simple, color, glow, { fontSize }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.3}>
         {parts.hh}:{parts.mm}:{parts.ss}
       </Text>
-      {parts.ampm !== '' && <Text style={[styles.simpleAmPm, { fontSize: fontSize * 0.3, marginLeft: fontSize * 0.12 }]}>{parts.ampm}</Text>}
+      {parts.ampm !== '' && <Text style={[styles.simpleAmPm, color, { fontSize: fontSize * 0.3, marginLeft: fontSize * 0.12 }]}>{parts.ampm}</Text>}
     </View>
   )
 }
 
 /* ---------- flip: split-flap cards ---------- */
 
-function FlipFace({ parts, size }: { parts: TimeParts; size: Size }) {
+function FlipFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
   const gapRatio = 0.12
   const cardWidth = Math.min((size.width * 0.92) / (3 + 2 * gapRatio), (size.height * 0.8) / 1.2)
   const gap = cardWidth * gapRatio
   return (
     <View style={[styles.row, { alignItems: 'center', gap }]}>
-      <FlipCard value={parts.hh} width={cardWidth} corner={parts.ampm} />
-      <FlipCard value={parts.mm} width={cardWidth} />
-      <FlipCard value={parts.ss} width={cardWidth} />
+      <FlipCard value={parts.hh} width={cardWidth} theme={theme} corner={parts.ampm} />
+      <FlipCard value={parts.mm} width={cardWidth} theme={theme} />
+      <FlipCard value={parts.ss} width={cardWidth} theme={theme} />
     </View>
   )
 }
@@ -66,13 +77,13 @@ type Face = { digits: string; corner?: string }
  * then the bottom flap (new value) swings down from it. Behind them, the static halves show
  * the new value on top and the old value at the bottom, like the real mechanism.
  */
-function FlipCard({ value, width, corner }: { value: string; width: number; corner?: string }) {
+function FlipCard({ value, width, theme, corner }: { value: string; width: number; theme: ClockTheme; corner?: string }) {
   const height = width * 1.2
   const [flip, setFlip] = useState({ from: { digits: value, corner }, to: { digits: value, corner }, n: 0 })
   if (flip.to.digits !== value || flip.to.corner !== corner) {
     setFlip({ from: flip.to, to: { digits: value, corner }, n: flip.n + 1 })
   }
-  const half = { width, height, radius: width * 0.08 }
+  const half = { width, height, radius: width * 0.08, theme }
   return (
     <View style={{ width, height }}>
       <Half side="top" face={flip.to} {...half} />
@@ -88,7 +99,7 @@ const FALL_MS = 160
 const LAND_MS = 260
 const useNativeDriver = Platform.OS !== 'web'
 
-function Flaps({ from, to, ...half }: { from: Face; to: Face; width: number; height: number; radius: number }) {
+function Flaps({ from, to, ...half }: { from: Face; to: Face; width: number; height: number; radius: number; theme: ClockTheme }) {
   const [fall] = useState(() => new Animated.Value(0))
   const [land] = useState(() => new Animated.Value(0))
   useEffect(() => {
@@ -126,6 +137,7 @@ type HalfProps = {
   width: number
   height: number
   radius: number
+  theme: ClockTheme
   /** rotation around the hinge (the half's edge at the card's middle) */
   transform?: Animated.WithAnimatedValue<ViewStyle>['transform']
   /** darkness of the shadow over the half, 0 … 1 */
@@ -133,7 +145,7 @@ type HalfProps = {
 }
 
 /** The top or bottom half of a card: the full card face, clipped to one half. */
-function Half({ side, face, width, height, radius, transform, shade }: HalfProps) {
+function Half({ side, face, width, height, radius, theme, transform, shade }: HalfProps) {
   const top = side === 'top'
   return (
     <Animated.View
@@ -141,6 +153,7 @@ function Half({ side, face, width, height, radius, transform, shade }: HalfProps
         styles.half,
         {
           top: top ? 0 : height / 2,
+          backgroundColor: theme.surface,
           height: height / 2,
           transformOrigin: top ? 'bottom' : 'top',
           transform,
@@ -151,9 +164,9 @@ function Half({ side, face, width, height, radius, transform, shade }: HalfProps
       ]}
     >
       <View style={[styles.face, { height, top: top ? 0 : -height / 2 }]}>
-        <Text style={[styles.cardDigits, { fontSize: width * 0.62 }]}>{face.digits}</Text>
+        <Text style={[styles.cardDigits, { fontSize: width * 0.62, color: theme.text }]}>{face.digits}</Text>
         {!!face.corner && (
-          <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09 }]}>
+          <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09, color: theme.muted }]}>
             {face.corner}
           </Text>
         )}
