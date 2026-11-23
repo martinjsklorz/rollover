@@ -3,6 +3,7 @@ import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEv
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
 import { useLayoutSize, type Size } from '../useLayoutSize'
+import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
 
@@ -31,7 +32,8 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
   const afterMidnight = elapsed >= settings.before
   return (
     <>
-      {settings.fireworks && afterMidnight && <Fireworks size={size} colors={theme.fireworks} />}
+      {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
+      {afterMidnight && settings.animation === 'confetti' && <Confetti size={size} colors={theme.accents} />}
       {/* screen readers get the time as one name, not the digits and colons one by one */}
       <View role="timer" aria-label={formatTime(time, settings.hour12)}>
         <View aria-hidden>

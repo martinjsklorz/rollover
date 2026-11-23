@@ -14,7 +14,7 @@ export const colors = {
 /**
  * Clock themes, for New Year's Eve or any midnight.
  * The background stays true black in every theme (see brand/README.md); a theme colors the
- * digits, the flip cards and the fireworks.
+ * digits, the flip cards and the midnight animation.
  */
 export type ClockTheme = {
   name: string
@@ -27,44 +27,44 @@ export type ClockTheme = {
   surface: string
   /** soft glow around the simple digits */
   glow?: boolean
-  /** spark colors, picked at random for each burst */
-  fireworks: string[]
+  /** firework and confetti colors, picked at random */
+  accents: string[]
 }
 
 export const THEMES = {
   classic: {
     name: 'Classic',
-    hint: 'White digits, ember fireworks',
+    hint: 'White digits, ember and white sparkle',
     text: colors.text,
     muted: colors.muted,
     surface: colors.surface,
-    fireworks: [colors.ember, '#FFFFFF', '#FFB29E'],
+    accents: [colors.ember, '#FFFFFF', '#FFB29E'],
   },
   champagne: {
     name: 'Champagne',
-    hint: 'Gold digits, golden fireworks',
+    hint: 'Gold digits, golden sparkle',
     text: '#F2D58A',
     muted: '#A08A55',
     surface: '#1F1A10',
     glow: true,
-    fireworks: ['#F2D58A', '#FFF4D6', '#E0A84A', '#FFFFFF'],
+    accents: ['#F2D58A', '#FFF4D6', '#E0A84A', '#FFFFFF'],
   },
   midnight: {
     name: 'Midnight blue',
-    hint: 'Ice-blue digits, silver and blue fireworks',
+    hint: 'Ice-blue digits, silver and blue sparkle',
     text: '#D3E2FF',
     muted: '#7D8BA8',
     surface: '#0F1A33',
-    fireworks: ['#7FB2FF', '#D3E2FF', '#FFFFFF', '#9C8CFF'],
+    accents: ['#7FB2FF', '#D3E2FF', '#FFFFFF', '#9C8CFF'],
   },
   party: {
     name: 'Party',
-    hint: 'Neon digits, fireworks in every color',
+    hint: 'Neon digits, sparkle in every color',
     text: '#FF6AD5',
     muted: '#A35A90',
     surface: '#24102A',
     glow: true,
-    fireworks: ['#FF6AD5', '#4FE3FF', '#B6FF5C', '#FFE15C', '#FF8A3D'],
+    accents: ['#FF6AD5', '#4FE3FF', '#B6FF5C', '#FFE15C', '#FF8A3D'],
   },
 } satisfies Record<string, ClockTheme>
 
