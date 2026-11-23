@@ -16,7 +16,8 @@ export default function Clock({ settings, startedAt }: { settings: Settings; sta
   const [size, setSize] = useState<Size | null>(null)
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout
-    setSize({ width, height })
+    // web: a screen left in the stack is hidden (display: none) and reports 0×0; keep the last size
+    if (width > 0 && height > 0) setSize({ width, height })
   }
   return (
     <View style={styles.fill} onLayout={onLayout}>
@@ -54,6 +55,8 @@ function SimpleFace({ parts, size, theme }: { parts: TimeParts; size: Size; them
   const [widthPerPoint, setWidthPerPoint] = useState<number | null>(null)
   const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (parts.ampm ? 6.2 : 5)), size.height * 0.5)
   const onLayout = (e: LayoutChangeEvent) => {
+    // hidden (see Clock): a 0 width would count as unmeasured and hide the digits for good
+    if (!e.nativeEvent.layout.width || !fontSize) return
     const measured = e.nativeEvent.layout.width / fontSize
     // AM and PM differ slightly in width; don't resize the digits for that
     if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) setWidthPerPoint(measured)
