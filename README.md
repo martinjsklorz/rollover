@@ -47,12 +47,12 @@ Plus **Party**, in neon pink with fireworks in every color (that's the one at th
 - **Fireworks or confetti.** At the stroke of midnight, rockets go up and burst over the clock, or confetti
   pops from the corners and rains down, until the loop starts over.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
-  phone, or open it on the TV.
+  phone, or run it on the TV: there's an app for Apple TV and Android TV (Google TV), driven by the remote.
 
 Set it up in under a minute: one question per page, with a live preview on every one.
 Next time, it's one tap on Start.
 
-**iPhone, Android and the web.** [Open it in your browser](https://martinjsklorz.github.io/rollover/), nothing to install.
+**iPhone, Android, Apple TV, Android TV and the web.** [Open it in your browser](https://martinjsklorz.github.io/rollover/), nothing to install.
 
 ---
 
@@ -67,8 +67,11 @@ Midnight blue and Party), how long before midnight and how long after it (5 to 6
 and the midnight animation: fireworks, confetti or none. It plays over the clock from 00:00:00 until the loop starts over.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
 and two taps go back to the setup (the first shows a hint, so a stray touch doesn't end a take).
+On a TV, Select works like a tap and the remote's Back button goes back right away.
 
-Built with [Expo](https://expo.dev) (React Native) and Expo Router for iOS and Android.
+Built with [Expo](https://expo.dev) (React Native) and Expo Router for iOS and Android, and for
+Apple TV and Android TV with [react-native-tvos](https://github.com/react-native-tvos/react-native-tvos)
+(see [TV](#tv)).
 
 ```
 src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
@@ -77,6 +80,7 @@ src/wizard/ui.tsx   wizard page layout, option cards, buttons
 src/clock/          the clock face (simple / flip), the loop timing, the midnight fireworks and confetti
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
+src/tv.ts           TV helpers: sizes doubled on Apple TV, the remote's Back button, overscan margins
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 docs/               README images (screenshots and the New Year's Eve GIF from the web build)
 ```
@@ -95,8 +99,8 @@ Add Expo modules with `pnpm exec expo install <package>`, so the versions match 
 
 ### CI and GitHub Pages
 
-`.github/workflows/ci.yml` runs on every push and pull request: typecheck, lint, `expo-doctor`, and a
-build for iOS, Android and web. Pushes to `main` publish the web build to GitHub Pages.
+`.github/workflows/ci.yml` runs on every push and pull request: typecheck, lint, `expo-doctor` and a
+TV prebuild (which checks the TV config and artwork in `app.json`). Pushes to `main` also build iOS, Android and web. They publish the web build to GitHub Pages.
 
 The web build lives under `/rollover` (`experiments.baseUrl` in `app.json`). `public/index.html` is
 the page template and keeps the page black before the app loads; it links `public/manifest.json`
@@ -121,3 +125,32 @@ OTA updates cover JavaScript and assets. A change to native code (a new native m
 a permission) needs a new store build.
 
 `ios/` and `android/` are generated (`expo prebuild`) and not committed. Native settings live in `app.json`.
+
+### TV
+
+`react-native` in `package.json` is [react-native-tvos](https://github.com/react-native-tvos/react-native-tvos),
+a fork of React Native that also builds for Apple TV and Android TV. It builds phone apps the same as
+React Native. The `@react-native-tvos/config-tv` plugin in `app.json` makes `expo prebuild` generate TV
+projects when `EXPO_TV=1` is set, so one native project is either phone or TV, never both:
+
+```bash
+pnpm tv:ios       # prebuild for Apple TV, then run it in the Apple TV simulator
+pnpm tv:android   # prebuild for Android TV, then run it on an Android TV emulator (API 31+)
+pnpm exec expo prebuild --clean   # back to phone projects
+```
+
+Prebuild changes the `ios` and `android` scripts in `package.json` to `expo run:*`; don't commit that.
+Expo Go doesn't run on a TV, so TV apps are always development builds.
+
+- **Remote.** Every screen sets where the remote's focus starts (`hasTVPreferredFocus`), and buttons and
+  options show the focus (white fill, white outline). The remote's Back button goes back; on the home
+  screen it leaves the app, as Apple TV requires.
+- **Sizes.** Android TV lays out at 960×540 dp, like a phone on its side. Apple TV lays out at 1920×1080
+  points, so there `sizedStyles` doubles every size and `useScreenSize` halves the window (`src/tv.ts`).
+- **Artwork.** `brand/tools` builds the Android TV banner and the Apple TV layered icon and top shelf
+  images into `assets/tv/`. Apple checks the sizes exactly.
+- **Builds.** `eas.json` has a `_tv` profile for each build profile (`EXPO_TV=1`):
+  `pnpm dlx eas-cli@latest build --profile production_tv`. Apple TV uses the iPhone app's bundle ID and
+  certificate but needs its own tvOS provisioning profile, which EAS can't create: make it in the Apple
+  Developer portal and use [local credentials](https://docs.expo.dev/app-signing/local-credentials/).
+- **Samsung (Tizen) and LG (webOS)** TVs aren't supported by React Native; their browsers run the web version.

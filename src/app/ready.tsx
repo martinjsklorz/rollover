@@ -1,6 +1,7 @@
-import { StyleSheet, Text } from 'react-native'
+import { Text } from 'react-native'
 import { router } from 'expo-router'
 import { useSettings } from '../settings'
+import { isTV, sizedStyles } from '../tv'
 import { canKeepAwake, enterFullscreen } from '../web'
 import { STEPS } from '../wizard/steps'
 import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
@@ -15,8 +16,10 @@ export default function Ready() {
       count={STEPS.length + 1}
       title="Ready"
       subtitle={
-        'Place your phone, then tap Start. Tap the clock twice to come back here.' +
-        (canKeepAwake ? '' : ' This browser may let the screen go dark; turn off auto-lock to keep it on.')
+        isTV
+          ? 'Press Start. Press Back on the remote to come back here.'
+          : 'Place your phone, then tap Start. Tap the clock twice to come back here.' +
+            (canKeepAwake ? '' : ' This browser may let the screen go dark; turn off auto-lock to keep it on.')
       }
       footer={
         <>
@@ -27,6 +30,7 @@ export default function Ready() {
           <Button
             title="Start"
             primary
+            preferredFocus
             onPress={() => {
               save()
               enterFullscreen()
@@ -61,7 +65,7 @@ export default function Ready() {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = sizedStyles({
   value: { color: colors.muted, fontSize: 17, fontVariant: ['tabular-nums'] },
   chevron: { color: colors.muted, fontSize: 24, marginLeft: -6 },
 })

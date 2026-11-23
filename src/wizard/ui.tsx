@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ComponentRef, type ReactNode, type Ref } from 'react'
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native'
-import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import Head from 'expo-router/head'
@@ -10,6 +10,7 @@ import { useLayoutSize } from '../useLayoutSize'
 import { useSettled } from '../useSettled'
 import { noFocusRing, useFocusOnScreen } from '../web'
 import { colors } from '../theme'
+import { isTV, sizedStyles, tvMargins, tvScale, useScreenSize } from '../tv'
 
 export { colors }
 
@@ -44,7 +45,7 @@ export function WizardPage({
   footer: ReactNode
 }) {
   const { settings, previewStartedAt } = useSettings()
-  const { width, height } = useWindowDimensions()
+  const { width, height } = useScreenSize()
   const short = height < SHORT
   const wide = width > height
   const settled = useSettled()
@@ -116,13 +117,13 @@ export function WizardPage({
   const columnWidth = Math.min(width, COLUMN) - 48
   const previewHeight = short ? Math.min(columnWidth * 0.42, height * 0.2) : Math.min(columnWidth * 0.5, height * 0.3)
   return (
-    <SafeAreaView style={[styles.page, roomy && { paddingTop: height * 0.08 }]}>
+    <SafeAreaView style={[styles.page, roomy && { paddingTop: height * 0.08 * tvScale }]}>
       <StatusBar style="light" />
       {head}
       <View style={[styles.column, roomy ? styles.columnRoomy : styles.fill]}>
         <View style={styles.top}>
           {header}
-          <View style={[styles.preview, short && styles.previewShort, { height: previewHeight }]}>{preview}</View>
+          <View style={[styles.preview, short && styles.previewShort, { height: previewHeight * tvScale }]}>{preview}</View>
         </View>
         <ScrollView {...scrollProps} style={roomy ? styles.scrollFit : styles.fill} contentContainerStyle={styles.scroll}>
           {text}
@@ -154,21 +155,24 @@ function WideLayout({
   footer: ReactNode
   short: boolean
 }) {
-  const { width, height } = useWindowDimensions()
+  const { width, height } = useScreenSize()
   const fill = height < 600
   // remembered, so the next page draws the preview card from its first frame
   const [area, onLayout] = useLayoutSize(`card area ${width}×${height}`)
   const aspect = width / height
   let card: { width: number; height: number } | null = null
   if (area) {
-    const cardWidth = Math.min(area.width, (fill ? area.height : CARD * height) * aspect)
+    // area is measured, so it's already in points; height isn't
+    const cardWidth = Math.min(area.width, (fill ? area.height : CARD * height * tvScale) * aspect)
     card = { width: cardWidth, height: cardWidth / aspect }
   }
   // Tablet and desktop: the group hangs from a fixed top that centers the tallest card, instead of
   // being centered as a whole, so the preview stays put when the next step has more or fewer options.
-  const top = fill ? undefined : Math.max(16, ((1 - CARD) * height) / 2 - CARD_OFFSET)
+  const top = fill ? undefined : Math.max(16, ((1 - CARD) * height) / 2 - CARD_OFFSET) * tvScale
   return (
-    <SafeAreaView style={[styles.page, styles.widePage, !fill && { justifyContent: 'flex-start', paddingTop: top }]}>
+    <SafeAreaView
+      style={[styles.page, styles.widePage, !fill && { justifyContent: 'flex-start', paddingTop: top }, tvMargins]}
+    >
       <StatusBar style="light" />
       {head}
       <View style={[styles.wide, fill ? styles.fill : styles.wideRoomy]}>
@@ -228,6 +232,7 @@ export function Row({
   accessibilityHint,
   onKeyDown,
   rowRef,
+  preferredFocus,
 }: {
   label: string
   hint?: string
@@ -242,8 +247,10 @@ export function Row({
   accessibilityHint?: string
   onKeyDown?: (e: WebKeyEvent) => void
   rowRef?: Ref<ComponentRef<typeof Pressable>>
+  /** TV: the row the remote's focus starts on */
+  preferredFocus?: boolean
 }) {
-  const short = useWindowDimensions().height < SHORT
+  const short = useScreenSize().height < SHORT
   const id = useId()
   // web: name the row by its label and describe it by its hint, instead of reading both as one run-on name
   const webProps =
@@ -263,8 +270,16 @@ export function Row({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       tabIndex={tabbable ? 0 : -1}
+      hasTVPreferredFocus={preferredFocus}
       {...(webProps as object)}
-      style={({ pressed }) => [styles.row, short && styles.rowShort, !first && styles.rowLine, pressed && styles.rowPressed]}
+      style={({ pressed, focused }) => [
+        styles.row,
+        short && styles.rowShort,
+        isTV && styles.rowTV,
+        !first && styles.rowLine,
+        pressed && styles.rowPressed,
+        isTV && focused && styles.rowFocused,
+      ]}
     >
       <View style={styles.rowText}>
         <Text style={styles.rowLabel} nativeID={`${id}-label`}>
@@ -337,30 +352,48 @@ export function OptionRow({
       role="radio"
       selected={selected}
       tabbable={tabbable}
+      preferredFocus={isTV && tabbable}
       right={<View style={[styles.radio, selected && styles.radioOn]}>{selected && <View style={styles.radioDot} />}</View>}
     />
   )
 }
 
-export function Button({ title, onPress, primary, style }: { title: string; onPress: () => void; primary?: boolean; style?: StyleProp<ViewStyle> }) {
+/** `preferredFocus`: on a TV, the remote's focus starts on this button. */
+export function Button({
+  title,
+  onPress,
+  primary,
+  preferredFocus,
+  style,
+}: {
+  title: string
+  onPress: () => void
+  primary?: boolean
+  preferredFocus?: boolean
+  style?: StyleProp<ViewStyle>
+}) {
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       hitSlop={8}
-      style={({ pressed }) => [
+      hasTVPreferredFocus={preferredFocus}
+      style={({ pressed, focused }) => [
         styles.button,
         primary ? styles.buttonPrimary : styles.buttonPlain,
         style,
         pressed && (primary ? styles.buttonPrimaryPressed : styles.pressed),
+        isTV && focused && styles.buttonFocused,
       ]}
     >
-      <Text style={[styles.buttonText, primary && styles.buttonTextPrimary]}>{title}</Text>
+      {({ focused }) => (
+        <Text style={[styles.buttonText, primary && styles.buttonTextPrimary, isTV && focused && styles.buttonTextFocused]}>{title}</Text>
+      )}
     </Pressable>
   )
 }
 
-const styles = StyleSheet.create({
+const styles = sizedStyles({
   page: { flex: 1, backgroundColor: colors.bg },
   fill: { flex: 1 },
   locked: { pointerEvents: 'none' },
@@ -412,6 +445,10 @@ const styles = StyleSheet.create({
   rowShort: { paddingVertical: 10, minHeight: 52 },
   rowLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line },
   rowPressed: { backgroundColor: colors.surface },
+  // TV: room between the text and the focus outline
+  rowTV: { paddingHorizontal: 28 },
+  // TV: the remote's focus, drawn like the primary button's stroke so it reads from the couch
+  rowFocused: { backgroundColor: colors.surface, borderRadius: 12, outlineWidth: 2, outlineColor: colors.text, outlineOffset: -2 },
   rowText: { flex: 1 },
   rowLabel: { color: colors.text, fontSize: 17 },
   rowHint: { color: colors.muted, fontSize: 14, marginTop: 3, fontVariant: ['tabular-nums'] },
@@ -443,4 +480,7 @@ const styles = StyleSheet.create({
   buttonText: { color: colors.muted, fontSize: 17, fontWeight: '400', letterSpacing: 0.2 },
   buttonTextPrimary: { color: colors.text },
   pressed: { opacity: 0.6 },
+  // TV: the focused button is filled white, the usual TV focus look
+  buttonFocused: { backgroundColor: colors.text, borderColor: colors.text, opacity: 1 },
+  buttonTextFocused: { color: colors.bg },
 })
