@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar'
 import Head from 'expo-router/head'
 import Clock from '../clock/Clock'
 import { useSettings } from '../settings'
+import { useLayoutSize } from '../useLayoutSize'
 import { useSettled } from '../useSettled'
 import { noFocusRing, useFocusOnScreen } from '../web'
 import { colors } from '../theme'
@@ -30,7 +31,6 @@ export function WizardPage({
   count,
   title,
   subtitle,
-  previewFrom = 'start',
   children,
   footer,
 }: {
@@ -40,30 +40,24 @@ export function WizardPage({
   count: number
   title: string
   subtitle?: string
-  /** 'midnight' starts the preview just before midnight, so a change to "after" shows within seconds */
-  previewFrom?: 'start' | 'midnight'
   children: ReactNode
   footer: ReactNode
 }) {
-  const { settings, loopChangedAt } = useSettings()
+  const { settings, previewStartedAt } = useSettings()
   const { width, height } = useWindowDimensions()
   const short = height < SHORT
   const wide = width > height
-  // The preview loop starts when the page opens and restarts when before/after change. It's kept
-  // here, not in the preview, so it keeps running when the layout switches between portrait and
-  // landscape (which remounts the preview).
-  const [openedAt] = useState(Date.now)
-  const startedAt =
-    Math.max(openedAt, loopChangedAt) - (previewFrom === 'midnight' ? Math.max(0, settings.before - 3) * 1000 : 0)
   const settled = useSettled()
   const [moreBelow, scrollProps] = useMoreBelow()
   const titleRef = useRef<ComponentRef<typeof Text>>(null)
   useFocusOnScreen(titleRef)
 
-  // decorative for screen readers: the options' hints say the same in words
+  // Decorative for screen readers: the options' hints say the same in words.
+  // One loop for the whole wizard and a remembered size, so the next page's preview
+  // picks up where this one is instead of starting over from a blank frame.
   const preview = (
     <View style={styles.fill} aria-hidden>
-      <Clock settings={settings} startedAt={startedAt} />
+      <Clock settings={settings} startedAt={previewStartedAt} sizeKey={`preview ${width}×${height}`} />
     </View>
   )
   const head = (
@@ -162,8 +156,8 @@ function WideLayout({
 }) {
   const { width, height } = useWindowDimensions()
   const fill = height < 600
-  const [area, setArea] = useState<{ width: number; height: number } | null>(null)
-  const onLayout = (e: LayoutChangeEvent) => setArea(e.nativeEvent.layout)
+  // remembered, so the next page draws the preview card from its first frame
+  const [area, onLayout] = useLayoutSize(`card area ${width}×${height}`)
   const aspect = width / height
   let card: { width: number; height: number } | null = null
   if (area) {

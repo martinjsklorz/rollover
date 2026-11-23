@@ -19,8 +19,6 @@ export type Step = {
   choices: Choice[]
   /** text for the summary on the last page */
   summary: (s: Settings) => string
-  /** where the preview starts: the start of the loop, or just before midnight (shows the end sooner) */
-  preview?: 'start' | 'midnight'
 }
 
 const SECONDS = [5, 10, 30, 60]
@@ -78,7 +76,6 @@ export const STEPS: Step[] = [
       value: { after: sec },
     })),
     summary: (s) => `${s.after} seconds`,
-    preview: 'midnight',
   },
   {
     id: 'fireworks',
