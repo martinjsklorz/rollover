@@ -1,4 +1,4 @@
-import type { Settings } from '../settings'
+import type { MidnightAnimation, Settings } from '../settings'
 import { formatTime, loopTime } from '../clock/time'
 import { THEMES, THEME_IDS, themeOf } from '../theme'
 
@@ -24,6 +24,8 @@ export type Step = {
 }
 
 const SECONDS = [5, 10, 30, 60]
+
+const ANIMATION_NAMES: Record<MidnightAnimation, string> = { fireworks: 'Fireworks', confetti: 'Confetti', none: 'No animation' }
 
 /** One page per setting. Add a setting by adding a step here. */
 export const STEPS: Step[] = [
@@ -81,15 +83,17 @@ export const STEPS: Step[] = [
     preview: 'midnight',
   },
   {
-    id: 'fireworks',
-    name: 'Fireworks',
-    title: 'Fireworks at midnight?',
-    subtitle: 'They light up the seconds after midnight, every time the clock rolls over.',
+    id: 'animation',
+    name: 'Midnight animation',
+    title: 'Midnight animation',
+    subtitle: 'It plays in the seconds after midnight, every time the clock rolls over.',
     choices: [
-      { label: 'Fireworks', hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`, value: { fireworks: true } },
-      { label: 'No fireworks', hint: 'Just the clock', value: { fireworks: false } },
+      { label: 'Fireworks', hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`, value: { animation: 'fireworks' } },
+      { label: 'Confetti', hint: (s: Settings) => `Confetti pops at ${formatTime(0, s.hour12)}`, value: { animation: 'confetti' } },
+      { label: 'None', hint: 'Just the clock', value: { animation: 'none' } },
     ],
-    summary: (s) => (s.fireworks ? 'Fireworks' : 'No fireworks'),
+    summary: (s) => ANIMATION_NAMES[s.animation],
+    preview: 'midnight',
   },
 ]
 
