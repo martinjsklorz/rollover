@@ -9,7 +9,9 @@ The first screen shows the logo and Start, which runs the clock with your last s
 or starts the setup wizard. The first time, only the wizard is offered.
 
 The wizard has one page per setting, with a live preview on every page:
-24-hour or 12-hour, simple or flip-clock style, how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10).
+24-hour or 12-hour, simple or flip-clock style, a theme (Classic, or the New Year's Eve themes Champagne,
+Midnight blue and Party), how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10),
+and whether fireworks go up at midnight. They burst over the clock from 00:00:00 until the loop starts over.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
 and a tap goes back to the setup.
 
@@ -19,9 +21,9 @@ Built with [Expo](https://expo.dev) (React Native) and Expo Router for iOS and A
 src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip) and the loop timing
+src/clock/          the clock face (simple / flip), the loop timing, the midnight fireworks
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
-src/theme.ts        brand colors used by the app
+src/theme.ts        brand colors used by the app, and the clock themes
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 ```
 

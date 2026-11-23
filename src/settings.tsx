@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useEffectEvent, useState, type ReactNode } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { THEME_IDS, type ThemeId } from './theme'
 
 export type ClockStyle = 'simple' | 'flip'
 
@@ -7,6 +8,9 @@ export type Settings = {
   /** 12-hour clock with AM/PM instead of 24-hour */
   hour12: boolean
   style: ClockStyle
+  theme: ThemeId
+  /** fireworks after midnight */
+  fireworks: boolean
   /** seconds shown before midnight, e.g. 5 → starts at 23:59:55 */
   before: number
   /** seconds shown after midnight, e.g. 10 → runs until 00:00:10, then repeats */
@@ -16,6 +20,8 @@ export type Settings = {
 export const DEFAULT_SETTINGS: Settings = {
   hour12: false,
   style: 'simple',
+  theme: 'classic',
+  fireworks: true,
   before: 10,
   after: 10,
 }
@@ -64,6 +70,8 @@ function parse(raw: string | null): Settings | null {
   return {
     hour12: typeof v.hour12 === 'boolean' ? v.hour12 : DEFAULT_SETTINGS.hour12,
     style: v.style === 'simple' || v.style === 'flip' ? v.style : DEFAULT_SETTINGS.style,
+    theme: THEME_IDS.includes(v.theme as ThemeId) ? (v.theme as ThemeId) : DEFAULT_SETTINGS.theme,
+    fireworks: typeof v.fireworks === 'boolean' ? v.fireworks : DEFAULT_SETTINGS.fireworks,
     before: seconds(v.before, DEFAULT_SETTINGS.before),
     after: seconds(v.after, DEFAULT_SETTINGS.after),
   }
