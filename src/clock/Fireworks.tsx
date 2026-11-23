@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, View, useAnimatedValue } from 'react-native'
+import { Animated, Easing, Platform, StyleSheet, View } from 'react-native'
 
 type Size = { width: number; height: number }
 
@@ -97,8 +97,9 @@ export default memo(function Fireworks({ size, colors }: { size: Size; colors: s
 
 /** One rocket climbing from the bottom edge, then its burst of sparks falling and twinkling out. */
 const BurstView = memo(function BurstView({ burst, onDone }: { burst: Burst; onDone: (id: number) => void }) {
-  const rise = useAnimatedValue(0)
-  const blast = useAnimatedValue(0)
+  // not useAnimatedValue: react-native-web doesn't export it
+  const [rise] = useState(() => new Animated.Value(0))
+  const [blast] = useState(() => new Animated.Value(0))
 
   useEffect(() => {
     const animation = Animated.sequence([
