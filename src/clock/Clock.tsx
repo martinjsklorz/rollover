@@ -2,24 +2,19 @@ import { useEffect, useState } from 'react'
 import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
+import { useLayoutSize, type Size } from '../useLayoutSize'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
-
-type Size = { width: number; height: number }
 
 /**
  * The looping clock. Fills its parent and sizes itself to fit,
  * so the same component is used for the wizard preview and the full screen.
  * The loop runs from `startedAt`; pass a new value to restart it.
+ * `sizeKey` remembers the size, so a clock in the same spot on the next screen shows from its first frame.
  */
-export default function Clock({ settings, startedAt }: { settings: Settings; startedAt: number }) {
-  const [size, setSize] = useState<Size | null>(null)
-  const onLayout = (e: LayoutChangeEvent) => {
-    const { width, height } = e.nativeEvent.layout
-    // web: a screen left in the stack is hidden (display: none) and reports 0×0; keep the last size
-    if (width > 0 && height > 0) setSize({ width, height })
-  }
+export default function Clock({ settings, startedAt, sizeKey }: { settings: Settings; startedAt: number; sizeKey?: string }) {
+  const [size, onLayout] = useLayoutSize(sizeKey)
   return (
     <View style={styles.fill} onLayout={onLayout}>
       {/* key: a new start shows its first second right away, not the old loop's for a frame */}
@@ -51,17 +46,24 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
 
 /* ---------- simple: thin white digits ---------- */
 
+/** measured digit widths, kept for the next clock so it doesn't start hidden */
+const measuredWidthPerPoint: { hour12?: number; hour24?: number } = {}
+
 function SimpleFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
   // The digits' width per point of font size depends on the font, so it's measured: the first
   // render uses a safe guess (hidden), then the digits are sized to fill the width.
-  const [widthPerPoint, setWidthPerPoint] = useState<number | null>(null)
+  const format = parts.ampm ? 'hour12' : 'hour24'
+  const [widthPerPoint, setWidthPerPoint] = useState(() => measuredWidthPerPoint[format] ?? null)
   const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (parts.ampm ? 6.2 : 5)), size.height * 0.5)
   const onLayout = (e: LayoutChangeEvent) => {
     // hidden (see Clock): a 0 width would count as unmeasured and hide the digits for good
     if (!e.nativeEvent.layout.width || !fontSize) return
     const measured = e.nativeEvent.layout.width / fontSize
     // AM and PM differ slightly in width; don't resize the digits for that
-    if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) setWidthPerPoint(measured)
+    if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) {
+      measuredWidthPerPoint[format] = measured
+      setWidthPerPoint(measured)
+    }
   }
   const color = { color: theme.text }
   const glow = theme.glow && { textShadowColor: theme.text, textShadowRadius: fontSize * 0.12, textShadowOffset: { width: 0, height: 0 } }

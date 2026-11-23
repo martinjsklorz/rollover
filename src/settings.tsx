@@ -43,8 +43,8 @@ type SettingsContext = {
   saved: Settings | null
   /** working copy: the wizard edits it, the preview and the clock show it */
   settings: Settings
-  /** when before or after last changed (Date.now()), so the wizard preview can restart its loop */
-  loopChangedAt: number
+  /** start of the wizard preview's loop (Date.now()), shared by all wizard pages so it runs on between them */
+  previewStartedAt: number
   update: (patch: Partial<Settings>) => void
   /** start the wizard from the saved settings (or the defaults) */
   beginSetup: () => void
@@ -101,7 +101,7 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
   const [loaded, setLoaded] = useState(false)
   const [saved, setSaved] = useState<Settings | null>(null)
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
-  const [loopChangedAt, setLoopChangedAt] = useState(0)
+  const [previewStartedAt, setPreviewStartedAt] = useState(Date.now)
   const ready = useEffectEvent(() => onReady?.())
 
   useEffect(() => {
@@ -121,13 +121,19 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
   const value: SettingsContext = {
     saved,
     settings,
-    loopChangedAt,
+    previewStartedAt,
     update: (patch) => {
-      const loopChanges = (['before', 'after'] as const).some((k) => patch[k] !== undefined && patch[k] !== settings[k])
-      if (loopChanges) setLoopChangedAt(Date.now())
+      const changes = (k: 'before' | 'after') => patch[k] !== undefined && patch[k] !== settings[k]
+      // a new loop length restarts the preview where it shows: a new "before" from its new start,
+      // a new "after" from midnight (the loop started `before` seconds ago)
+      if (changes('before')) setPreviewStartedAt(Date.now())
+      else if (changes('after')) setPreviewStartedAt(Date.now() - settings.before * 1000)
       setSettings((s) => ({ ...s, ...patch }))
     },
-    beginSetup: () => setSettings(saved ?? DEFAULT_SETTINGS),
+    beginSetup: () => {
+      setSettings(saved ?? DEFAULT_SETTINGS)
+      setPreviewStartedAt(Date.now())
+    },
     restoreSaved: () => saved && setSettings(saved),
     save: () => {
       setSaved(settings)

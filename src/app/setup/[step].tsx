@@ -26,7 +26,6 @@ export default function SetupStep() {
       count={STEPS.length + 1}
       title={step.title}
       subtitle={step.subtitle}
-      previewFrom={step.preview}
       footer={
         <>
           <Button title="Back" onPress={back} />
