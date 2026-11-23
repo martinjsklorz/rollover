@@ -1,6 +1,6 @@
 name: CI
 
-# Every push and pull request: typecheck, Expo checks, and a build for iOS, Android and web.
+# Every push and pull request: typecheck, lint, Expo checks, and a build for iOS, Android and web.
 # Pushes to main also publish the web app to GitHub Pages.
 on:
   push:
@@ -34,6 +34,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Lint
+        run: pnpm lint
+
       - name: Expo doctor
         run: pnpm dlx expo-doctor@latest
 
@@ -43,8 +46,22 @@ jobs:
       - name: Build web
         run: |
           pnpm exec expo export --platform web
-          # GitHub Pages serves 404.html for unknown paths; the app then routes itself (deep links, reloads)
+          # The export is a single-page app with one index.html. GitHub Pages serves <path>.html
+          # for /<path>, so a copy per route makes deep links and reloads load with status 200:
+          # every screen file in src/app (except index and _layout), and /setup/<id> for each
+          # step id in src/wizard/steps.ts.
+          for file in src/app/*.tsx; do
+            route=$(basename "$file" .tsx)
+            case "$route" in index | _* | +* | \[*) continue ;; esac
+            cp dist/index.html "dist/$route.html"
+          done
+          steps=$(sed -nE "s/^ *id: '([^']+)',?$/\1/p" src/wizard/steps.ts)
+          [ -n "$steps" ] || { echo "No step ids found in src/wizard/steps.ts" >&2; exit 1; }
+          mkdir -p dist/setup
+          for id in $steps; do cp dist/index.html "dist/setup/$id.html"; done
+          # Anything else (unknown paths, trailing slashes) still gets the app, with status 404.
           cp dist/index.html dist/404.html
+          ls dist/*.html dist/setup/*.html
 
       - uses: actions/upload-pages-artifact@v5
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

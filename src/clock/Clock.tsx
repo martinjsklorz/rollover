@@ -2,15 +2,16 @@ import { useState } from 'react'
 import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native'
 import type { Settings } from '../settings'
 import { colors } from '../theme'
-import { loopTime, timeParts, useLoop, type TimeParts } from './time'
+import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 type Size = { width: number; height: number }
 
 /**
  * The looping clock. Fills its parent and sizes itself to fit,
  * so the same component is used for the wizard preview and the full screen.
+ * The loop runs from `startedAt`; pass a new value to restart it.
  */
-export default function Clock({ settings }: { settings: Settings }) {
+export default function Clock({ settings, startedAt }: { settings: Settings; startedAt: number }) {
   const [size, setSize] = useState<Size | null>(null)
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout
@@ -18,25 +19,41 @@ export default function Clock({ settings }: { settings: Settings }) {
   }
   return (
     <View style={styles.fill} onLayout={onLayout}>
-      {/* key restarts the loop when before/after change */}
-      {size && <LoopingFace key={`${settings.before}/${settings.after}`} settings={settings} size={size} />}
+      {/* key: a new start shows its first second right away, not the old loop's for a frame */}
+      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} />}
     </View>
   )
 }
 
-function LoopingFace({ settings, size }: { settings: Settings; size: Size }) {
-  const elapsed = useLoop(settings.before + settings.after)
-  const parts = timeParts(loopTime(settings.before, elapsed), settings.hour12)
-  return settings.style === 'flip' ? <FlipFace parts={parts} size={size} /> : <SimpleFace parts={parts} size={size} />
+function LoopingFace({ settings, startedAt, size }: { settings: Settings; startedAt: number; size: Size }) {
+  const elapsed = useLoop(settings.before + settings.after, startedAt)
+  const time = loopTime(settings.before, elapsed)
+  const parts = timeParts(time, settings.hour12)
+  return (
+    // screen readers get the time as one name, not the digits and colons one by one
+    <View role="timer" aria-label={formatTime(time, settings.hour12)}>
+      <View aria-hidden>
+        {settings.style === 'flip' ? <FlipFace parts={parts} size={size} /> : <SimpleFace parts={parts} size={size} />}
+      </View>
+    </View>
+  )
 }
 
 /* ---------- simple: thin white digits ---------- */
 
 function SimpleFace({ parts, size }: { parts: TimeParts; size: Size }) {
-  const fontSize = Math.min(size.width / (parts.ampm ? 6.2 : 5), size.height * 0.5)
+  // The digits' width per point of font size depends on the font, so it's measured: the first
+  // render uses a safe guess (hidden), then the digits are sized to fill the width.
+  const [widthPerPoint, setWidthPerPoint] = useState<number | null>(null)
+  const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (parts.ampm ? 6.2 : 5)), size.height * 0.5)
+  const onLayout = (e: LayoutChangeEvent) => {
+    const measured = e.nativeEvent.layout.width / fontSize
+    // AM and PM differ slightly in width; don't resize the digits for that
+    if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) setWidthPerPoint(measured)
+  }
   return (
-    <View style={styles.row}>
-      <Text style={[styles.simple, { fontSize }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.3}>
+    <View style={[styles.row, !widthPerPoint && styles.measuring]} onLayout={onLayout}>
+      <Text style={[styles.simple, { fontSize }]} numberOfLines={1}>
         {parts.hh}:{parts.mm}:{parts.ss}
       </Text>
       {parts.ampm !== '' && <Text style={[styles.simpleAmPm, { fontSize: fontSize * 0.3, marginLeft: fontSize * 0.12 }]}>{parts.ampm}</Text>}
@@ -66,7 +83,10 @@ function FlipCard({ value, width, corner }: { value: string; width: number; corn
       <Text style={[styles.cardDigits, { fontSize: width * 0.62 }]}>{value}</Text>
       <View style={[styles.hinge, { top: height / 2 - 1 }]} />
       {!!corner && (
-        <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09 }]}>{corner}</Text>
+        // at least 9 pt, so AM/PM stays readable on the small preview cards
+        <Text style={[styles.corner, { fontSize: Math.max(width * 0.12, 9), top: width * 0.07, left: width * 0.09 }]}>
+          {corner}
+        </Text>
       )}
     </View>
   )
@@ -75,7 +95,8 @@ function FlipCard({ value, width, corner }: { value: string; width: number; corn
 const styles = StyleSheet.create({
   fill: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' },
-  simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'] },
+  measuring: { opacity: 0 },
+  simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'], flexShrink: 0 },
   simpleAmPm: { color: colors.text, fontWeight: '300' },
   card: { backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   cardDigits: { color: colors.text, fontWeight: '400', fontVariant: ['tabular-nums'], includeFontPadding: false },

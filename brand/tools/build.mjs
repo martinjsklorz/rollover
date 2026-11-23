@@ -1,16 +1,18 @@
 // Builds every Rollover brand file from one geometry.
 //   cd brand/tools && pnpm install --ignore-workspace && pnpm build
-// Writes brand/logo/*.svg, brand/png/*.png, brand/social/*.png and the app's icons in assets/.
+// Writes brand/logo/*.svg, brand/png/*.png, brand/social/*.png, the app's icons in assets/
+// and the web icons in public/.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Resvg } from '@resvg/resvg-js'
-import opentype from 'opentype.js'
+import { parse as parseFont } from 'opentype.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const brand = join(here, '..')
 const assets = join(here, '../../assets')
+const pub = join(here, '../../public')
 const require = createRequire(import.meta.url)
 
 /* ---------- palette (keep in sync with brand/README.md and src/theme.ts) ---------- */
@@ -52,9 +54,11 @@ const dotTop = (r) => r + r * RATIO.stroke * RATIO.dot
 
 const fonts = {}
 function font(weight) {
-  fonts[weight] ??= opentype.parse(
-    readFileSync(require.resolve(`@fontsource/inter/files/inter-latin-${weight}-normal.woff`)).buffer,
-  )
+  if (!fonts[weight]) {
+    const file = readFileSync(require.resolve(`@fontsource/inter/files/inter-latin-${weight}-normal.woff`))
+    // copy out just this file's bytes: a Buffer can be a view into a larger, shared ArrayBuffer
+    fonts[weight] = parseFont(file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength))
+  }
   return fonts[weight]
 }
 
@@ -170,6 +174,12 @@ const png = (path, s) => out(path, new Resvg(s, { font: { loadSystemFonts: false
   png(join(assets, 'splash-icon.png'), svg(S, S, mark(S / 2, cy, 400)))
   // the mark for the app UI, sharp up to 96 pt at 3x
   png(join(assets, 'brand', 'mark.png'), svg(288, 288, mark(144, 144 + (dotTop(102) - outer(102)) / 2, 102)))
+  // web: the iOS icon scaled down, opaque. The mark sits well inside the 80 % safe zone,
+  // so the same files work as maskable PWA icons. Served from public/ (manifest.json, index.html).
+  const web = (size) => svg(size, size, `<g transform="scale(${size / S})">${mark(S / 2, cy, r)}</g>`, C.black)
+  png(join(pub, 'icon-192.png'), web(192))
+  png(join(pub, 'icon-512.png'), web(512))
+  png(join(pub, 'apple-touch-icon.png'), web(180))
 }
 
 /* social card + store banner */

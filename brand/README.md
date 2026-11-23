@@ -38,6 +38,7 @@ The mark should be at least 16 px wide. Below that, use the mono version.
 App icons and the splash image live in `../assets/` and are wired up in `app.json`:
 `icon.png` (iOS, plus `icon-dark.png` and `icon-tinted.png` for iOS 18 dark and tinted icons),
 `android-icon.png` and `android-icon-monochrome.png` (adaptive and themed icons), `splash-icon.png`.
+The web icons (`icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) live in `../public/`.
 
 ## Color
 
@@ -81,4 +82,4 @@ pnpm install --ignore-workspace
 pnpm build
 ```
 
-This rewrites `logo/`, `png/`, `social/` and the icons in `../assets/`. Change the geometry or colors in `build.mjs`, not in the output files.
+This rewrites `logo/`, `png/`, `social/`, the icons in `../assets/` and the web icons in `../public/`. Change the geometry or colors in `build.mjs`, not in the output files.

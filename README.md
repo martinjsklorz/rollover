@@ -32,17 +32,22 @@ corepack enable   # once; provides the pnpm version pinned in package.json
 pnpm install
 pnpm start        # scan the QR code with Expo Go on your iPhone or Android phone
 pnpm typecheck
+pnpm lint         # ESLint with eslint-config-expo (eslint.config.js)
 ```
 
 Add Expo modules with `pnpm exec expo install <package>`, so the versions match the Expo SDK.
 
 ## CI and GitHub Pages
 
-`.github/workflows/ci.yml` runs on every push and pull request: typecheck, `expo-doctor`, and a
+`.github/workflows/ci.yml` runs on every push and pull request: typecheck, lint, `expo-doctor`, and a
 build for iOS, Android and web. Pushes to `main` publish the web build to GitHub Pages.
 
 The web build lives under `/rollover` (`experiments.baseUrl` in `app.json`). `public/index.html` is
-the page template and keeps the page black before the app loads.
+the page template and keeps the page black before the app loads; it links `public/manifest.json`
+and the web icons with the `/rollover` prefix written out, because Expo copies `public/` as is.
+The export is a single-page app, so CI copies `index.html` to one `.html` file per route
+(`ready.html`, `setup/format.html`, …) and GitHub Pages answers deep links and reloads with 200.
+`404.html` catches anything else.
 
 ## Builds and over-the-air updates
 
