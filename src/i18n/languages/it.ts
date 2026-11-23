@@ -1,0 +1,81 @@
+import type { Strings } from './en'
+
+const it: Strings = {
+  home: {
+    tagline: 'Mezzanotte, ancora e ancora.',
+    fromTo: (from, to) => `dalle ${from} alle ${to}`,
+    start: 'Avvia',
+    newSetup: 'Nuova configurazione',
+    setUp: 'Configura l’orologio',
+  },
+  wizard: {
+    back: 'Indietro',
+    next: 'Avanti',
+    stepOf: (step, count) => `Passaggio ${step} di ${count}`,
+  },
+  ready: {
+    title: 'Pronto',
+    subtitle: 'Posiziona il telefono, poi tocca Avvia. Tocca l’orologio due volte per tornare qui.',
+    mayDim: 'Questo browser potrebbe spegnere lo schermo; disattiva il blocco automatico per tenerlo acceso.',
+    start: 'Avvia',
+    change: (name) => `Modifica ${name.toLowerCase()}`,
+  },
+  clock: {
+    title: 'Orologio',
+    back: 'Indietro. Tocca due volte per tornare indietro.',
+    goBack: 'Torna indietro',
+    tapAgain: 'Tocca di nuovo per tornare indietro',
+  },
+  seconds: (n) => `${n} secondi`,
+  format: {
+    name: 'Formato',
+    title: '24 ore o AM/PM?',
+    hour24: '24 ore',
+    hour12: '12 ore',
+  },
+  style: {
+    name: 'Stile',
+    title: 'Scegli uno stile',
+    simple: 'Semplice',
+    simpleHint: 'Cifre bianche sottili',
+    flip: 'Orologio a palette',
+    flipHint: 'Cartelle ribaltabili',
+  },
+  theme: {
+    name: 'Tema',
+    title: 'Scegli un tema',
+    subtitle: 'Colori per Capodanno, o per qualsiasi mezzanotte.',
+  },
+  themes: {
+    classic: { name: 'Classico', hint: 'Cifre bianche, scintille brace e bianche' },
+    champagne: { name: 'Champagne', hint: 'Cifre dorate, scintille dorate' },
+    midnight: { name: 'Blu notte', hint: 'Cifre azzurro ghiaccio, scintille argento e blu' },
+    party: { name: 'Festa', hint: 'Cifre al neon, scintille di tutti i colori' },
+  },
+  before: {
+    name: 'Prima di mezzanotte',
+    title: 'Quanto prima di mezzanotte?',
+    subtitle: 'Il tempo per prepararsi prima che l’orologio scatti.',
+    hint: (time) => `Inizia alle ${time}`,
+  },
+  after: {
+    name: 'Dopo mezzanotte',
+    title: 'Quanto dopo mezzanotte?',
+    subtitle: 'Poi l’orologio ricomincia.',
+    hint: (time) => `Fino alle ${time}, poi si ripete`,
+  },
+  animation: {
+    name: 'Animazione di mezzanotte',
+    title: 'Animazione di mezzanotte',
+    subtitle: 'Parte nei secondi dopo mezzanotte, ogni volta che l’orologio scatta.',
+    fireworks: 'Fuochi d’artificio',
+    fireworksHint: (time) => `I razzi partono alle ${time}`,
+    confetti: 'Coriandoli',
+    confettiHint: (time) => `I coriandoli esplodono alle ${time}`,
+    none: 'Nessuna',
+    noneHint: 'Solo l’orologio',
+    noneSummary: 'Nessuna animazione',
+  },
+}
+
+export default it

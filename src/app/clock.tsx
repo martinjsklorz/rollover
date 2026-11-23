@@ -5,6 +5,7 @@ import Head from 'expo-router/head'
 import { NavigationBar } from 'expo-navigation-bar'
 import { StatusBar } from 'expo-status-bar'
 import Clock from '../clock/Clock'
+import { useStrings } from '../i18n'
 import { useSettings } from '../settings'
 import { colors } from '../theme'
 import { useSettled } from '../useSettled'
@@ -20,6 +21,7 @@ const ARMED_MS = 3000
 export default function ClockScreen() {
   useKeepScreenOn()
   const { settings } = useSettings()
+  const t = useStrings()
   const [startedAt] = useState(Date.now)
   const settled = useSettled()
   const [armed, setArmed] = useState(false)
@@ -45,7 +47,7 @@ export default function ClockScreen() {
   return (
     <View style={styles.screen}>
       <Head>
-        <title>Clock · Rollover</title>
+        <title>{`${t.clock.title} · Rollover`}</title>
       </Head>
       <StatusBar hidden />
       <NavigationBar hidden />
@@ -55,11 +57,11 @@ export default function ClockScreen() {
         style={[StyleSheet.absoluteFill, styles.back, !settled && styles.locked]}
         onPress={tap}
         role="button"
-        accessibilityLabel={armed ? 'Go back' : 'Back. Tap twice to go back.'}
+        accessibilityLabel={armed ? t.clock.goBack : t.clock.back}
       />
       {armed && (
         <Text style={styles.hint} aria-live="polite">
-          Tap again to go back
+          {t.clock.tapAgain}
         </Text>
       )}
     </View>

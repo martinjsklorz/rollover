@@ -35,7 +35,14 @@
           "backgroundColor": "#000000"
         }
       ],
-      ["expo-router", { "sitemap": false }]
+      ["expo-router", { "sitemap": false }],
+      [
+        "expo-localization",
+        {
+          "supportsRTL": false,
+          "supportedLocales": ["en", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "uk", "zh-Hans", "zh-Hant"]
+        }
+      ]
     ],
     "web": {
       "output": "single",

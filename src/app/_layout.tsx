@@ -1,11 +1,14 @@
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
+import { useLanguage } from '../i18n'
 import { SettingsProvider } from '../settings'
+import { useDocumentLanguage } from '../web'
 
 // keep the (black) launch screen up until the saved settings are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
 export default function RootLayout() {
+  useDocumentLanguage(useLanguage())
   return (
     <SettingsProvider onReady={() => SplashScreen.hideAsync().catch(() => {})}>
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#000' } }}>

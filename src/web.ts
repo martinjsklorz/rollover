@@ -70,3 +70,10 @@ export function useFocusOnScreen(ref: RefObject<unknown>) {
     }, [ref]),
   )
 }
+
+/** Keeps `<html lang>` on the app's language, so screen readers and the browser's translate offer get it right. */
+export function useDocumentLanguage(lang: string) {
+  useEffect(() => {
+    if (web) document.documentElement.lang = lang
+  }, [lang])
+}

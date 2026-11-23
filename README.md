@@ -46,6 +46,8 @@ Plus **Party**, in neon pink with fireworks in every color (that's the one at th
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
 - **Fireworks or confetti.** At the stroke of midnight, rockets go up and burst over the clock, or confetti
   pops from the corners and rains down, until the loop starts over.
+- **In your language.** English, Chinese, Spanish, Hindi, Portuguese, French, German, Japanese, Russian,
+  Korean, Indonesian, Turkish, Italian, Polish, Ukrainian and Dutch, following your phone or browser.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
   phone, or open it on the TV.
 
@@ -77,6 +79,7 @@ src/wizard/ui.tsx   wizard page layout, option cards, buttons
 src/clock/          the clock face (simple / flip), the loop timing, the midnight fireworks and confetti
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
+src/i18n/           the app's languages (one file each, translated from languages/en.ts) and the device-language pick
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 docs/               README images (screenshots and the New Year's Eve GIF from the web build)
 ```
