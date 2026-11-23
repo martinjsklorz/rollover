@@ -12,9 +12,9 @@ export const colors = {
 }
 
 /**
- * Clock themes, for New Year's Eve or any midnight.
+ * Clock themes. Each belongs to an occasion (src/occasions.ts): Classic, New Year's Eve or Birthday.
  * The background stays true black in every theme (see brand/README.md); a theme colors the
- * digits, the flip cards and the midnight animation.
+ * digits, the flip cards, the birthday greeting and the midnight animation.
  */
 export type ClockTheme = {
   name: string
@@ -27,7 +27,7 @@ export type ClockTheme = {
   surface: string
   /** soft glow around the simple digits */
   glow?: boolean
-  /** firework and confetti colors, picked at random */
+  /** firework, confetti and balloon colors, picked at random */
   accents: string[]
 }
 
@@ -65,6 +65,33 @@ export const THEMES = {
     surface: '#24102A',
     glow: true,
     accents: ['#FF6AD5', '#4FE3FF', '#B6FF5C', '#FFE15C', '#FF8A3D'],
+  },
+  // Birthday: candy pastels, softer than Party's neon. The shared gold is the candle flame.
+  bubblegum: {
+    name: 'Bubblegum',
+    hint: 'Pink digits; pink, lilac and gold',
+    text: '#FFA8D6',
+    muted: '#A9728F',
+    surface: '#2A1422',
+    glow: true,
+    accents: ['#FF7EBF', '#FFD1E8', '#C9A7FF', '#FFE08A', '#FFFFFF'],
+  },
+  sky: {
+    name: 'Sky',
+    hint: 'Blue digits; blue, mint and lemon',
+    text: '#8FD0FF',
+    muted: '#6E8FA8',
+    surface: '#0E1F2E',
+    glow: true,
+    accents: ['#4FAEFF', '#A8DCFF', '#7FE3C4', '#FFE08A', '#FFFFFF'],
+  },
+  sprinkles: {
+    name: 'Sprinkles',
+    hint: 'White digits; every pastel',
+    text: colors.text,
+    muted: colors.muted,
+    surface: colors.surface,
+    accents: ['#FF8FC7', '#7CC8FF', '#FFE08A', '#8CE6B0', '#C9A7FF', '#FFB07A'],
   },
 } satisfies Record<string, ClockTheme>
 
