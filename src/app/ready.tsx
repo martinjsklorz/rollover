@@ -3,26 +3,26 @@ import { router } from 'expo-router'
 import { useSettings } from '../settings'
 import { canKeepAwake, enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
-import { STEP_IDS, useSteps } from '../wizard/steps'
+import { stepsFor, useSteps } from '../wizard/steps'
 import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
 
 /** Last wizard page: a summary of the choices and the Start button. */
 export default function Ready() {
   const { settings, save } = useSettings()
   const t = useStrings()
-  const steps = useSteps()
+  const steps = stepsFor(useSteps(), settings)
   return (
     <WizardPage
       name={t.ready.title}
-      index={STEP_IDS.length}
-      count={STEP_IDS.length + 1}
+      index={steps.length}
+      count={steps.length + 1}
       title={t.ready.title}
       subtitle={canKeepAwake ? t.ready.subtitle : `${t.ready.subtitle} ${t.ready.mayDim}`}
       footer={
         <>
           <Button
             title={t.wizard.back}
-            onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${STEP_IDS[STEP_IDS.length - 1]}`))}
+            onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${steps[steps.length - 1].id}`))}
           />
           <Button
             title={t.ready.start}

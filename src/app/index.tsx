@@ -50,6 +50,7 @@ export default function Home() {
           {summary ? (
             <>
               <View style={styles.summary} accessible>
+                <Text style={styles.summaryText}>{summary.occasion}</Text>
                 <Text style={styles.summaryText}>{summary.look}</Text>
                 <Text style={styles.summaryText} accessibilityLabel={t.home.fromTo(summary.from, summary.to)}>
                   {summary.from} → {summary.to}

@@ -33,8 +33,32 @@ const en = {
     /** screen reader label after the first tap */
     goBack: 'Go back',
     tapAgain: 'Tap again to go back',
+    /** birthday greeting under the digits at midnight, without and with a name */
+    birthday: 'Happy birthday!',
+    birthdayName: (name: string) => `Happy birthday, ${name}!`,
   },
   seconds: (n: number) => `${n} seconds`,
+  occasion: {
+    name: 'Occasion',
+    title: "What's the occasion?",
+    subtitle: 'It sets the colors and the midnight animation.',
+  },
+  occasions: {
+    classic: { name: 'Classic', hint: 'Any midnight, white and ember' },
+    newyear: { name: "New Year's Eve", hint: 'Gold, ice blue or neon' },
+    birthday: { name: 'Birthday', hint: 'Candy colors, balloons and a name' },
+  },
+  /** the birthday's name page */
+  name: {
+    name: 'Name',
+    title: 'Whose birthday?',
+    subtitle: 'Shown under the clock at midnight. Leave it empty for just “Happy birthday!”',
+    /** names the text field for screen readers */
+    label: 'Name',
+    placeholder: 'Their name',
+    /** on the summary page when it was left empty */
+    none: 'No name',
+  },
   format: {
     name: 'Format',
     title: '24-hour or AM/PM?',
@@ -52,13 +76,17 @@ const en = {
   theme: {
     name: 'Theme',
     title: 'Pick a theme',
-    subtitle: "Colors for New Year's Eve, or any midnight.",
+    /** by occasion; Classic has a single theme, so no theme page */
+    subtitle: { newyear: "Colors for New Year's Eve.", birthday: 'Colors for the birthday.' },
   },
   themes: {
     classic: { name: 'Classic', hint: 'White digits, ember and white sparkle' },
     champagne: { name: 'Champagne', hint: 'Gold digits, golden sparkle' },
     midnight: { name: 'Midnight blue', hint: 'Ice-blue digits, silver and blue sparkle' },
     party: { name: 'Party', hint: 'Neon digits, sparkle in every color' },
+    bubblegum: { name: 'Bubblegum', hint: 'Pink digits; pink, lilac and gold' },
+    sky: { name: 'Sky', hint: 'Blue digits; blue, mint and lemon' },
+    sprinkles: { name: 'Sprinkles', hint: 'White digits; every pastel' },
   },
   before: {
     name: 'Before midnight',
@@ -76,6 +104,8 @@ const en = {
     name: 'Midnight animation',
     title: 'Midnight animation',
     subtitle: 'It plays in the seconds after midnight, every time the clock rolls over.',
+    balloons: 'Balloons',
+    balloonsHint: (time: string) => `Balloons float up at ${time}`,
     fireworks: 'Fireworks',
     fireworksHint: (time: string) => `Rockets go up at ${time}`,
     confetti: 'Confetti',

@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ComponentRef, type ReactNode, type Ref } from 'react'
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native'
-import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import Head from 'expo-router/head'
@@ -344,6 +344,46 @@ export function OptionRow({
   )
 }
 
+/** A one-line text field: a thin underline that turns white while you type, like the primary button's outline. */
+export function TextInputRow({
+  label,
+  placeholder,
+  maxLength,
+  value,
+  onChange,
+  onSubmit,
+}: {
+  /** names the field for screen readers */
+  label: string
+  placeholder: string
+  maxLength: number
+  value: string
+  onChange: (value: string) => void
+  /** the keyboard's Next key */
+  onSubmit: () => void
+}) {
+  const [focused, setFocused] = useState(false)
+  return (
+    <TextInput
+      value={value}
+      onChangeText={onChange}
+      onSubmitEditing={onSubmit}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      placeholder={placeholder}
+      placeholderTextColor={colors.muted}
+      maxLength={maxLength}
+      accessibilityLabel={label}
+      autoCapitalize="words"
+      autoCorrect={false}
+      autoComplete="off"
+      returnKeyType="next"
+      selectionColor={colors.text}
+      style={[styles.input, focused && styles.inputFocused]}
+    />
+  )
+}
+
 export function Button({ title, onPress, primary, style }: { title: string; onPress: () => void; primary?: boolean; style?: StyleProp<ViewStyle> }) {
   return (
     <Pressable
@@ -417,6 +457,18 @@ const styles = StyleSheet.create({
   rowText: { flex: 1 },
   rowLabel: { color: colors.text, fontSize: 17 },
   rowHint: { color: colors.muted, fontSize: 14, marginTop: 3, fontVariant: ['tabular-nums'] },
+
+  input: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '300',
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1.5,
+    borderBottomColor: colors.line,
+    ...noFocusRing,
+  },
+  inputFocused: { borderBottomColor: colors.text },
 
   radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: colors.line, alignItems: 'center', justifyContent: 'center' },
   radioOn: { borderColor: colors.ember },
