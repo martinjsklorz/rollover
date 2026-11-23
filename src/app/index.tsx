@@ -2,7 +2,9 @@ import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
+import Head from 'expo-router/head'
 import { useSettings } from '../settings'
+import { enterFullscreen } from '../web'
 import { STEPS, describe } from '../wizard/steps'
 import { Button, colors } from '../wizard/ui'
 
@@ -18,8 +20,10 @@ export default function Home() {
 
   const start = () => {
     restoreSaved()
+    enterFullscreen()
     router.push('/clock')
   }
+  const summary = saved && describe(saved)
   const setup = () => {
     beginSetup()
     router.push(`/setup/${STEPS[0].id}`)
@@ -28,6 +32,9 @@ export default function Home() {
   return (
     <SafeAreaView style={[styles.page, sideBySide && styles.pageSide, centered && styles.pageCentered]}>
       <StatusBar style="light" />
+      <Head>
+        <title>Rollover</title>
+      </Head>
       <View style={[styles.brand, !centered && styles.fill]}>
         <Image source={require('../../assets/brand/mark.png')} style={styles.logo} accessibilityIgnoresInvertColors />
         <Text style={styles.name} accessibilityLabel="Rollover">
@@ -37,9 +44,14 @@ export default function Home() {
       </View>
       <View style={[styles.actionsArea, sideBySide && styles.actionsSide, centered && styles.actionsCentered]}>
         <View style={styles.actions}>
-          {saved ? (
+          {summary ? (
             <>
-              <Text style={styles.summary}>{describe(saved)}</Text>
+              <View style={styles.summary} accessible>
+                <Text style={styles.summaryText}>{summary.look}</Text>
+                <Text style={styles.summaryText} accessibilityLabel={`from ${summary.from} to ${summary.to}`}>
+                  {summary.from} → {summary.to}
+                </Text>
+              </View>
               <Button title="Start" primary onPress={start} style={styles.button} />
               <Button title="New setup" onPress={setup} style={styles.button} />
             </>
@@ -65,6 +77,7 @@ const styles = StyleSheet.create({
   actionsSide: { flex: 1, paddingBottom: 0 },
   actionsCentered: { marginTop: 56 },
   actions: { width: '100%', maxWidth: 340, gap: 12 },
-  summary: { color: colors.muted, fontSize: 15, textAlign: 'center', marginBottom: 4, fontVariant: ['tabular-nums'] },
+  summary: { marginBottom: 4, gap: 2 },
+  summaryText: { color: colors.muted, fontSize: 15, textAlign: 'center', fontVariant: ['tabular-nums'] },
   button: { alignSelf: 'stretch' },
 })

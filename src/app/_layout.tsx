@@ -10,7 +10,7 @@ export default function RootLayout() {
     <SettingsProvider onReady={() => SplashScreen.hideAsync().catch(() => {})}>
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#000' } }}>
         {/* each step is its own screen in the stack, so "go back to Style" finds the Style page */}
-        <Stack.Screen name="setup/[step]" getId={({ params }) => String(params?.step)} />
+        <Stack.Screen name="setup/[step]" dangerouslySingular={(_, params) => String(params?.step)} />
         {/* iOS takes the status bar from the screen options; <StatusBar hidden /> alone is ignored there */}
         <Stack.Screen name="clock" options={{ autoHideHomeIndicator: true, statusBarHidden: true }} />
       </Stack>

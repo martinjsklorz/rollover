@@ -19,6 +19,8 @@ export type Step = {
   choices: Choice[]
   /** text for the summary on the last page */
   summary: (s: Settings) => string
+  /** where the preview starts: the start of the loop, or just before midnight (shows the end sooner) */
+  preview?: 'start' | 'midnight'
 }
 
 const SECONDS = [5, 10, 30, 60]
@@ -63,7 +65,7 @@ export const STEPS: Step[] = [
       hint: (s: Settings) => `Starts at ${formatTime(loopTime(sec, 0), s.hour12)}`,
       value: { before: sec },
     })),
-    summary: (s) => `−${s.before} s`,
+    summary: (s) => `${s.before} seconds`,
   },
   {
     id: 'after',
@@ -72,10 +74,11 @@ export const STEPS: Step[] = [
     subtitle: 'Then the clock starts over.',
     choices: SECONDS.map((sec) => ({
       label: `${sec} seconds`,
-      hint: (s: Settings) => `Runs until ${formatTime(sec, s.hour12)}, then repeats`,
+      hint: (s: Settings) => `Until ${formatTime(sec, s.hour12)}, then repeats`,
       value: { after: sec },
     })),
-    summary: (s) => `+${s.after} s`,
+    summary: (s) => `${s.after} seconds`,
+    preview: 'midnight',
   },
   {
     id: 'fireworks',
@@ -96,7 +99,13 @@ export const isSelected = (choice: Choice, s: Settings) =>
 export const hintText = (choice: Choice, s: Settings) =>
   typeof choice.hint === 'function' ? choice.hint(s) : choice.hint
 
-/** One line like "24-hour · Simple · −5 s · +10 s". */
-export const describe = (s: Settings) => STEPS.map((step) => step.summary(s)).join(' · ')
-
 export const stepIndex = (id: string) => STEPS.findIndex((s) => s.id === id)
+
+const summaryOf = (id: string, s: Settings) => STEPS[stepIndex(id)].summary(s)
+
+/** The settings in two short lines: "24-hour · Simple" and the loop, from 23:59:50 to 00:00:10. */
+export const describe = (s: Settings) => ({
+  look: `${summaryOf('format', s)} · ${summaryOf('style', s)}`,
+  from: formatTime(loopTime(s.before, 0), s.hour12),
+  to: formatTime(s.after, s.hour12),
+})

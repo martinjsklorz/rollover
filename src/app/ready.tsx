@@ -1,6 +1,7 @@
 import { StyleSheet, Text } from 'react-native'
 import { router } from 'expo-router'
 import { useSettings } from '../settings'
+import { canKeepAwake, enterFullscreen } from '../web'
 import { STEPS } from '../wizard/steps'
 import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
 
@@ -9,18 +10,26 @@ export default function Ready() {
   const { settings, save } = useSettings()
   return (
     <WizardPage
+      name="Ready"
       index={STEPS.length}
       count={STEPS.length + 1}
       title="Ready"
-      subtitle="Place your phone, then tap Start. Tap the clock to come back here."
+      subtitle={
+        'Place your phone, then tap Start. Tap the clock twice to come back here.' +
+        (canKeepAwake ? '' : ' This browser may let the screen go dark; turn off auto-lock to keep it on.')
+      }
       footer={
         <>
-          <Button title="Back" onPress={() => router.back()} />
+          <Button
+            title="Back"
+            onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${STEPS[STEPS.length - 1].id}`))}
+          />
           <Button
             title="Start"
             primary
             onPress={() => {
               save()
+              enterFullscreen()
               router.push('/clock')
             }}
           />
@@ -34,12 +43,15 @@ export default function Ready() {
             first={i === 0}
             role="button"
             label={step.name}
-            accessibilityHint={`Change ${step.name}`}
+            accessibilityLabel={`${step.name}: ${step.summary(settings)}`}
+            accessibilityHint={`Change ${step.name.toLowerCase()}`}
             onPress={() => router.dismissTo(`/setup/${step.id}`)}
             right={
               <>
                 <Text style={styles.value}>{step.summary(settings)}</Text>
-                <Text style={styles.chevron}>›</Text>
+                <Text style={styles.chevron} aria-hidden>
+                  ›
+                </Text>
               </>
             }
           />
@@ -51,5 +63,5 @@ export default function Ready() {
 
 const styles = StyleSheet.create({
   value: { color: colors.muted, fontSize: 17, fontVariant: ['tabular-nums'] },
-  chevron: { color: colors.line, fontSize: 24, marginLeft: -6 },
+  chevron: { color: colors.muted, fontSize: 24, marginLeft: -6 },
 })

@@ -2,9 +2,22 @@
 <html lang="%LANG_ISO_CODE%">
   <head>
     <meta charset="utf-8" />
-    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- viewport-fit=cover: draw under the notch and home indicator; the app pads with safe-area insets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>%WEB_TITLE%</title>
+    <!-- theme-color and description are added by Expo from `web` in app.json -->
+    <!--
+      Files in public/ are copied to the export root as they are: Expo doesn't prefix these links
+      with `experiments.baseUrl`, so they carry it here. Keep "/rollover" in sync with app.json.
+      URLs inside manifest.json are relative to the manifest, so they need no prefix.
+    -->
+    <link rel="manifest" href="/rollover/manifest.json" />
+    <link rel="apple-touch-icon" href="/rollover/apple-touch-icon.png" />
+    <!-- Added to the home screen: open without browser UI, content under a translucent status bar -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Rollover" />
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       /* These styles make the body full-height */
@@ -14,6 +27,8 @@
         /* black from the first frame: the clock is used in dark rooms */
         background-color: #000;
         color-scheme: dark;
+        /* no pull-to-refresh or rubber-band bounce on mobile */
+        overscroll-behavior: none;
       }
       /* These styles disable body scrolling if you are using <ScrollView> */
       body {

@@ -3,15 +3,16 @@ import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEv
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
 import Fireworks from './Fireworks'
-import { loopTime, timeParts, useLoop, type TimeParts } from './time'
+import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 type Size = { width: number; height: number }
 
 /**
  * The looping clock. Fills its parent and sizes itself to fit,
  * so the same component is used for the wizard preview and the full screen.
+ * The loop runs from `startedAt`; pass a new value to restart it.
  */
-export default function Clock({ settings }: { settings: Settings }) {
+export default function Clock({ settings, startedAt }: { settings: Settings; startedAt: number }) {
   const [size, setSize] = useState<Size | null>(null)
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout
@@ -19,22 +20,28 @@ export default function Clock({ settings }: { settings: Settings }) {
   }
   return (
     <View style={styles.fill} onLayout={onLayout}>
-      {/* key restarts the loop when before/after change */}
-      {size && <LoopingFace key={`${settings.before}/${settings.after}`} settings={settings} size={size} />}
+      {/* key: a new start shows its first second right away, not the old loop's for a frame */}
+      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} />}
     </View>
   )
 }
 
-function LoopingFace({ settings, size }: { settings: Settings; size: Size }) {
-  const elapsed = useLoop(settings.before + settings.after)
-  const parts = timeParts(loopTime(settings.before, elapsed), settings.hour12)
+function LoopingFace({ settings, startedAt, size }: { settings: Settings; startedAt: number; size: Size }) {
+  const elapsed = useLoop(settings.before + settings.after, startedAt)
+  const time = loopTime(settings.before, elapsed)
+  const parts = timeParts(time, settings.hour12)
   const theme = themeOf(settings.theme)
   // from 00:00:00 until the loop starts over
   const afterMidnight = elapsed >= settings.before
   return (
     <>
       {settings.fireworks && afterMidnight && <Fireworks size={size} colors={theme.fireworks} />}
-      {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
+      {/* screen readers get the time as one name, not the digits and colons one by one */}
+      <View role="timer" aria-label={formatTime(time, settings.hour12)}>
+        <View aria-hidden>
+          {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
+        </View>
+      </View>
     </>
   )
 }
@@ -42,12 +49,20 @@ function LoopingFace({ settings, size }: { settings: Settings; size: Size }) {
 /* ---------- simple: thin white digits ---------- */
 
 function SimpleFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
-  const fontSize = Math.min(size.width / (parts.ampm ? 6.2 : 5), size.height * 0.5)
+  // The digits' width per point of font size depends on the font, so it's measured: the first
+  // render uses a safe guess (hidden), then the digits are sized to fill the width.
+  const [widthPerPoint, setWidthPerPoint] = useState<number | null>(null)
+  const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (parts.ampm ? 6.2 : 5)), size.height * 0.5)
+  const onLayout = (e: LayoutChangeEvent) => {
+    const measured = e.nativeEvent.layout.width / fontSize
+    // AM and PM differ slightly in width; don't resize the digits for that
+    if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) setWidthPerPoint(measured)
+  }
   const color = { color: theme.text }
   const glow = theme.glow && { textShadowColor: theme.text, textShadowRadius: fontSize * 0.12, textShadowOffset: { width: 0, height: 0 } }
   return (
-    <View style={styles.row}>
-      <Text style={[styles.simple, color, glow, { fontSize }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.3}>
+    <View style={[styles.row, !widthPerPoint && styles.measuring]} onLayout={onLayout}>
+      <Text style={[styles.simple, color, glow, { fontSize }]} numberOfLines={1}>
         {parts.hh}:{parts.mm}:{parts.ss}
       </Text>
       {parts.ampm !== '' && <Text style={[styles.simpleAmPm, color, { fontSize: fontSize * 0.3, marginLeft: fontSize * 0.12 }]}>{parts.ampm}</Text>}
@@ -166,7 +181,8 @@ function Half({ side, face, width, height, radius, theme, transform, shade }: Ha
       <View style={[styles.face, { height, top: top ? 0 : -height / 2 }]}>
         <Text style={[styles.cardDigits, { fontSize: width * 0.62, color: theme.text }]}>{face.digits}</Text>
         {!!face.corner && (
-          <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09, color: theme.muted }]}>
+          // at least 9 pt, so AM/PM stays readable on the small preview cards
+          <Text style={[styles.corner, { fontSize: Math.max(width * 0.12, 9), top: width * 0.07, left: width * 0.09, color: theme.muted }]}>
             {face.corner}
           </Text>
         )}
@@ -179,7 +195,8 @@ function Half({ side, face, width, height, radius, theme, transform, shade }: Ha
 const styles = StyleSheet.create({
   fill: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' },
-  simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'] },
+  measuring: { opacity: 0 },
+  simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'], flexShrink: 0 },
   simpleAmPm: { color: colors.text, fontWeight: '300' },
   half: { position: 'absolute', left: 0, right: 0, overflow: 'hidden', backgroundColor: colors.surface, backfaceVisibility: 'hidden' },
   face: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
