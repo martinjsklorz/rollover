@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native'
+import { useEffect, useState } from 'react'
+import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
 import Fireworks from './Fireworks'
@@ -70,16 +70,109 @@ function FlipFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme:
   )
 }
 
+type Face = { digits: string; corner?: string }
+
+/**
+ * One split-flap card. On every change the top flap (old value) falls down onto the hinge,
+ * then the bottom flap (new value) swings down from it. Behind them, the static halves show
+ * the new value on top and the old value at the bottom, like the real mechanism.
+ */
 function FlipCard({ value, width, theme, corner }: { value: string; width: number; theme: ClockTheme; corner?: string }) {
   const height = width * 1.2
+  const [flip, setFlip] = useState({ from: { digits: value, corner }, to: { digits: value, corner }, n: 0 })
+  if (flip.to.digits !== value || flip.to.corner !== corner) {
+    setFlip({ from: flip.to, to: { digits: value, corner }, n: flip.n + 1 })
+  }
+  const half = { width, height, radius: width * 0.08, theme }
   return (
-    <View style={[styles.card, { width, height, borderRadius: width * 0.08, backgroundColor: theme.surface }]}>
-      <Text style={[styles.cardDigits, { fontSize: width * 0.62, color: theme.text }]}>{value}</Text>
+    <View style={{ width, height }}>
+      <Half side="top" face={flip.to} {...half} />
+      <Half side="bottom" face={flip.from} {...half} />
+      {/* keyed so every flip starts from a fresh, unrotated flap */}
+      {flip.n > 0 && <Flaps key={flip.n} from={flip.from} to={flip.to} {...half} />}
       <View style={[styles.hinge, { top: height / 2 - 1 }]} />
-      {!!corner && (
-        <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09, color: theme.muted }]}>{corner}</Text>
-      )}
     </View>
+  )
+}
+
+const FALL_MS = 160
+const LAND_MS = 260
+const useNativeDriver = Platform.OS !== 'web'
+
+function Flaps({ from, to, ...half }: { from: Face; to: Face; width: number; height: number; radius: number; theme: ClockTheme }) {
+  const [fall] = useState(() => new Animated.Value(0))
+  const [land] = useState(() => new Animated.Value(0))
+  useEffect(() => {
+    const anim = Animated.sequence([
+      Animated.timing(fall, { toValue: 1, duration: FALL_MS, easing: Easing.in(Easing.quad), useNativeDriver }),
+      Animated.timing(land, { toValue: 1, duration: LAND_MS, easing: Easing.out(Easing.back(1.4)), useNativeDriver }),
+    ])
+    anim.start()
+    return () => anim.stop()
+  }, [fall, land])
+  const perspective = half.width * 4
+  return (
+    <>
+      <Half
+        side="bottom"
+        face={to}
+        {...half}
+        transform={[{ perspective }, { rotateX: land.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '0deg'] }) }]}
+        shade={land.interpolate({ inputRange: [0, 1], outputRange: [0.5, 0], extrapolate: 'clamp' })}
+      />
+      <Half
+        side="top"
+        face={from}
+        {...half}
+        transform={[{ perspective }, { rotateX: fall.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-90deg'] }) }]}
+        shade={fall.interpolate({ inputRange: [0, 1], outputRange: [0, 0.5] })}
+      />
+    </>
+  )
+}
+
+type HalfProps = {
+  side: 'top' | 'bottom'
+  face: Face
+  width: number
+  height: number
+  radius: number
+  theme: ClockTheme
+  /** rotation around the hinge (the half's edge at the card's middle) */
+  transform?: Animated.WithAnimatedValue<ViewStyle>['transform']
+  /** darkness of the shadow over the half, 0 … 1 */
+  shade?: Animated.AnimatedInterpolation<number>
+}
+
+/** The top or bottom half of a card: the full card face, clipped to one half. */
+function Half({ side, face, width, height, radius, theme, transform, shade }: HalfProps) {
+  const top = side === 'top'
+  return (
+    <Animated.View
+      style={[
+        styles.half,
+        {
+          top: top ? 0 : height / 2,
+          backgroundColor: theme.surface,
+          height: height / 2,
+          transformOrigin: top ? 'bottom' : 'top',
+          transform,
+          ...(top
+            ? { borderTopLeftRadius: radius, borderTopRightRadius: radius }
+            : { borderBottomLeftRadius: radius, borderBottomRightRadius: radius }),
+        },
+      ]}
+    >
+      <View style={[styles.face, { height, top: top ? 0 : -height / 2 }]}>
+        <Text style={[styles.cardDigits, { fontSize: width * 0.62, color: theme.text }]}>{face.digits}</Text>
+        {!!face.corner && (
+          <Text style={[styles.corner, { fontSize: width * 0.12, top: width * 0.07, left: width * 0.09, color: theme.muted }]}>
+            {face.corner}
+          </Text>
+        )}
+      </View>
+      {shade && <Animated.View style={[StyleSheet.absoluteFill, styles.shade, { opacity: shade }]} />}
+    </Animated.View>
   )
 }
 
@@ -88,7 +181,9 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' },
   simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'] },
   simpleAmPm: { color: colors.text, fontWeight: '300' },
-  card: { backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  half: { position: 'absolute', left: 0, right: 0, overflow: 'hidden', backgroundColor: colors.surface, backfaceVisibility: 'hidden' },
+  face: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
+  shade: { backgroundColor: colors.bg },
   cardDigits: { color: colors.text, fontWeight: '400', fontVariant: ['tabular-nums'], includeFontPadding: false },
   hinge: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: colors.bg },
   corner: { position: 'absolute', color: colors.muted, fontWeight: '600' },
