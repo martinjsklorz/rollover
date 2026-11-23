@@ -1,7 +1,8 @@
 name: CI
 
-# Every push and pull request: typecheck, lint, Expo checks, and a build for iOS, Android and web.
-# Pushes to main also publish the web app to GitHub Pages.
+# Every pull request: typecheck, lint and Expo checks.
+# Pushes to main (merged pull requests) also build iOS, Android and web, and publish the web app
+# to GitHub Pages.
 on:
   push:
     branches: [main]
@@ -18,6 +19,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      IS_MAIN: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -41,9 +44,11 @@ jobs:
         run: pnpm dlx expo-doctor@latest
 
       - name: Bundle iOS and Android
+        if: env.IS_MAIN == 'true'
         run: pnpm exec expo export --platform ios --platform android --output-dir ${{ runner.temp }}/native
 
       - name: Build web
+        if: env.IS_MAIN == 'true'
         run: |
           pnpm exec expo export --platform web
           # The export is a single-page app with one index.html. GitHub Pages serves <path>.html
@@ -64,7 +69,7 @@ jobs:
           ls dist/*.html dist/setup/*.html
 
       - uses: actions/upload-pages-artifact@v5
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: env.IS_MAIN == 'true'
         with:
           path: dist
 
