@@ -18,6 +18,10 @@ const pad2 = (n: number) => String(n).padStart(2, '0')
 const SHORT = 760
 /** Widest the portrait column gets (tablet, browser). */
 const COLUMN = 560
+/** Tallest the landscape preview card gets on a tablet or desktop, as a share of the window height. */
+const CARD = 0.55
+/** From the top of the landscape group to the top of its preview card: left padding, header and its margin. */
+const CARD_OFFSET = 16 + 28 + 20
 
 /** Layout shared by every wizard page: mark and step count, live preview, question, options, footer buttons. */
 export function WizardPage({
@@ -163,11 +167,14 @@ function WideLayout({
   const aspect = width / height
   let card: { width: number; height: number } | null = null
   if (area) {
-    const cardWidth = Math.min(area.width, (fill ? area.height : height * 0.55) * aspect)
+    const cardWidth = Math.min(area.width, (fill ? area.height : CARD * height) * aspect)
     card = { width: cardWidth, height: cardWidth / aspect }
   }
+  // Tablet and desktop: the group hangs from a fixed top that centers the tallest card, instead of
+  // being centered as a whole, so the preview stays put when the next step has more or fewer options.
+  const top = fill ? undefined : Math.max(16, ((1 - CARD) * height) / 2 - CARD_OFFSET)
   return (
-    <SafeAreaView style={[styles.page, styles.widePage]}>
+    <SafeAreaView style={[styles.page, styles.widePage, !fill && { justifyContent: 'flex-start', paddingTop: top }]}>
       <StatusBar style="light" />
       {head}
       <View style={[styles.wide, fill ? styles.fill : styles.wideRoomy]}>
