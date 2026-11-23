@@ -1,7 +1,7 @@
 // Builds every Rollover brand file from one geometry.
 //   cd brand/tools && pnpm install --ignore-workspace && pnpm build
 // Writes brand/logo/*.svg, brand/png/*.png, brand/social/*.png, the app's icons in assets/
-// and the web icons in public/.
+// (the TV ones in assets/tv/) and the web icons in public/.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
@@ -182,7 +182,7 @@ const png = (path, s) => out(path, new Resvg(s, { font: { loadSystemFonts: false
   png(join(pub, 'apple-touch-icon.png'), web(180))
 }
 
-/* social card + store banner */
+/* social card, store banner, Apple TV top shelf */
 {
   const card = (W, H, size, tagSize) => {
     const probe = lockup(0, 0, size)
@@ -196,4 +196,29 @@ const png = (path, s) => out(path, new Resvg(s, { font: { loadSystemFonts: false
   png(join(brand, 'social', 'og-1200x630.png'), card(1200, 630, 120, 34))
   png(join(brand, 'social', 'banner-1024x500.png'), card(1024, 500, 104, 30))
   png(join(brand, 'social', 'square-1080.png'), card(1080, 1080, 120, 34))
+  // Apple TV top shelf, shown when the app is in the top row of the home screen
+  for (const [name, W] of [['top-shelf', 1920], ['top-shelf-wide', 2320]]) {
+    png(join(assets, 'tv', `${name}.png`), card(W, 720, 150, 42))
+    png(join(assets, 'tv', `${name}@2x.png`), card(W * 2, 1440, 300, 84))
+  }
+}
+
+/* TV app icons (app.json, @react-native-tvos/config-tv) */
+{
+  // Android TV launcher banner, 320×180 (xhdpi): the lockup on black
+  {
+    const W = 320
+    const H = 180
+    const size = 52
+    const probe = lockup(0, 0, size)
+    png(join(assets, 'tv', 'android-banner.png'), svg(W, H, lockup((W - probe.width) / 2, H / 2 + size * 0.36, size).body, C.black))
+  }
+  // Apple TV app icon in two layers, which tvOS moves apart for the parallax effect on focus:
+  // an opaque black back and the mark in front. The mark stays well inside the edges the focus effect crops.
+  for (const [name, W, H] of [['icon', 1280, 768], ['icon-small', 400, 240], ['icon-small@2x', 800, 480]]) {
+    const r = H * 0.25
+    const cy = H / 2 + (dotTop(r) - outer(r)) / 2
+    png(join(assets, 'tv', `${name}-back.png`), svg(W, H, '', C.black))
+    png(join(assets, 'tv', `${name}-front.png`), svg(W, H, mark(W / 2, cy, r)))
+  }
 }

@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar'
 import Clock from '../clock/Clock'
 import { useSettings } from '../settings'
 import { colors } from '../theme'
+import { isTV, sizedStyles } from '../tv'
 import { useSettled } from '../useSettled'
 import { exitFullscreen, noFocusRing, useFocusOnScreen, useKeepScreenOn, useKeys } from '../web'
 
@@ -15,7 +16,8 @@ const ARMED_MS = 3000
 
 /**
  * Full-screen clock. Nothing else on screen. Going back takes two taps (the first shows a hint),
- * so a stray touch while filming doesn't end the take. Esc goes back right away.
+ * so a stray touch while filming doesn't end the take. Esc, and Back on a TV remote, go back right away.
+ * On a TV, Select works like a tap.
  */
 export default function ClockScreen() {
   useKeepScreenOn()
@@ -52,21 +54,23 @@ export default function ClockScreen() {
       <Clock settings={settings} startedAt={startedAt} />
       <Pressable
         ref={backRef}
-        style={[StyleSheet.absoluteFill, styles.back, !settled && styles.locked]}
+        // TV: not locked, or it can't take focus when the screen opens and Select does nothing
+        style={[StyleSheet.absoluteFill, styles.back, !settled && !isTV && styles.locked]}
         onPress={tap}
+        hasTVPreferredFocus
         role="button"
-        accessibilityLabel={armed ? 'Go back' : 'Back. Tap twice to go back.'}
+        accessibilityLabel={armed ? 'Go back' : `Back. ${isTV ? 'Press' : 'Tap'} twice to go back.`}
       />
       {armed && (
         <Text style={styles.hint} aria-live="polite">
-          Tap again to go back
+          {isTV ? 'Press again to go back' : 'Tap again to go back'}
         </Text>
       )}
     </View>
   )
 }
 
-const styles = StyleSheet.create({
+const styles = sizedStyles({
   screen: { flex: 1, backgroundColor: '#000', padding: 16 },
   back: noFocusRing,
   locked: { pointerEvents: 'none' },
