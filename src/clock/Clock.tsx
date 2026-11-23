@@ -3,9 +3,13 @@ import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEv
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
 import { useLayoutSize, type Size } from '../useLayoutSize'
+import Balloons from './Balloons'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
+
+// react-native-web has no native animation driver
+const useNativeDriver = Platform.OS !== 'web'
 
 /**
  * The looping clock. Fills its parent and sizes itself to fit,
@@ -30,17 +34,57 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
   const theme = themeOf(settings.theme)
   // from 00:00:00 until the loop starts over
   const afterMidnight = elapsed >= settings.before
+  // the greeting goes in the space below the digits
+  const [faceHeight, setFaceHeight] = useState(0)
+  const name = settings.name.trim()
   return (
     <>
       {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'confetti' && <Confetti size={size} colors={theme.accents} />}
+      {afterMidnight && settings.animation === 'balloons' && <Balloons size={size} colors={theme.accents} />}
       {/* screen readers get the time as one name, not the digits and colons one by one */}
       <View role="timer" aria-label={formatTime(time, settings.hour12)}>
-        <View aria-hidden>
+        <View aria-hidden onLayout={(e) => setFaceHeight(e.nativeEvent.layout.height)}>
           {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
         </View>
       </View>
+      {afterMidnight && settings.occasion === 'birthday' && faceHeight > 0 && (
+        <Greeting text={name ? `Happy birthday, ${name}!` : 'Happy birthday!'} color={theme.text} size={size} faceHeight={faceHeight} />
+      )}
     </>
+  )
+}
+
+/* ---------- birthday greeting ---------- */
+
+const GREETING_DELAY_MS = 300
+const GREETING_FADE_MS = 900
+
+/** One line under the digits, fading in at midnight. Sized to the space between the digits and the bottom edge. */
+function Greeting({ text, color, size, faceHeight }: { text: string; color: string; size: Size; faceHeight: number }) {
+  const [opacity] = useState(() => new Animated.Value(0))
+  useEffect(() => {
+    const fade = Animated.timing(opacity, {
+      toValue: 1,
+      delay: GREETING_DELAY_MS,
+      duration: GREETING_FADE_MS,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver,
+    })
+    fade.start()
+    return () => fade.stop()
+  }, [opacity])
+  const space = (size.height - faceHeight) / 2
+  // light type is about 0.55 em per character; keep the line within 90 % of the width
+  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / (text.length * 0.55), size.height * 0.08)
+  // no room on a very small preview
+  if (fontSize < 8) return null
+  return (
+    <View style={[styles.greeting, { top: size.height - space, height: space }]} pointerEvents="none">
+      <Animated.Text style={[styles.greetingText, { color, fontSize, opacity }]} numberOfLines={1}>
+        {text}
+      </Animated.Text>
+    </View>
   )
 }
 
@@ -119,7 +163,6 @@ function FlipCard({ value, width, theme, corner }: { value: string; width: numbe
 
 const FALL_MS = 160
 const LAND_MS = 260
-const useNativeDriver = Platform.OS !== 'web'
 
 function Flaps({ from, to, ...half }: { from: Face; to: Face; width: number; height: number; radius: number; theme: ClockTheme }) {
   const [fall] = useState(() => new Animated.Value(0))
@@ -211,4 +254,6 @@ const styles = StyleSheet.create({
   cardDigits: { color: colors.text, fontWeight: '400', fontVariant: ['tabular-nums'], includeFontPadding: false },
   hinge: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: colors.bg },
   corner: { position: 'absolute', color: colors.muted, fontWeight: '600' },
+  greeting: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
+  greetingText: { fontWeight: '300', textAlign: 'center' },
 })

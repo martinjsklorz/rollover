@@ -3,17 +3,18 @@ import { router } from 'expo-router'
 import { useSettings } from '../settings'
 import { isTV, sizedStyles } from '../tv'
 import { canKeepAwake, enterFullscreen } from '../web'
-import { STEPS } from '../wizard/steps'
+import { stepsFor } from '../wizard/steps'
 import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
 
 /** Last wizard page: a summary of the choices and the Start button. */
 export default function Ready() {
   const { settings, save } = useSettings()
+  const steps = stepsFor(settings)
   return (
     <WizardPage
       name="Ready"
-      index={STEPS.length}
-      count={STEPS.length + 1}
+      index={steps.length}
+      count={steps.length + 1}
       title="Ready"
       subtitle={
         isTV
@@ -25,7 +26,7 @@ export default function Ready() {
         <>
           <Button
             title="Back"
-            onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${STEPS[STEPS.length - 1].id}`))}
+            onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${steps[steps.length - 1].id}`))}
           />
           <Button
             title="Start"
@@ -41,7 +42,7 @@ export default function Ready() {
       }
     >
       <List>
-        {STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <Row
             key={step.id}
             first={i === 0}

@@ -1,5 +1,6 @@
-import type { MidnightAnimation, Settings } from '../settings'
+import { NAME_MAX, type MidnightAnimation, type Settings } from '../settings'
 import { formatTime, loopTime } from '../clock/time'
+import { OCCASIONS, OCCASION_IDS } from '../occasions'
 import { THEMES, THEME_IDS, themeOf } from '../theme'
 
 export type Choice = {
@@ -8,25 +9,68 @@ export type Choice = {
   hint?: string | ((s: Settings) => string)
   /** the settings this choice applies */
   value: Partial<Settings>
+  /** offered only when this holds, e.g. the themes of the chosen occasion */
+  when?: (s: Settings) => boolean
+}
+
+/** A text field instead of choices. */
+export type TextField = {
+  /** the setting it edits */
+  setting: 'name'
+  /** names the field for screen readers */
+  label: string
+  placeholder: string
+  maxLength: number
 }
 
 export type Step = {
   id: string
   title: string
-  subtitle?: string
+  subtitle?: string | ((s: Settings) => string)
   /** short name for the summary on the last page */
   name: string
-  choices: Choice[]
+  /** the options; a step has these or a text field */
+  choices?: Choice[]
+  text?: TextField
+  /** shown only when this holds, e.g. the name page for a birthday */
+  when?: (s: Settings) => boolean
   /** text for the summary on the last page */
   summary: (s: Settings) => string
 }
 
 const SECONDS = [5, 10, 30, 60]
 
-const ANIMATION_NAMES: Record<MidnightAnimation, string> = { fireworks: 'Fireworks', confetti: 'Confetti', none: 'No animation' }
+const ANIMATION_NAMES: Record<MidnightAnimation, string> = {
+  fireworks: 'Fireworks',
+  confetti: 'Confetti',
+  balloons: 'Balloons',
+  none: 'No animation',
+}
 
-/** One page per setting. Add a setting by adding a step here. */
+const offersAnimation = (animation: MidnightAnimation) => (s: Settings) => OCCASIONS[s.occasion].animations.includes(animation)
+
+/**
+ * One page per setting. Add a setting by adding a step here.
+ * Keep each `id: '…',` on a line of its own: CI reads them to publish a page per step (.github/workflows/ci.yml).
+ */
 export const STEPS: Step[] = [
+  {
+    id: 'occasion',
+    name: 'Occasion',
+    title: "What's the occasion?",
+    subtitle: 'It sets the colors and the midnight animation.',
+    choices: OCCASION_IDS.map((o) => ({ label: OCCASIONS[o].name, hint: OCCASIONS[o].hint, value: { occasion: o } })),
+    summary: (s) => OCCASIONS[s.occasion].name,
+  },
+  {
+    id: 'name',
+    name: 'Name',
+    title: 'Whose birthday?',
+    subtitle: 'Shown under the clock at midnight. Leave it empty for just “Happy birthday!”',
+    text: { setting: 'name', label: 'Name', placeholder: 'Their name', maxLength: NAME_MAX },
+    when: (s) => s.occasion === 'birthday',
+    summary: (s) => s.name.trim() || 'No name',
+  },
   {
     id: 'format',
     name: 'Format',
@@ -51,8 +95,15 @@ export const STEPS: Step[] = [
     id: 'theme',
     name: 'Theme',
     title: 'Pick a theme',
-    subtitle: "Colors for New Year's Eve, or any midnight.",
-    choices: THEME_IDS.map((id) => ({ label: THEMES[id].name, hint: THEMES[id].hint, value: { theme: id } })),
+    subtitle: (s) => `Colors for ${s.occasion === 'birthday' ? 'the birthday' : "New Year's Eve"}.`,
+    choices: THEME_IDS.map((id) => ({
+      label: THEMES[id].name,
+      hint: THEMES[id].hint,
+      value: { theme: id },
+      when: (s: Settings) => OCCASIONS[s.occasion].themes.includes(id),
+    })),
+    // Classic has a single theme
+    when: (s) => OCCASIONS[s.occasion].themes.length > 1,
     summary: (s) => themeOf(s.theme).name,
   },
   {
@@ -85,7 +136,18 @@ export const STEPS: Step[] = [
     title: 'Midnight animation',
     subtitle: 'It plays in the seconds after midnight, every time the clock rolls over.',
     choices: [
-      { label: 'Fireworks', hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`, value: { animation: 'fireworks' } },
+      {
+        label: 'Balloons',
+        hint: (s: Settings) => `Balloons float up at ${formatTime(0, s.hour12)}`,
+        value: { animation: 'balloons' },
+        when: offersAnimation('balloons'),
+      },
+      {
+        label: 'Fireworks',
+        hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`,
+        value: { animation: 'fireworks' },
+        when: offersAnimation('fireworks'),
+      },
       { label: 'Confetti', hint: (s: Settings) => `Confetti pops at ${formatTime(0, s.hour12)}`, value: { animation: 'confetti' } },
       { label: 'None', hint: 'Just the clock', value: { animation: 'none' } },
     ],
@@ -99,12 +161,28 @@ export const isSelected = (choice: Choice, s: Settings) =>
 export const hintText = (choice: Choice, s: Settings) =>
   typeof choice.hint === 'function' ? choice.hint(s) : choice.hint
 
-export const stepIndex = (id: string) => STEPS.findIndex((s) => s.id === id)
+/** The wizard's pages for these settings: the name page only for a birthday, no theme page for Classic. */
+export const stepsFor = (s: Settings) => STEPS.filter((step) => !step.when || step.when(s))
 
-const summaryOf = (id: string, s: Settings) => STEPS[stepIndex(id)].summary(s)
+/** The choices a step offers for these settings. */
+export const choicesFor = (step: Step, s: Settings) => (step.choices ?? []).filter((c) => !c.when || c.when(s))
 
-/** The settings in two short lines: "24-hour · Simple" and the loop, from 23:59:50 to 00:00:10. */
+export const subtitleText = (step: Step, s: Settings) => (typeof step.subtitle === 'function' ? step.subtitle(s) : step.subtitle)
+
+const summaryOf = (id: string, s: Settings) => STEPS.find((step) => step.id === id)!.summary(s)
+
+/**
+ * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple")
+ * and the loop, from 23:59:50 to 00:00:10.
+ */
 export const describe = (s: Settings) => ({
+  occasion: [
+    OCCASIONS[s.occasion].name,
+    s.occasion === 'birthday' && s.name.trim(),
+    OCCASIONS[s.occasion].themes.length > 1 && themeOf(s.theme).name,
+  ]
+    .filter(Boolean)
+    .join(' · '),
   look: `${summaryOf('format', s)} · ${summaryOf('style', s)}`,
   from: formatTime(loopTime(s.before, 0), s.hour12),
   to: formatTime(s.after, s.hour12),
