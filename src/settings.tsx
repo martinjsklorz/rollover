@@ -1,14 +1,22 @@
 import { createContext, useContext, useEffect, useEffectEvent, useState, type ReactNode } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { OCCASION_IDS, fitOccasion, type Occasion } from './occasions'
 import { THEME_IDS, type ThemeId } from './theme'
 
 export type ClockStyle = 'simple' | 'flip'
 
 /** what plays over the clock after midnight */
-export type MidnightAnimation = 'fireworks' | 'confetti' | 'none'
-const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'none']
+export type MidnightAnimation = 'fireworks' | 'confetti' | 'balloons' | 'none'
+const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'balloons', 'none']
+
+/** longest birthday name, so the greeting fits on one line */
+export const NAME_MAX = 20
 
 export type Settings = {
+  /** decides which themes and animations are offered (src/occasions.ts) */
+  occasion: Occasion
+  /** birthday: whose it is, shown under the clock at midnight; may be empty */
+  name: string
   /** 12-hour clock with AM/PM instead of 24-hour */
   hour12: boolean
   style: ClockStyle
@@ -22,6 +30,8 @@ export type Settings = {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  occasion: 'classic',
+  name: '',
   hour12: false,
   style: 'simple',
   theme: 'classic',
@@ -41,7 +51,7 @@ const MAX_SECONDS = 60
 type SettingsContext = {
   /** settings the clock was last started with; null until the wizard has been completed once */
   saved: Settings | null
-  /** working copy: the wizard edits it, the preview and the clock show it */
+  /** working copy: the wizard edits it, the preview and the clock show it. Always fits its occasion (see fitOccasion). */
   settings: Settings
   /** start of the wizard preview's loop (Date.now()), shared by all wizard pages so it runs on between them */
   previewStartedAt: number
@@ -59,6 +69,7 @@ const Context = createContext<SettingsContext | null>(null)
 /**
  * Stored settings, checked field by field: a missing or invalid field (an older version,
  * a setting added later, a damaged value) gets the default. Anything but an object is ignored.
+ * A theme or animation the occasion doesn't offer gets the occasion's default.
  */
 function parse(raw: string | null): Settings | null {
   let value: unknown
@@ -71,10 +82,18 @@ function parse(raw: string | null): Settings | null {
   const v = value as Record<string, unknown>
   const seconds = (n: unknown, fallback: number) =>
     typeof n === 'number' && Number.isInteger(n) && n >= MIN_SECONDS && n <= MAX_SECONDS ? n : fallback
-  return {
+  const theme = THEME_IDS.includes(v.theme as ThemeId) ? (v.theme as ThemeId) : DEFAULT_SETTINGS.theme
+  return fitOccasion({
+    occasion: OCCASION_IDS.includes(v.occasion as Occasion)
+      ? (v.occasion as Occasion)
+      : // saved before occasions existed: the Classic theme, or one of the New Year's Eve themes
+        theme === 'classic'
+        ? 'classic'
+        : 'newyear',
+    name: typeof v.name === 'string' ? v.name.slice(0, NAME_MAX) : DEFAULT_SETTINGS.name,
     hour12: typeof v.hour12 === 'boolean' ? v.hour12 : DEFAULT_SETTINGS.hour12,
     style: v.style === 'simple' || v.style === 'flip' ? v.style : DEFAULT_SETTINGS.style,
-    theme: THEME_IDS.includes(v.theme as ThemeId) ? (v.theme as ThemeId) : DEFAULT_SETTINGS.theme,
+    theme,
     animation: ANIMATIONS.includes(v.animation as MidnightAnimation)
       ? (v.animation as MidnightAnimation)
       : // saved before confetti existed: fireworks on or off
@@ -85,7 +104,7 @@ function parse(raw: string | null): Settings | null {
         : DEFAULT_SETTINGS.animation,
     before: seconds(v.before, DEFAULT_SETTINGS.before),
     after: seconds(v.after, DEFAULT_SETTINGS.after),
-  }
+  })
 }
 
 async function load(key: string): Promise<Settings | null> {
@@ -128,7 +147,8 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
       // a new "after" from midnight (the loop started `before` seconds ago)
       if (changes('before')) setPreviewStartedAt(Date.now())
       else if (changes('after')) setPreviewStartedAt(Date.now() - settings.before * 1000)
-      setSettings((s) => ({ ...s, ...patch }))
+      // a new occasion brings its default theme and animation, unless it offers the current ones
+      setSettings((s) => fitOccasion({ ...s, ...patch }))
     },
     beginSetup: () => {
       setSettings(saved ?? DEFAULT_SETTINGS)

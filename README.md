@@ -41,11 +41,14 @@ again: 23:59:55, 00:00:00, fireworks, and once more from the top. As often as yo
 
 Plus **Party**, in neon pink with fireworks in every color (that's the one at the top).
 
+**Birthday?** Pick it as the occasion and the clock goes candy-colored (Bubblegum pink, Sky blue or
+pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fades in under the digits.
+
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
 - **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
-- **Fireworks or confetti.** At the stroke of midnight, rockets go up and burst over the clock, or confetti
-  pops from the corners and rains down, until the loop starts over.
+- **Fireworks, confetti or balloons.** At the stroke of midnight, rockets go up and burst over the clock,
+  confetti pops from the corners and rains down, or balloons float up, until the loop starts over.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
   phone, or open it on the TV.
 
@@ -61,10 +64,18 @@ Next time, it's one tap on Start.
 The first screen shows the logo and Start, which runs the clock with your last settings,
 or starts the setup wizard. The first time, only the wizard is offered.
 
-The wizard has one page per setting, with a live preview on every page:
-24-hour or 12-hour, simple or flip-clock style, a theme (Classic, or the New Year's Eve themes Champagne,
-Midnight blue and Party), how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10),
-and the midnight animation: fireworks, confetti or none. It plays over the clock from 00:00:00 until the loop starts over.
+The wizard has one page per setting, with a live preview on every page. It starts with the occasion
+(`src/occasions.ts`), which decides the pages and options that follow:
+
+| Occasion | Themes | Animations (first is the default) | Extra |
+| --- | --- | --- | --- |
+| Classic | Classic only, so no theme page | fireworks, confetti, none | |
+| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | |
+| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name, shown under the clock at midnight |
+
+Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
+after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
+00:00:00 until the loop starts over.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
 and two taps go back to the setup (the first shows a hint, so a stray touch doesn't end a take).
 
@@ -73,8 +84,10 @@ Built with [Expo](https://expo.dev) (React Native) and Expo Router for iOS and A
 ```
 src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
+src/occasions.ts    Classic, New Year's Eve, Birthday: the themes and animations each one offers
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip), the loop timing, the midnight fireworks and confetti
+src/clock/          the clock face (simple / flip), the loop timing, the birthday greeting, the midnight
+                    fireworks, confetti and balloons
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
