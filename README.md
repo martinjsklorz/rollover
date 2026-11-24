@@ -40,10 +40,13 @@ again: 23:59:55, 00:00:00, fireworks, and once more from the top. As often as yo
 | White digits, ember fireworks | Gold digits, golden fireworks | Ice-blue split-flap cards |
 
 Plus **Party**, in neon pink with fireworks in every color (that's the one at the top).
+On New Year's Eve, "Happy New Year 2027!" fades in under the digits at midnight, always with the year that begins.
 
 **Birthday?** Pick it as the occasion and the clock goes candy-colored (Bubblegum pink, Sky blue or
 pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fades in under the digits.
 
+- **Your own line at midnight.** On Classic, add a short message, like "We did it!", and it fades in
+  under the digits at midnight.
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
 - **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
@@ -71,9 +74,9 @@ The wizard has one page per setting, with a live preview on every page. It start
 
 | Occasion | Themes | Animations (first is the default) | Extra |
 | --- | --- | --- | --- |
-| Classic | Classic only, so no theme page | fireworks, confetti, none | |
-| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | |
-| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name, shown under the clock at midnight |
+| Classic | Classic only, so no theme page | fireworks, confetti, none | an optional message page; the message shows under the clock at midnight |
+| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | "Happy New Year 2027!" under the clock at midnight (the year that begins) |
+| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name page; "Happy birthday, Mia!" under the clock at midnight |
 
 Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
 after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
@@ -91,7 +94,7 @@ src/app/            screens (Expo Router): index (home), setup/[step], ready, cl
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
 src/occasions.ts    Classic, New Year's Eve, Birthday: the themes and animations each one offers
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip), the loop timing, the birthday greeting, the midnight
+src/clock/          the clock face (simple / flip), the loop timing, the greeting at midnight, the midnight
                     fireworks, confetti and balloons
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes

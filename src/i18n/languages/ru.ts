@@ -37,6 +37,7 @@ const ru: Strings = {
     pressAgain: 'Нажмите ещё раз, чтобы вернуться',
     birthday: 'С днём рождения!',
     birthdayName: (name) => `С днём рождения, ${name}!`,
+    newYear: (year) => `С Новым ${year} годом!`,
   },
   seconds,
   occasion: {
@@ -56,6 +57,15 @@ const ru: Strings = {
     label: 'Имя',
     placeholder: 'Имя именинника',
     none: 'Без имени',
+  },
+  message: {
+    name: 'Надпись',
+    title: 'Какую надпись показать в полночь?',
+    subtitle: 'Появится под часами в полночь. Оставьте пустым, чтобы были только часы.',
+    label: 'Надпись',
+    placeholder: 'У нас получилось!',
+    none: 'Без надписи',
+    quote: (text) => `«${text}»`,
   },
   format: {
     name: 'Формат',

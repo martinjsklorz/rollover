@@ -60,7 +60,7 @@ export function WizardPage({
   // picks up where this one is instead of starting over from a blank frame.
   const preview = (
     <View style={styles.fill} aria-hidden>
-      <Clock settings={settings} startedAt={previewStartedAt} sizeKey={`preview ${width}×${height}`} />
+      <Clock settings={settings} startedAt={previewStartedAt} sizeKey={`preview ${width}×${height}`} preview />
     </View>
   )
   const head = (
@@ -365,6 +365,7 @@ export function TextInputRow({
   label,
   placeholder,
   maxLength,
+  autoCapitalize,
   value,
   onChange,
   onSubmit,
@@ -373,6 +374,7 @@ export function TextInputRow({
   label: string
   placeholder: string
   maxLength: number
+  autoCapitalize: 'words' | 'sentences'
   value: string
   onChange: (value: string) => void
   /** the keyboard's Next key */
@@ -390,7 +392,7 @@ export function TextInputRow({
       placeholderTextColor={colors.muted}
       maxLength={maxLength}
       accessibilityLabel={label}
-      autoCapitalize="words"
+      autoCapitalize={autoCapitalize}
       autoCorrect={false}
       autoComplete="off"
       returnKeyType="next"

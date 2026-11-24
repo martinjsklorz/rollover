@@ -30,6 +30,7 @@ const ko: Strings = {
     pressAgain: '한 번 더 누르면 돌아갑니다',
     birthday: '생일 축하해요!',
     birthdayName: (name) => `${name}, 생일 축하해요!`,
+    newYear: (year) => `${year}년 새해 복 많이 받으세요!`,
   },
   seconds: (n) => `${n}초`,
   occasion: {
@@ -49,6 +50,15 @@ const ko: Strings = {
     label: '이름',
     placeholder: '이름 입력',
     none: '이름 없음',
+  },
+  message: {
+    name: '메시지',
+    title: '자정에 띄울 메시지가 있나요?',
+    subtitle: '자정에 시계 아래에 표시됩니다. 비워 두면 시계만 표시됩니다.',
+    label: '메시지',
+    placeholder: '우리가 해냈어!',
+    none: '메시지 없음',
+    quote: (text) => `“${text}”`,
   },
   format: {
     name: '형식',

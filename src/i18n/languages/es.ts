@@ -30,6 +30,7 @@ const es: Strings = {
     pressAgain: 'Pulsa otra vez para volver',
     birthday: '¡Feliz cumpleaños!',
     birthdayName: (name) => `¡Feliz cumpleaños, ${name}!`,
+    newYear: (year) => `¡Feliz Año Nuevo ${year}!`,
   },
   seconds: (n) => `${n} segundos`,
   occasion: {
@@ -49,6 +50,15 @@ const es: Strings = {
     label: 'Nombre',
     placeholder: 'Su nombre',
     none: 'Sin nombre',
+  },
+  message: {
+    name: 'Mensaje',
+    title: '¿Un mensaje para la medianoche?',
+    subtitle: 'Aparece bajo el reloj a medianoche. Déjalo vacío para mostrar solo el reloj.',
+    label: 'Mensaje',
+    placeholder: '¡Lo logramos!',
+    none: 'Sin mensaje',
+    quote: (text) => `«${text}»`,
   },
   format: {
     name: 'Formato',

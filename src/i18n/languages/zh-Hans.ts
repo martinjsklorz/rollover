@@ -30,6 +30,7 @@ const zhHans: Strings = {
     pressAgain: '再按一次即可返回',
     birthday: '生日快乐！',
     birthdayName: (name) => `${name}，生日快乐！`,
+    newYear: (year) => `${year}新年快乐！`,
   },
   seconds: (n) => `${n} 秒`,
   occasion: {
@@ -49,6 +50,15 @@ const zhHans: Strings = {
     label: '名字',
     placeholder: '寿星的名字',
     none: '无名字',
+  },
+  message: {
+    name: '寄语',
+    title: '午夜要显示一句话吗？',
+    subtitle: '午夜时显示在时钟下方。留空则只显示时钟。',
+    label: '寄语',
+    placeholder: '我们做到了！',
+    none: '无寄语',
+    quote: (text) => `“${text}”`,
   },
   format: {
     name: '格式',

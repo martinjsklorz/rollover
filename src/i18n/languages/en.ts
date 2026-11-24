@@ -42,6 +42,8 @@ const en = {
     /** birthday greeting under the digits at midnight, without and with a name */
     birthday: 'Happy birthday!',
     birthdayName: (name: string) => `Happy birthday, ${name}!`,
+    /** New Year's Eve greeting under the digits at midnight, with the year that begins */
+    newYear: (year: number) => `Happy New Year ${year}!`,
   },
   seconds: (n: number) => `${n} seconds`,
   occasion: {
@@ -64,6 +66,20 @@ const en = {
     placeholder: 'Their name',
     /** on the summary page when it was left empty */
     none: 'No name',
+  },
+  /** Classic's message page: an optional line under the clock at midnight */
+  message: {
+    name: 'Message',
+    title: 'A message for midnight?',
+    subtitle: 'Shown under the clock at midnight. Leave it empty for just the clock.',
+    /** names the text field for screen readers */
+    label: 'Message',
+    /** an example, shown while the field is empty */
+    placeholder: 'We did it!',
+    /** on the summary page when it was left empty */
+    none: 'No message',
+    /** the message in quotes, on the summary page */
+    quote: (text: string) => `“${text}”`,
   },
   format: {
     name: 'Format',

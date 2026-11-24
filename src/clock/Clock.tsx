@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
+import { AccessibilityInfo, Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import { useStrings } from '../i18n'
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
@@ -7,6 +7,7 @@ import { useLayoutSize, type Size } from '../useLayoutSize'
 import Balloons from './Balloons'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
+import { greetingFor } from './greeting'
 import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 // react-native-web has no native animation driver
@@ -17,18 +18,29 @@ const useNativeDriver = Platform.OS !== 'web'
  * so the same component is used for the wizard preview and the full screen.
  * The loop runs from `startedAt`; pass a new value to restart it.
  * `sizeKey` remembers the size, so a clock in the same spot on the next screen shows from its first frame.
+ * `preview`: the wizard's small preview, hidden from screen readers, so its greeting isn't announced.
  */
-export default function Clock({ settings, startedAt, sizeKey }: { settings: Settings; startedAt: number; sizeKey?: string }) {
+export default function Clock({
+  settings,
+  startedAt,
+  sizeKey,
+  preview = false,
+}: {
+  settings: Settings
+  startedAt: number
+  sizeKey?: string
+  preview?: boolean
+}) {
   const [size, onLayout] = useLayoutSize(sizeKey)
   return (
     <View style={styles.fill} onLayout={onLayout}>
       {/* key: a new start shows its first second right away, not the old loop's for a frame */}
-      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} />}
+      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} announce={!preview} />}
     </View>
   )
 }
 
-function LoopingFace({ settings, startedAt, size }: { settings: Settings; startedAt: number; size: Size }) {
+function LoopingFace({ settings, startedAt, size, announce }: { settings: Settings; startedAt: number; size: Size; announce: boolean }) {
   const elapsed = useLoop(settings.before + settings.after, startedAt)
   const time = loopTime(settings.before, elapsed)
   const parts = timeParts(time, settings.hour12)
@@ -37,8 +49,8 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
   const afterMidnight = elapsed >= settings.before
   // the greeting goes in the space below the digits
   const [faceHeight, setFaceHeight] = useState(0)
-  const name = settings.name.trim()
   const t = useStrings()
+  const greeting = afterMidnight ? greetingFor(settings, t, new Date()) : null
   return (
     <>
       {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
@@ -50,21 +62,31 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
           {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
         </View>
       </View>
-      {afterMidnight && settings.occasion === 'birthday' && faceHeight > 0 && (
-        <Greeting text={name ? t.clock.birthdayName(name) : t.clock.birthday} color={theme.text} size={size} faceHeight={faceHeight} />
-      )}
+      {/* always there, so screen readers on the web and Android read the greeting when it appears (iOS: see Greeting) */}
+      <View style={StyleSheet.absoluteFill} aria-live={announce ? 'polite' : 'off'} pointerEvents="none">
+        {greeting && faceHeight > 0 && <Greeting text={greeting} color={theme.text} size={size} faceHeight={faceHeight} announce={announce} />}
+      </View>
     </>
   )
 }
 
-/* ---------- birthday greeting ---------- */
+/* ---------- greeting: "Happy New Year 2027!", "Happy birthday, Mia!", a Classic message ---------- */
 
 const GREETING_DELAY_MS = 300
 const GREETING_FADE_MS = 900
 
 /** One line under the digits, fading in at midnight. Sized to the space between the digits and the bottom edge. */
-function Greeting({ text, color, size, faceHeight }: { text: string; color: string; size: Size; faceHeight: number }) {
+function Greeting({ text, color, size, faceHeight, announce }: { text: string; color: string; size: Size; faceHeight: number; announce: boolean }) {
   const [opacity] = useState(() => new Animated.Value(0))
+  // fits the space under the digits and stays within 90 % of the width
+  const space = (size.height - faceHeight) / 2
+  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / textWidthEm(text), size.height * 0.08)
+  // no room on a very small preview
+  const shown = fontSize >= 8
+  useEffect(() => {
+    // iOS has no live regions: announce it. The web and Android read it from the live region around it.
+    if (announce && shown && Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(text)
+  }, [announce, shown, text])
   useEffect(() => {
     const fade = Animated.timing(opacity, {
       toValue: 1,
@@ -76,11 +98,7 @@ function Greeting({ text, color, size, faceHeight }: { text: string; color: stri
     fade.start()
     return () => fade.stop()
   }, [opacity])
-  const space = (size.height - faceHeight) / 2
-  // keep the line within 90 % of the width
-  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / textWidthEm(text), size.height * 0.08)
-  // no room on a very small preview
-  if (fontSize < 8) return null
+  if (!shown) return null
   return (
     <View style={[styles.greeting, { top: size.height - space, height: space }]} pointerEvents="none">
       <Animated.Text style={[styles.greetingText, { color, fontSize, opacity }]} numberOfLines={1}>

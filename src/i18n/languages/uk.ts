@@ -37,6 +37,7 @@ const uk: Strings = {
     pressAgain: 'Натисніть ще раз, щоб повернутися',
     birthday: 'З днем народження!',
     birthdayName: (name) => `З днем народження, ${name}!`,
+    newYear: (year) => `З Новим ${year} роком!`,
   },
   seconds,
   occasion: {
@@ -56,6 +57,15 @@ const uk: Strings = {
     label: 'Ім’я',
     placeholder: 'Ім’я іменинника',
     none: 'Без імені',
+  },
+  message: {
+    name: 'Напис',
+    title: 'Який напис показати опівночі?',
+    subtitle: 'З’явиться під годинником опівночі. Залиште порожнім, щоб був лише годинник.',
+    label: 'Напис',
+    placeholder: 'У нас вийшло!',
+    none: 'Без напису',
+    quote: (text) => `«${text}»`,
   },
   format: {
     name: 'Формат',

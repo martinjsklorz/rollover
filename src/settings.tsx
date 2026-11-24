@@ -11,12 +11,16 @@ const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'balloons', 'n
 
 /** longest birthday name, so the greeting fits on one line */
 export const NAME_MAX = 20
+/** longest Classic message, so it fits on one line under the clock */
+export const MESSAGE_MAX = 24
 
 export type Settings = {
   /** decides which themes and animations are offered (src/occasions.ts) */
   occasion: Occasion
   /** birthday: whose it is, shown under the clock at midnight; may be empty */
   name: string
+  /** Classic: an optional line under the clock at midnight, e.g. "We did it!"; may be empty */
+  message: string
   /** 12-hour clock with AM/PM instead of 24-hour */
   hour12: boolean
   style: ClockStyle
@@ -32,6 +36,7 @@ export type Settings = {
 export const DEFAULT_SETTINGS: Settings = {
   occasion: 'classic',
   name: '',
+  message: '',
   hour12: false,
   style: 'simple',
   theme: 'classic',
@@ -91,6 +96,7 @@ function parse(raw: string | null): Settings | null {
         ? 'classic'
         : 'newyear',
     name: typeof v.name === 'string' ? v.name.slice(0, NAME_MAX) : DEFAULT_SETTINGS.name,
+    message: typeof v.message === 'string' ? v.message.slice(0, MESSAGE_MAX) : DEFAULT_SETTINGS.message,
     hour12: typeof v.hour12 === 'boolean' ? v.hour12 : DEFAULT_SETTINGS.hour12,
     style: v.style === 'simple' || v.style === 'flip' ? v.style : DEFAULT_SETTINGS.style,
     theme,

@@ -30,6 +30,7 @@ const ja: Strings = {
     pressAgain: 'もう一度押すと戻ります',
     birthday: 'お誕生日おめでとう！',
     birthdayName: (name) => `${name}、お誕生日おめでとう！`,
+    newYear: (year) => `${year}年 あけましておめでとう！`,
   },
   seconds: (n) => `${n}秒`,
   occasion: {
@@ -49,6 +50,15 @@ const ja: Strings = {
     label: '名前',
     placeholder: '名前を入力',
     none: '名前なし',
+  },
+  message: {
+    name: 'メッセージ',
+    title: '0時に表示するメッセージは？',
+    subtitle: '0時に時計の下に表示されます。空欄なら時計だけになります。',
+    label: 'メッセージ',
+    placeholder: 'やったね！',
+    none: 'メッセージなし',
+    quote: (text) => `「${text}」`,
   },
   format: {
     name: '表示形式',

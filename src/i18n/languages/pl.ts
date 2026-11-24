@@ -37,6 +37,7 @@ const pl: Strings = {
     pressAgain: 'Naciśnij ponownie, aby wrócić',
     birthday: 'Wszystkiego najlepszego!',
     birthdayName: (name) => `Wszystkiego najlepszego, ${name}!`,
+    newYear: (year) => `Szczęśliwego Nowego Roku ${year}!`,
   },
   seconds,
   occasion: {
@@ -56,6 +57,15 @@ const pl: Strings = {
     label: 'Imię',
     placeholder: 'Wpisz imię',
     none: 'Bez imienia',
+  },
+  message: {
+    name: 'Napis',
+    title: 'Jaki napis o północy?',
+    subtitle: 'Wyświetla się pod zegarem o północy. Zostaw puste, by był sam zegar.',
+    label: 'Napis',
+    placeholder: 'Udało się!',
+    none: 'Bez napisu',
+    quote: (text) => `„${text}”`,
   },
   format: {
     name: 'Format',

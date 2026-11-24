@@ -30,6 +30,7 @@ const zhHant: Strings = {
     pressAgain: '再按一下即可返回',
     birthday: '生日快樂！',
     birthdayName: (name) => `${name}，生日快樂！`,
+    newYear: (year) => `${year}新年快樂！`,
   },
   seconds: (n) => `${n} 秒`,
   occasion: {
@@ -49,6 +50,15 @@ const zhHant: Strings = {
     label: '名字',
     placeholder: '壽星的名字',
     none: '無名字',
+  },
+  message: {
+    name: '寄語',
+    title: '午夜要顯示一句話嗎？',
+    subtitle: '午夜時顯示在時鐘下方。留空則只顯示時鐘。',
+    label: '寄語',
+    placeholder: '我們做到了！',
+    none: '無寄語',
+    quote: (text) => `「${text}」`,
   },
   format: {
     name: '格式',
