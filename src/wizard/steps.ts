@@ -29,7 +29,7 @@ export type TextField = {
 export type Step = {
   id: string
   title: string
-  subtitle?: string | ((s: Settings) => string)
+  subtitle?: string | ((s: Settings) => string | undefined)
   /** short name for the summary on the last page */
   name: string
   /** the options; a step has these or a text field */
@@ -54,6 +54,7 @@ export const stepsIn = (t: Strings): Step[] => {
     fireworks: t.animation.fireworks,
     confetti: t.animation.confetti,
     balloons: t.animation.balloons,
+    lanterns: t.animation.lanterns,
     none: t.animation.noneSummary,
   }
   return [
@@ -98,7 +99,7 @@ export const stepsIn = (t: Strings): Step[] => {
       id: 'theme',
       name: t.theme.name,
       title: t.theme.title,
-      subtitle: (s) => (s.occasion === 'birthday' ? t.theme.subtitle.birthday : t.theme.subtitle.newyear),
+      subtitle: (s) => (s.occasion === 'classic' ? undefined : t.theme.subtitle[s.occasion]),
       choices: THEME_IDS.map((id) => ({
         label: t.themes[id].name,
         hint: t.themes[id].hint,
@@ -144,6 +145,12 @@ export const stepsIn = (t: Strings): Step[] => {
           hint: (s: Settings) => t.animation.balloonsHint(formatTime(0, s.hour12)),
           value: { animation: 'balloons' },
           when: offersAnimation('balloons'),
+        },
+        {
+          label: t.animation.lanterns,
+          hint: (s: Settings) => t.animation.lanternsHint(formatTime(0, s.hour12)),
+          value: { animation: 'lanterns' },
+          when: offersAnimation('lanterns'),
         },
         {
           label: t.animation.fireworks,

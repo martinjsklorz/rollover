@@ -44,11 +44,15 @@ Plus **Party**, in neon pink with fireworks in every color (that's the one at th
 **Birthday?** Pick it as the occasion and the clock goes candy-colored (Bubblegum pink, Sky blue or
 pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fades in under the digits.
 
+**Lunar New Year?** For the Spring Festival, Seollal or Tết: red Lantern, warm Gilded gold or pink
+Plum blossom digits, red paper lanterns rise at midnight, and the coming year's zodiac animal greets it:
+"Happy Year of the Goat!", or 羊年大吉！
+
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
 - **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
-- **Fireworks, confetti or balloons.** At the stroke of midnight, rockets go up and burst over the clock,
-  confetti pops from the corners and rains down, or balloons float up, until the loop starts over.
+- **Fireworks, confetti, balloons or lanterns.** At the stroke of midnight, rockets go up and burst over the clock,
+  confetti pops from the corners and rains down, or balloons or lanterns float up, until the loop starts over.
 - **In your language.** English, Chinese, Spanish, Hindi, Portuguese, French, German, Japanese, Russian,
   Korean, Indonesian, Turkish, Italian, Polish, Ukrainian and Dutch, following your phone or browser.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
@@ -74,6 +78,7 @@ The wizard has one page per setting, with a live preview on every page. It start
 | Classic | Classic only, so no theme page | fireworks, confetti, none | |
 | New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | |
 | Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name, shown under the clock at midnight |
+| Lunar New Year | Lantern, Gilded, Plum blossom | lanterns, fireworks, confetti, none | the coming year's zodiac animal, shown under the clock at midnight |
 
 Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
 after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
@@ -89,10 +94,10 @@ Apple TV and Android TV with [react-native-tvos](https://github.com/react-native
 ```
 src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
-src/occasions.ts    Classic, New Year's Eve, Birthday: the themes and animations each one offers
+src/occasions.ts    Classic, New Year's Eve, Birthday, Lunar New Year: the themes and animations each one offers
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip), the loop timing, the birthday greeting, the midnight
-                    fireworks, confetti and balloons
+src/clock/          the clock face (simple / flip), the loop timing, the greeting under the digits (birthday,
+                    Lunar New Year zodiac), the midnight fireworks, confetti, balloons and lanterns
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
 src/i18n/           the app's languages (one file each, translated from languages/en.ts) and the device-language pick

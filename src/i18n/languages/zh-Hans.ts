@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: '鼠',
+  ox: '牛',
+  tiger: '虎',
+  rabbit: '兔',
+  dragon: '龙',
+  snake: '蛇',
+  horse: '马',
+  goat: '羊',
+  monkey: '猴',
+  rooster: '鸡',
+  dog: '狗',
+  pig: '猪',
+}
+
 const zhHans: Strings = {
   home: {
     tagline: '午夜，一次又一次。',
@@ -30,7 +46,9 @@ const zhHans: Strings = {
     pressAgain: '再按一次即可返回',
     birthday: '生日快乐！',
     birthdayName: (name) => `${name}，生日快乐！`,
+    lunarNewYear: (animal) => `${zodiac[animal]}年大吉！`,
   },
+  zodiac,
   seconds: (n) => `${n} 秒`,
   occasion: {
     name: '场合',
@@ -41,6 +59,7 @@ const zhHans: Strings = {
     classic: { name: '经典', hint: '任何午夜，白色与余烬色' },
     newyear: { name: '跨年夜', hint: '金色、冰蓝或霓虹' },
     birthday: { name: '生日', hint: '糖果色、气球和名字' },
+    lunar: { name: '春节', hint: '红与金、灯笼和生肖' },
   },
   name: {
     name: '名字',
@@ -67,7 +86,11 @@ const zhHans: Strings = {
   theme: {
     name: '主题',
     title: '选择主题',
-    subtitle: { newyear: '跨年夜的配色。', birthday: '生日的配色。' },
+    subtitle: {
+      newyear: '跨年夜的配色。',
+      birthday: '生日的配色。',
+      lunar: '春节的配色。',
+    },
   },
   themes: {
     classic: { name: '经典', hint: '白色数字，余烬色与白色火花' },
@@ -77,6 +100,9 @@ const zhHans: Strings = {
     bubblegum: { name: '泡泡糖', hint: '粉色数字；粉色、淡紫与金色' },
     sky: { name: '天空', hint: '蓝色数字；蓝色、薄荷与柠檬' },
     sprinkles: { name: '彩糖', hint: '白色数字；各种粉彩色' },
+    lantern: { name: '红灯笼', hint: '红色数字；红、金与暖白' },
+    gilded: { name: '鎏金', hint: '金色数字；红与金' },
+    plum: { name: '梅花', hint: '粉色数字；粉、白与金' },
   },
   before: {
     name: '午夜前',
@@ -96,6 +122,8 @@ const zhHans: Strings = {
     subtitle: '每次时钟跨过午夜，都会在之后的几秒内播放。',
     balloons: '气球',
     balloonsHint: (time) => `${time} 气球升起`,
+    lanterns: '灯笼',
+    lanternsHint: (time) => `${time} 灯笼升起`,
     fireworks: '烟花',
     fireworksHint: (time) => `${time} 烟花升空`,
     confetti: '彩纸',

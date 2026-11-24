@@ -1,3 +1,21 @@
+import type { ZodiacAnimal } from '../../clock/greeting'
+
+/** The Chinese zodiac's animals, in the order of the cycle. */
+const zodiac: Record<ZodiacAnimal, string> = {
+  rat: 'Rat',
+  ox: 'Ox',
+  tiger: 'Tiger',
+  rabbit: 'Rabbit',
+  dragon: 'Dragon',
+  snake: 'Snake',
+  horse: 'Horse',
+  goat: 'Goat',
+  monkey: 'Monkey',
+  rooster: 'Rooster',
+  dog: 'Dog',
+  pig: 'Pig',
+}
+
 /**
  * The English strings: the source every other language translates, and the fallback.
  * Times like "23:59:50" and AM/PM come in already formatted and stay as they are in every language.
@@ -42,7 +60,13 @@ const en = {
     /** birthday greeting under the digits at midnight, without and with a name */
     birthday: 'Happy birthday!',
     birthdayName: (name: string) => `Happy birthday, ${name}!`,
+    /**
+     * Lunar New Year greeting, for the animal of the coming year. Phrase it as is natural in the language;
+     * it may use `zodiac`, or its own forms of the names where the grammar needs them (e.g. a genitive).
+     */
+    lunarNewYear: (animal: ZodiacAnimal) => `Happy Year of the ${zodiac[animal]}!`,
   },
+  zodiac,
   seconds: (n: number) => `${n} seconds`,
   occasion: {
     name: 'Occasion',
@@ -53,6 +77,8 @@ const en = {
     classic: { name: 'Classic', hint: 'Any midnight, white and ember' },
     newyear: { name: "New Year's Eve", hint: 'Gold, ice blue or neon' },
     birthday: { name: 'Birthday', hint: 'Candy colors, balloons and a name' },
+    /** the local name where there is one, e.g. 春节, 설날 */
+    lunar: { name: 'Lunar New Year', hint: 'Red and gold, lanterns and the zodiac' },
   },
   /** the birthday's name page */
   name: {
@@ -83,7 +109,11 @@ const en = {
     name: 'Theme',
     title: 'Pick a theme',
     /** by occasion; Classic has a single theme, so no theme page */
-    subtitle: { newyear: "Colors for New Year's Eve.", birthday: 'Colors for the birthday.' },
+    subtitle: {
+      newyear: "Colors for New Year's Eve.",
+      birthday: 'Colors for the birthday.',
+      lunar: 'Colors for Lunar New Year.',
+    },
   },
   themes: {
     classic: { name: 'Classic', hint: 'White digits, ember and white sparkle' },
@@ -93,6 +123,9 @@ const en = {
     bubblegum: { name: 'Bubblegum', hint: 'Pink digits; pink, lilac and gold' },
     sky: { name: 'Sky', hint: 'Blue digits; blue, mint and lemon' },
     sprinkles: { name: 'Sprinkles', hint: 'White digits; every pastel' },
+    lantern: { name: 'Lantern', hint: 'Red digits; red, gold and warm white' },
+    gilded: { name: 'Gilded', hint: 'Gold digits; red and gold' },
+    plum: { name: 'Plum blossom', hint: 'Pink digits; pink, white and gold' },
   },
   before: {
     name: 'Before midnight',
@@ -112,6 +145,8 @@ const en = {
     subtitle: 'It plays in the seconds after midnight, every time the clock rolls over.',
     balloons: 'Balloons',
     balloonsHint: (time: string) => `Balloons float up at ${time}`,
+    lanterns: 'Lanterns',
+    lanternsHint: (time: string) => `Lanterns rise at ${time}`,
     fireworks: 'Fireworks',
     fireworksHint: (time: string) => `Rockets go up at ${time}`,
     confetti: 'Confetti',

@@ -1,5 +1,37 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Rata',
+  ox: 'Buey',
+  tiger: 'Tigre',
+  rabbit: 'Conejo',
+  dragon: 'Dragón',
+  snake: 'Serpiente',
+  horse: 'Caballo',
+  goat: 'Cabra',
+  monkey: 'Mono',
+  rooster: 'Gallo',
+  dog: 'Perro',
+  pig: 'Cerdo',
+}
+
+/** With the article: año del Caballo, año de la Cabra */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'de la Rata',
+  ox: 'del Buey',
+  tiger: 'del Tigre',
+  rabbit: 'del Conejo',
+  dragon: 'del Dragón',
+  snake: 'de la Serpiente',
+  horse: 'del Caballo',
+  goat: 'de la Cabra',
+  monkey: 'del Mono',
+  rooster: 'del Gallo',
+  dog: 'del Perro',
+  pig: 'del Cerdo',
+}
+
 const es: Strings = {
   home: {
     tagline: 'Medianoche, una y otra vez.',
@@ -30,7 +62,9 @@ const es: Strings = {
     pressAgain: 'Pulsa otra vez para volver',
     birthday: '¡Feliz cumpleaños!',
     birthdayName: (name) => `¡Feliz cumpleaños, ${name}!`,
+    lunarNewYear: (animal) => `¡Feliz año ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} segundos`,
   occasion: {
     name: 'Ocasión',
@@ -41,6 +75,7 @@ const es: Strings = {
     classic: { name: 'Clásico', hint: 'Cualquier medianoche, en blanco y brasa' },
     newyear: { name: 'Nochevieja', hint: 'Dorado, azul hielo o neón' },
     birthday: { name: 'Cumpleaños', hint: 'Colores de caramelo, globos y un nombre' },
+    lunar: { name: 'Año Nuevo Lunar', hint: 'Rojo y oro, farolillos y el zodiaco' },
   },
   name: {
     name: 'Nombre',
@@ -67,7 +102,11 @@ const es: Strings = {
   theme: {
     name: 'Tema',
     title: 'Elige un tema',
-    subtitle: { newyear: 'Colores para Nochevieja.', birthday: 'Colores para el cumpleaños.' },
+    subtitle: {
+      newyear: 'Colores para Nochevieja.',
+      birthday: 'Colores para el cumpleaños.',
+      lunar: 'Colores para el Año Nuevo Lunar.',
+    },
   },
   themes: {
     classic: { name: 'Clásico', hint: 'Dígitos blancos, destellos brasa y blancos' },
@@ -77,6 +116,9 @@ const es: Strings = {
     bubblegum: { name: 'Chicle', hint: 'Dígitos rosas; rosa, lila y dorado' },
     sky: { name: 'Cielo', hint: 'Dígitos azules; azul, menta y limón' },
     sprinkles: { name: 'Grageas', hint: 'Dígitos blancos; todos los tonos pastel' },
+    lantern: { name: 'Farolillo', hint: 'Dígitos rojos; rojo, oro y blanco cálido' },
+    gilded: { name: 'Dorado', hint: 'Dígitos dorados; rojo y oro' },
+    plum: { name: 'Flor de ciruelo', hint: 'Dígitos rosas; rosa, blanco y oro' },
   },
   before: {
     name: 'Antes de medianoche',
@@ -96,6 +138,8 @@ const es: Strings = {
     subtitle: 'Se reproduce en los segundos después de medianoche, cada vez que el reloj cambia.',
     balloons: 'Globos',
     balloonsHint: (time) => `Los globos suben a las ${time}`,
+    lanterns: 'Farolillos',
+    lanternsHint: (time) => `Los farolillos suben a las ${time}`,
     fireworks: 'Fuegos artificiales',
     fireworksHint: (time) => `Los cohetes suben a las ${time}`,
     confetti: 'Confeti',

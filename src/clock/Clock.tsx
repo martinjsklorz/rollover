@@ -7,6 +7,8 @@ import { useLayoutSize, type Size } from '../useLayoutSize'
 import Balloons from './Balloons'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
+import { greetingFor } from './greeting'
+import Lanterns from './Lanterns'
 import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
 
 // react-native-web has no native animation driver
@@ -37,27 +39,26 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
   const afterMidnight = elapsed >= settings.before
   // the greeting goes in the space below the digits
   const [faceHeight, setFaceHeight] = useState(0)
-  const name = settings.name.trim()
   const t = useStrings()
+  const greeting = afterMidnight ? greetingFor(settings, t, new Date()) : null
   return (
     <>
       {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'confetti' && <Confetti size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'balloons' && <Balloons size={size} colors={theme.accents} />}
+      {afterMidnight && settings.animation === 'lanterns' && <Lanterns size={size} colors={theme.accents} />}
       {/* screen readers get the time as one name, not the digits and colons one by one */}
       <View role="timer" aria-label={formatTime(time, settings.hour12)}>
         <View aria-hidden onLayout={(e) => setFaceHeight(e.nativeEvent.layout.height)}>
           {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
         </View>
       </View>
-      {afterMidnight && settings.occasion === 'birthday' && faceHeight > 0 && (
-        <Greeting text={name ? t.clock.birthdayName(name) : t.clock.birthday} color={theme.text} size={size} faceHeight={faceHeight} />
-      )}
+      {greeting && faceHeight > 0 && <Greeting text={greeting} color={theme.text} size={size} faceHeight={faceHeight} />}
     </>
   )
 }
 
-/* ---------- birthday greeting ---------- */
+/* ---------- greeting: e.g. the birthday's or the Lunar New Year's ---------- */
 
 const GREETING_DELAY_MS = 300
 const GREETING_FADE_MS = 900
