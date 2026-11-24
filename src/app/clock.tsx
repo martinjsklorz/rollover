@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar'
 import Clock from '../clock/Clock'
 import { useStrings } from '../i18n'
 import { useSettings } from '../settings'
+import { useMidnightTune } from '../sound'
 import { colors } from '../theme'
 import { isTV, sizedStyles } from '../tv'
 import { useSettled } from '../useSettled'
@@ -25,6 +26,8 @@ export default function ClockScreen() {
   const { settings } = useSettings()
   const t = useStrings()
   const [startedAt] = useState(Date.now)
+  // the music box at midnight, if chosen; stops when the clock closes or the app goes to the background
+  const tune = useMidnightTune(settings)
   const settled = useSettled()
   const [armed, setArmed] = useState(false)
   const backRef = useRef<ComponentRef<typeof Pressable>>(null)
@@ -53,7 +56,7 @@ export default function ClockScreen() {
       </Head>
       <StatusBar hidden />
       <NavigationBar hidden />
-      <Clock settings={settings} startedAt={startedAt} />
+      <Clock settings={settings} startedAt={startedAt} onMidnight={tune.onMidnight} onLoopStart={tune.onLoopStart} />
       <Pressable
         ref={backRef}
         // TV: not locked, or it can't take focus when the screen opens and Select does nothing

@@ -104,6 +104,20 @@ const es: Strings = {
     noneHint: 'Solo el reloj',
     noneSummary: 'Sin animación',
   },
+  sound: {
+    name: 'Sonido',
+    title: 'Sonido a medianoche',
+    subtitle: 'Una caja de música toca una melodía corta a medianoche, cada vez que el reloj cambia.',
+    musicbox: 'Caja de música',
+    musicboxShort: 'Caja de música',
+    musicboxHint: {
+      classic: (time) => `Toca las campanadas de Westminster a las ${time}`,
+      newyear: (time) => `Toca «Auld Lang Syne» a las ${time}`,
+      birthday: (time) => `Toca «Cumpleaños feliz» a las ${time}`,
+    },
+    off: 'Silencio',
+    offHint: 'Sin sonido',
+  },
 }
 
 export default es

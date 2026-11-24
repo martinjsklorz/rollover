@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
 import Head from 'expo-router/head'
 import { useSettings } from '../settings'
+import { prepareTune } from '../sound'
 import { tvMargins, sizedStyles, useScreenSize } from '../tv'
 import { enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
@@ -24,10 +25,13 @@ export default function Home() {
 
   const start = () => {
     restoreSaved()
+    // inside the tap, and before full screen (which uses up the tap): a browser only lets
+    // the first midnight's tune play after a user gesture
+    if (saved) prepareTune(saved)
     enterFullscreen()
     router.push('/clock')
   }
-  const summary = saved && describe(saved, steps)
+  const summary = saved && describe(saved, steps, t)
   const setup = () => {
     beginSetup()
     router.push(`/setup/${STEP_IDS[0]}`)

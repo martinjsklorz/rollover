@@ -104,6 +104,20 @@ const id: Strings = {
     noneHint: 'Hanya jam',
     noneSummary: 'Tanpa animasi',
   },
+  sound: {
+    name: 'Suara',
+    title: 'Suara tengah malam',
+    subtitle: 'Kotak musik memainkan lagu singkat setiap kali jam melewati tengah malam.',
+    musicbox: 'Kotak musik',
+    musicboxShort: 'Kotak musik',
+    musicboxHint: {
+      classic: (time) => `Memainkan lonceng Westminster pukul ${time}`,
+      newyear: (time) => `Memainkan “Auld Lang Syne” pukul ${time}`,
+      birthday: (time) => `Memainkan “Happy Birthday” pukul ${time}`,
+    },
+    off: 'Senyap',
+    offHint: 'Tanpa suara',
+  },
 }
 
 export default id

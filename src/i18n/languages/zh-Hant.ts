@@ -104,6 +104,20 @@ const zhHant: Strings = {
     noneHint: '只顯示時鐘',
     noneSummary: '無動畫',
   },
+  sound: {
+    name: '聲音',
+    title: '午夜音樂',
+    subtitle: '每次時鐘跨過午夜，音樂盒都會奏出一段短曲。',
+    musicbox: '音樂盒',
+    musicboxShort: '音樂盒',
+    musicboxHint: {
+      classic: (time) => `${time} 奏出西敏寺鐘聲`,
+      newyear: (time) => `${time} 奏出《友誼萬歲》`,
+      birthday: (time) => `${time} 奏出《生日快樂》`,
+    },
+    off: '靜音',
+    offHint: '沒有聲音',
+  },
 }
 
 export default zhHant

@@ -57,7 +57,17 @@
             "topShelfWide2x": "./assets/tv/top-shelf-wide@2x.png"
           }
         }
-      ]
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ],
+      "expo-asset"
     ],
     "web": {
       "output": "single",

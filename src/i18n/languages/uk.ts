@@ -111,6 +111,20 @@ const uk: Strings = {
     noneHint: 'Лише годинник',
     noneSummary: 'Без анімації',
   },
+  sound: {
+    name: 'Звук',
+    title: 'Звук опівночі',
+    subtitle: 'Музична скринька грає коротку мелодію щоразу, коли годинник переходить через північ.',
+    musicbox: 'Музична скринька',
+    musicboxShort: 'Мелодія',
+    musicboxHint: {
+      classic: (time) => `Грає вестмінстерські куранти о ${time}`,
+      newyear: (time) => `Грає «Auld Lang Syne» о ${time}`,
+      birthday: (time) => `Грає «Happy Birthday» о ${time}`,
+    },
+    off: 'Без звуку',
+    offHint: 'Тиша',
+  },
 }
 
 export default uk

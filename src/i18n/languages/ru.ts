@@ -111,6 +111,20 @@ const ru: Strings = {
     noneHint: 'Только часы',
     noneSummary: 'Без анимации',
   },
+  sound: {
+    name: 'Звук',
+    title: 'Звук в полночь',
+    subtitle: 'Музыкальная шкатулка играет короткую мелодию каждый раз, когда часы переходят через полночь.',
+    musicbox: 'Музыкальная шкатулка',
+    musicboxShort: 'Мелодия',
+    musicboxHint: {
+      classic: (time) => `Играет вестминстерские куранты в ${time}`,
+      newyear: (time) => `Играет «Auld Lang Syne» в ${time}`,
+      birthday: (time) => `Играет «Happy Birthday» в ${time}`,
+    },
+    off: 'Без звука',
+    offHint: 'Тишина',
+  },
 }
 
 export default ru

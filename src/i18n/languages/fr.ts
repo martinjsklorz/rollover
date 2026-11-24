@@ -104,6 +104,20 @@ const fr: Strings = {
     noneHint: 'Juste l’horloge',
     noneSummary: 'Pas d’animation',
   },
+  sound: {
+    name: 'Son',
+    title: 'Son à minuit',
+    subtitle: 'Une boîte à musique joue un court air à minuit, chaque fois que l’horloge passe minuit.',
+    musicbox: 'Boîte à musique',
+    musicboxShort: 'Mélodie',
+    musicboxHint: {
+      classic: (time) => `Joue le carillon de Westminster à ${time}`,
+      newyear: (time) => `Joue « Ce n’est qu’un au revoir » à ${time}`,
+      birthday: (time) => `Joue « Joyeux anniversaire » à ${time}`,
+    },
+    off: 'Silencieux',
+    offHint: 'Aucun son',
+  },
 }
 
 export default fr

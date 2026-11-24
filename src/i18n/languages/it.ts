@@ -104,6 +104,20 @@ const it: Strings = {
     noneHint: 'Solo l’orologio',
     noneSummary: 'Nessuna animazione',
   },
+  sound: {
+    name: 'Suono',
+    title: 'Suono a mezzanotte',
+    subtitle: 'Un carillon suona una breve melodia a mezzanotte, ogni volta che l’orologio scatta.',
+    musicbox: 'Carillon',
+    musicboxShort: 'Carillon',
+    musicboxHint: {
+      classic: (time) => `Suona i rintocchi di Westminster alle ${time}`,
+      newyear: (time) => `Suona «Auld Lang Syne» alle ${time}`,
+      birthday: (time) => `Suona «Tanti auguri a te» alle ${time}`,
+    },
+    off: 'Silenzioso',
+    offHint: 'Nessun suono',
+  },
 }
 
 export default it

@@ -104,6 +104,20 @@ const tr: Strings = {
     noneHint: 'Sadece saat',
     noneSummary: 'Animasyon yok',
   },
+  sound: {
+    name: 'Ses',
+    title: 'Gece yarısı sesi',
+    subtitle: 'Saat her gece yarısını geçtiğinde bir müzik kutusu kısa bir melodi çalar.',
+    musicbox: 'Müzik kutusu',
+    musicboxShort: 'Müzik kutusu',
+    musicboxHint: {
+      classic: (time) => `Saat ${time} olunca Westminster çanlarını çalar`,
+      newyear: (time) => `Saat ${time} olunca “Auld Lang Syne” çalar`,
+      birthday: (time) => `Saat ${time} olunca “İyi ki doğdun” çalar`,
+    },
+    off: 'Sessiz',
+    offHint: 'Ses yok',
+  },
 }
 
 export default tr

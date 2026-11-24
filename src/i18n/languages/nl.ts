@@ -104,6 +104,20 @@ const nl: Strings = {
     noneHint: 'Alleen de klok',
     noneSummary: 'Geen animatie',
   },
+  sound: {
+    name: 'Geluid',
+    title: 'Geluid om middernacht',
+    subtitle: 'Om middernacht speelt een speeldoos een kort melodietje, elke keer dat de klok omslaat.',
+    musicbox: 'Speeldoos',
+    musicboxShort: 'Speeldoos',
+    musicboxHint: {
+      classic: (time) => `Speelt de Westminsterslag om ${time}`,
+      newyear: (time) => `Speelt ‘Auld Lang Syne’ om ${time}`,
+      birthday: (time) => `Speelt ‘Happy Birthday’ om ${time}`,
+    },
+    off: 'Stil',
+    offHint: 'Geen geluid',
+  },
 }
 
 export default nl

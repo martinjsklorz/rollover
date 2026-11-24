@@ -121,6 +121,22 @@ const en = {
     /** "None" on the summary page */
     noneSummary: 'No animation',
   },
+  sound: {
+    name: 'Sound',
+    title: 'Sound at midnight',
+    subtitle: 'A short music box tune plays at midnight, every time the clock rolls over.',
+    musicbox: 'Music box',
+    /** the music box in the summary's look line ("24-hour · Simple · Music box"); keep it short */
+    musicboxShort: 'Music box',
+    /** the tune each occasion plays (src/sound.ts) */
+    musicboxHint: {
+      classic: (time: string) => `Plays the Westminster chimes at ${time}`,
+      newyear: (time: string) => `Plays “Auld Lang Syne” at ${time}`,
+      birthday: (time: string) => `Plays “Happy Birthday” at ${time}`,
+    },
+    off: 'Silent',
+    offHint: 'No sound',
+  },
 }
 
 export type Strings = typeof en

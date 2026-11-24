@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import { useStrings } from '../i18n'
 import type { Settings } from '../settings'
@@ -17,24 +17,60 @@ const useNativeDriver = Platform.OS !== 'web'
  * so the same component is used for the wizard preview and the full screen.
  * The loop runs from `startedAt`; pass a new value to restart it.
  * `sizeKey` remembers the size, so a clock in the same spot on the next screen shows from its first frame.
+ * `onMidnight` runs at each 00:00:00, on the tick the midnight animation starts, and `onLoopStart` when the
+ * loop starts over (the full-screen clock's sound; the wizard preview passes neither and stays silent).
  */
-export default function Clock({ settings, startedAt, sizeKey }: { settings: Settings; startedAt: number; sizeKey?: string }) {
+export default function Clock({
+  settings,
+  startedAt,
+  sizeKey,
+  onMidnight,
+  onLoopStart,
+}: {
+  settings: Settings
+  startedAt: number
+  sizeKey?: string
+  onMidnight?: () => void
+  onLoopStart?: () => void
+}) {
   const [size, onLayout] = useLayoutSize(sizeKey)
   return (
     <View style={styles.fill} onLayout={onLayout}>
       {/* key: a new start shows its first second right away, not the old loop's for a frame */}
-      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} />}
+      {size && (
+        <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} onMidnight={onMidnight} onLoopStart={onLoopStart} />
+      )}
     </View>
   )
 }
 
-function LoopingFace({ settings, startedAt, size }: { settings: Settings; startedAt: number; size: Size }) {
+function LoopingFace({
+  settings,
+  startedAt,
+  size,
+  onMidnight,
+  onLoopStart,
+}: {
+  settings: Settings
+  startedAt: number
+  size: Size
+  onMidnight?: () => void
+  onLoopStart?: () => void
+}) {
   const elapsed = useLoop(settings.before + settings.after, startedAt)
   const time = loopTime(settings.before, elapsed)
   const parts = timeParts(time, settings.hour12)
   const theme = themeOf(settings.theme)
   // from 00:00:00 until the loop starts over
   const afterMidnight = elapsed >= settings.before
+  // fires when that changes, not on the first render: a tick late (a throttled tab) still counts
+  const wasAfterMidnight = useRef(afterMidnight)
+  const rolledOver = useEffectEvent((midnight: boolean) => (midnight ? onMidnight?.() : onLoopStart?.()))
+  useEffect(() => {
+    if (afterMidnight === wasAfterMidnight.current) return
+    wasAfterMidnight.current = afterMidnight
+    rolledOver(afterMidnight)
+  }, [afterMidnight])
   // the greeting goes in the space below the digits
   const [faceHeight, setFaceHeight] = useState(0)
   const name = settings.name.trim()

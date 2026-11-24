@@ -5,6 +5,7 @@ import en from '../i18n/languages/en'
 import { formatTime, loopTime } from '../clock/time'
 import { OCCASIONS, OCCASION_IDS } from '../occasions'
 import { THEME_IDS, themeId } from '../theme'
+import { playTune, stopTune } from '../sound'
 
 export type Choice = {
   label: string
@@ -14,6 +15,8 @@ export type Choice = {
   value: Partial<Settings>
   /** offered only when this holds, e.g. the themes of the chosen occasion */
   when?: (s: Settings) => boolean
+  /** runs when the user picks it (a tap, or Select on a TV; not a focus change), with the new settings */
+  onPress?: (s: Settings) => void
 }
 
 /** A text field instead of choices. */
@@ -156,6 +159,23 @@ export const stepsIn = (t: Strings): Step[] => {
       ],
       summary: (s) => animationNames[s.animation],
     },
+    {
+      id: 'sound',
+      name: t.sound.name,
+      title: t.sound.title,
+      subtitle: t.sound.subtitle,
+      choices: [
+        {
+          label: t.sound.musicbox,
+          hint: (s: Settings) => t.sound.musicboxHint[s.occasion](formatTime(0, s.hour12)),
+          value: { sound: 'musicbox' },
+          // a sample of the tune; the preview above stays silent, it loops on every page
+          onPress: (s: Settings) => playTune(s.occasion),
+        },
+        { label: t.sound.off, hint: t.sound.offHint, value: { sound: 'off' }, onPress: () => stopTune() },
+      ],
+      summary: (s) => (s.sound === 'musicbox' ? t.sound.musicbox : t.sound.off),
+    },
   ]
 }
 
@@ -183,10 +203,11 @@ export const choicesFor = (step: Step, s: Settings) => (step.choices ?? []).filt
 export const subtitleText = (step: Step, s: Settings) => (typeof step.subtitle === 'function' ? step.subtitle(s) : step.subtitle)
 
 /**
- * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple")
- * and the loop, from 23:59:50 to 00:00:10. `steps` are all the steps, in the app's language.
+ * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple",
+ * "24-hour · Simple · Music box" with sound) and the loop, from 23:59:50 to 00:00:10.
+ * `steps` are all the steps, in the app's language `t`.
  */
-export const describe = (s: Settings, steps: Step[]) => {
+export const describe = (s: Settings, steps: Step[], t: Strings) => {
   const summaryOf = (id: string) => steps.find((step) => step.id === id)!.summary(s)
   return {
     occasion: [
@@ -196,7 +217,7 @@ export const describe = (s: Settings, steps: Step[]) => {
     ]
       .filter(Boolean)
       .join(' · '),
-    look: `${summaryOf('format')} · ${summaryOf('style')}`,
+    look: [summaryOf('format'), summaryOf('style'), s.sound === 'musicbox' && t.sound.musicboxShort].filter(Boolean).join(' · '),
     from: formatTime(loopTime(s.before, 0), s.hour12),
     to: formatTime(s.after, s.hour12),
   }

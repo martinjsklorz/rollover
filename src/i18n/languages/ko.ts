@@ -104,6 +104,20 @@ const ko: Strings = {
     noneHint: '시계만',
     noneSummary: '애니메이션 없음',
   },
+  sound: {
+    name: '소리',
+    title: '자정의 소리',
+    subtitle: '시계가 자정을 넘길 때마다 오르골이 짧은 곡을 연주합니다.',
+    musicbox: '오르골',
+    musicboxShort: '오르골',
+    musicboxHint: {
+      classic: (time) => `${time}에 웨스트민스터 차임을 연주합니다`,
+      newyear: (time) => `${time}에 ‘석별의 정’을 연주합니다`,
+      birthday: (time) => `${time}에 ‘생일 축하합니다’를 연주합니다`,
+    },
+    off: '무음',
+    offHint: '소리 없음',
+  },
 }
 
 export default ko
