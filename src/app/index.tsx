@@ -1,9 +1,10 @@
-import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
 import Head from 'expo-router/head'
 import { useSettings } from '../settings'
+import { tvMargins, sizedStyles, useScreenSize } from '../tv'
 import { enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
 import { STEP_IDS, describe, useSteps } from '../wizard/steps'
@@ -14,7 +15,7 @@ export default function Home() {
   const { saved, beginSetup, restoreSaved } = useSettings()
   const t = useStrings()
   const steps = useSteps()
-  const { width, height } = useWindowDimensions()
+  const { width, height } = useScreenSize()
   // Phone on its side: too short to stack, so brand and actions sit side by side.
   const sideBySide = width > height && height < 500
   // Phone upright keeps the actions at the bottom, within thumb reach.
@@ -33,7 +34,7 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={[styles.page, sideBySide && styles.pageSide, centered && styles.pageCentered]}>
+    <SafeAreaView style={[styles.page, sideBySide && styles.pageSide, centered && styles.pageCentered, tvMargins]}>
       <StatusBar style="light" />
       <Head>
         <title>Rollover</title>
@@ -56,11 +57,11 @@ export default function Home() {
                   {summary.from} → {summary.to}
                 </Text>
               </View>
-              <Button title={t.home.start} primary onPress={start} style={styles.button} />
+              <Button title={t.home.start} primary preferredFocus onPress={start} style={styles.button} />
               <Button title={t.home.newSetup} onPress={setup} style={styles.button} />
             </>
           ) : (
-            <Button title={t.home.setUp} primary onPress={setup} style={styles.button} />
+            <Button title={t.home.setUp} primary preferredFocus onPress={setup} style={styles.button} />
           )}
         </View>
       </View>
@@ -68,7 +69,7 @@ export default function Home() {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = sizedStyles({
   page: { flex: 1, backgroundColor: colors.bg, padding: 24 },
   pageSide: { flexDirection: 'row', alignItems: 'center', gap: 32 },
   pageCentered: { justifyContent: 'center' },

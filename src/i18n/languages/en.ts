@@ -21,6 +21,8 @@ const en = {
     subtitle: 'Place your phone, then tap Start. Tap the clock twice to come back here.',
     /** added to the subtitle in a browser that can't keep the screen on */
     mayDim: 'This browser may let the screen go dark; turn off auto-lock to keep it on.',
+    /** the subtitle on a TV, driven by a remote */
+    subtitleTV: 'Press Start. Press Back on the remote to come back here.',
     start: 'Start',
     /** screen reader hint on a row of the summary, e.g. "Change style" */
     change: (name: string) => `Change ${name.toLowerCase()}`,
@@ -32,7 +34,11 @@ const en = {
     back: 'Back. Tap twice to go back.',
     /** screen reader label after the first tap */
     goBack: 'Go back',
+    /** on a TV, before the first press */
+    backTV: 'Back. Press twice to go back.',
     tapAgain: 'Tap again to go back',
+    /** on a TV, after the first press */
+    pressAgain: 'Press again to go back',
     /** birthday greeting under the digits at midnight, without and with a name */
     birthday: 'Happy birthday!',
     birthdayName: (name: string) => `Happy birthday, ${name}!`,

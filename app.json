@@ -42,6 +42,21 @@
           "supportsRTL": false,
           "supportedLocales": ["en", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "uk", "zh-Hans", "zh-Hant"]
         }
+      ],
+      [
+        "@react-native-tvos/config-tv",
+        {
+          "androidTVBanner": "./assets/tv/android-banner.png",
+          "appleTVImages": {
+            "iconLayers": { "front": "./assets/tv/icon-front.png", "back": "./assets/tv/icon-back.png" },
+            "iconSmallLayers": { "front": "./assets/tv/icon-small-front.png", "back": "./assets/tv/icon-small-back.png" },
+            "iconSmall2xLayers": { "front": "./assets/tv/icon-small@2x-front.png", "back": "./assets/tv/icon-small@2x-back.png" },
+            "topShelf": "./assets/tv/top-shelf.png",
+            "topShelf2x": "./assets/tv/top-shelf@2x.png",
+            "topShelfWide": "./assets/tv/top-shelf-wide.png",
+            "topShelfWide2x": "./assets/tv/top-shelf-wide@2x.png"
+          }
+        }
       ]
     ],
     "web": {

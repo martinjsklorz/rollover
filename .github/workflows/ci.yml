@@ -1,6 +1,6 @@
 name: CI
 
-# Every pull request: typecheck, lint and Expo checks.
+# Every pull request: typecheck, lint and Expo checks, and a TV prebuild.
 # Pushes to main (merged pull requests) also build iOS, Android and web, and publish the web app
 # to GitHub Pages.
 on:
@@ -42,6 +42,10 @@ jobs:
 
       - name: Expo doctor
         run: pnpm dlx expo-doctor@latest
+
+      # Checks the TV config plugin and its artwork (assets/tv); the generated projects aren't built
+      - name: Prebuild for TV
+        run: EXPO_TV=1 pnpm exec expo prebuild --no-install --clean
 
       - name: Bundle iOS and Android
         if: env.IS_MAIN == 'true'
