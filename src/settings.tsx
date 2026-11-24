@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useEffectEvent, useState, type ReactNode } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getCalendars } from 'expo-localization'
 import { OCCASION_IDS, fitOccasion, type Occasion } from './occasions'
 import { THEME_IDS, type ThemeId } from './theme'
 
@@ -29,16 +30,37 @@ export type Settings = {
   after: number
 }
 
-export const DEFAULT_SETTINGS: Settings = {
+/**
+ * Whether the device shows a 12-hour clock: its own setting where the system reports one,
+ * else what its locale prefers (en-US, hi-IN, ko-KR … are 12-hour), else 24-hour.
+ */
+export function deviceUses12h(): boolean {
+  try {
+    // the system's 12/24-hour switch on iOS and Android. On web it's null in practice: expo-localization
+    // reads hourCycle from a format without hours, which browsers leave unset; the fallback below has them
+    const uses24 = getCalendars()[0]?.uses24hourClock
+    if (typeof uses24 === 'boolean') return !uses24
+  } catch {}
+  try {
+    const cycle = new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions().hourCycle
+    if (cycle) return cycle === 'h11' || cycle === 'h12'
+  } catch {}
+  return false
+}
+
+/** Settings for a first setup; 12- or 24-hour comes from the device (defaultSettings) */
+const DEFAULT_SETTINGS: Omit<Settings, 'hour12'> = {
   occasion: 'classic',
   name: '',
-  hour12: false,
   style: 'simple',
   theme: 'classic',
   animation: 'fireworks',
   before: 10,
   after: 10,
 }
+
+/** The defaults, with 12- or 24-hour as the device shows it. Only for a first setup: a saved choice always wins. */
+export const defaultSettings = (): Settings => ({ ...DEFAULT_SETTINGS, hour12: deviceUses12h() })
 
 const STORAGE_KEY = 'rollover.settings.v1'
 /** the working copy, so a reload in the middle of the wizard (web) keeps the choices made so far */
@@ -68,7 +90,7 @@ const Context = createContext<SettingsContext | null>(null)
 
 /**
  * Stored settings, checked field by field: a missing or invalid field (an older version,
- * a setting added later, a damaged value) gets the default. Anything but an object is ignored.
+ * a setting added later, a damaged value) gets the default (for 12/24-hour, the device's). Anything but an object is ignored.
  * A theme or animation the occasion doesn't offer gets the occasion's default.
  */
 function parse(raw: string | null): Settings | null {
@@ -91,7 +113,7 @@ function parse(raw: string | null): Settings | null {
         ? 'classic'
         : 'newyear',
     name: typeof v.name === 'string' ? v.name.slice(0, NAME_MAX) : DEFAULT_SETTINGS.name,
-    hour12: typeof v.hour12 === 'boolean' ? v.hour12 : DEFAULT_SETTINGS.hour12,
+    hour12: typeof v.hour12 === 'boolean' ? v.hour12 : deviceUses12h(),
     style: v.style === 'simple' || v.style === 'flip' ? v.style : DEFAULT_SETTINGS.style,
     theme,
     animation: ANIMATIONS.includes(v.animation as MidnightAnimation)
@@ -119,7 +141,7 @@ async function load(key: string): Promise<Settings | null> {
 export function SettingsProvider({ children, onReady }: { children: ReactNode; onReady?: () => void }) {
   const [loaded, setLoaded] = useState(false)
   const [saved, setSaved] = useState<Settings | null>(null)
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS)
+  const [settings, setSettings] = useState(defaultSettings)
   const [previewStartedAt, setPreviewStartedAt] = useState(Date.now)
   const ready = useEffectEvent(() => onReady?.())
 
@@ -127,7 +149,7 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
     Promise.all([load(STORAGE_KEY), load(DRAFT_KEY)]).then(([s, draft]) => {
       setSaved(s)
       // the draft only matters when the app opens on a wizard page; home resets to the saved settings
-      setSettings(draft ?? s ?? DEFAULT_SETTINGS)
+      setSettings(draft ?? s ?? defaultSettings())
       setLoaded(true)
       ready()
     })
@@ -151,7 +173,7 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
       setSettings((s) => fitOccasion({ ...s, ...patch }))
     },
     beginSetup: () => {
-      setSettings(saved ?? DEFAULT_SETTINGS)
+      setSettings(saved ?? defaultSettings())
       setPreviewStartedAt(Date.now())
     },
     restoreSaved: () => saved && setSettings(saved),

@@ -63,6 +63,7 @@ const uk: Strings = {
     hour24: '24 години',
     hour12: '12 годин',
   },
+  dayPeriod: { am: 'дп', pm: 'пп', position: 'after', spaced: true },
   style: {
     name: 'Стиль',
     title: 'Виберіть стиль',

@@ -27,7 +27,7 @@ export default function Home() {
     enterFullscreen()
     router.push('/clock')
   }
-  const summary = saved && describe(saved, steps)
+  const summary = saved && describe(saved, steps, t)
   const setup = () => {
     beginSetup()
     router.push(`/setup/${STEP_IDS[0]}`)

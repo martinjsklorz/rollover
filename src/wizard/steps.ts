@@ -56,6 +56,9 @@ export const stepsIn = (t: Strings): Step[] => {
     balloons: t.animation.balloons,
     none: t.animation.noneSummary,
   }
+  const time = (seconds: number, hour12: boolean) => formatTime(seconds, hour12, t.dayPeriod)
+  /** the last second before midnight and midnight, e.g. "23:59:59 → 00:00:00" */
+  const rollover = (hour12: boolean) => `${time(loopTime(1, 0), hour12)} → ${time(0, hour12)}`
   return [
     {
       id: 'occasion',
@@ -79,8 +82,8 @@ export const stepsIn = (t: Strings): Step[] => {
       name: t.format.name,
       title: t.format.title,
       choices: [
-        { label: t.format.hour24, hint: '23:59:59 → 00:00:00', value: { hour12: false } },
-        { label: t.format.hour12, hint: '11:59:59 PM → 12:00:00 AM', value: { hour12: true } },
+        { label: t.format.hour24, hint: rollover(false), value: { hour12: false } },
+        { label: t.format.hour12, hint: rollover(true), value: { hour12: true } },
       ],
       summary: (s) => (s.hour12 ? t.format.hour12 : t.format.hour24),
     },
@@ -116,7 +119,7 @@ export const stepsIn = (t: Strings): Step[] => {
       subtitle: t.before.subtitle,
       choices: SECONDS.map((sec) => ({
         label: t.seconds(sec),
-        hint: (s: Settings) => t.before.hint(formatTime(loopTime(sec, 0), s.hour12)),
+        hint: (s: Settings) => t.before.hint(time(loopTime(sec, 0), s.hour12)),
         value: { before: sec },
       })),
       summary: (s) => t.seconds(s.before),
@@ -128,7 +131,7 @@ export const stepsIn = (t: Strings): Step[] => {
       subtitle: t.after.subtitle,
       choices: SECONDS.map((sec) => ({
         label: t.seconds(sec),
-        hint: (s: Settings) => t.after.hint(formatTime(sec, s.hour12)),
+        hint: (s: Settings) => t.after.hint(time(sec, s.hour12)),
         value: { after: sec },
       })),
       summary: (s) => t.seconds(s.after),
@@ -141,17 +144,17 @@ export const stepsIn = (t: Strings): Step[] => {
       choices: [
         {
           label: t.animation.balloons,
-          hint: (s: Settings) => t.animation.balloonsHint(formatTime(0, s.hour12)),
+          hint: (s: Settings) => t.animation.balloonsHint(time(0, s.hour12)),
           value: { animation: 'balloons' },
           when: offersAnimation('balloons'),
         },
         {
           label: t.animation.fireworks,
-          hint: (s: Settings) => t.animation.fireworksHint(formatTime(0, s.hour12)),
+          hint: (s: Settings) => t.animation.fireworksHint(time(0, s.hour12)),
           value: { animation: 'fireworks' },
           when: offersAnimation('fireworks'),
         },
-        { label: t.animation.confetti, hint: (s: Settings) => t.animation.confettiHint(formatTime(0, s.hour12)), value: { animation: 'confetti' } },
+        { label: t.animation.confetti, hint: (s: Settings) => t.animation.confettiHint(time(0, s.hour12)), value: { animation: 'confetti' } },
         { label: t.animation.none, hint: t.animation.noneHint, value: { animation: 'none' } },
       ],
       summary: (s) => animationNames[s.animation],
@@ -184,9 +187,9 @@ export const subtitleText = (step: Step, s: Settings) => (typeof step.subtitle =
 
 /**
  * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple")
- * and the loop, from 23:59:50 to 00:00:10. `steps` are all the steps, in the app's language.
+ * and the loop, from 23:59:50 to 00:00:10. `steps` are all the steps, in the app's language `t`.
  */
-export const describe = (s: Settings, steps: Step[]) => {
+export const describe = (s: Settings, steps: Step[], t: Strings) => {
   const summaryOf = (id: string) => steps.find((step) => step.id === id)!.summary(s)
   return {
     occasion: [
@@ -197,7 +200,7 @@ export const describe = (s: Settings, steps: Step[]) => {
       .filter(Boolean)
       .join(' · '),
     look: `${summaryOf('format')} · ${summaryOf('style')}`,
-    from: formatTime(loopTime(s.before, 0), s.hour12),
-    to: formatTime(s.after, s.hour12),
+    from: formatTime(loopTime(s.before, 0), s.hour12, t.dayPeriod),
+    to: formatTime(s.after, s.hour12, t.dayPeriod),
   }
 }

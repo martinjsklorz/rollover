@@ -56,6 +56,7 @@ const de: Strings = {
     hour24: '24 Stunden',
     hour12: '12 Stunden',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Stil',
     title: 'Wähle einen Stil',
