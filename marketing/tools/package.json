@@ -1,0 +1,15 @@
+{
+  "name": "rollover-marketing-tools",
+  "private": true,
+  "type": "module",
+  "description": "Captures the web build and composes the App Store and Play Store screenshots. Not part of the app.",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "compose": "node compose.mjs && node bold.mjs",
+    "build": "node capture.mjs && node compose.mjs && node bold.mjs"
+  },
+  "dependencies": {
+    "inter-ui": "4.1.0",
+    "playwright-core": "1.49.1"
+  }
+}

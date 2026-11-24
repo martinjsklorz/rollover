@@ -1,0 +1,33 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      inter-ui:
+        specifier: 4.1.0
+        version: 4.1.0
+      playwright-core:
+        specifier: 1.49.1
+        version: 1.49.1
+
+packages:
+
+  inter-ui@4.1.0:
+    resolution: {integrity: sha512-lUJ5YLtpj7jWsrhTbN5w32MLOqISGFGOTMRNn+IGhLrbt67z5yvmBRoqpLCWLVlJ+l7kqnH6su4meEqvLMfAAA==}
+    engines: {node: '>=16.0.0'}
+
+  playwright-core@1.49.1:
+    resolution: {integrity: sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+snapshots:
+
+  inter-ui@4.1.0: {}
+
+  playwright-core@1.49.1: {}

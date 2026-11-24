@@ -26,3 +26,6 @@ expo-env.d.ts
 .DS_Store
 .env*.local
 *.tsbuildinfo
+
+# raw captures for the store screenshots (marketing/tools/capture.mjs)
+marketing/captures/

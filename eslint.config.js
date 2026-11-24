@@ -15,9 +15,9 @@ module.exports = defineConfig([
     'expo-env.d.ts',
   ]),
   {
-    // A separate Node package (brand/tools/package.json) whose dependencies are only
-    // installed when the brand kit is rebuilt, so its imports usually don't resolve here.
-    files: ['brand/tools/**'],
+    // Separate Node packages (brand/tools, marketing/tools) whose dependencies are only
+    // installed when the brand kit or the store screenshots are rebuilt, so their imports usually don't resolve here.
+    files: ['brand/tools/**', 'marketing/tools/**'],
     rules: { 'import/no-unresolved': 'off' },
   },
 ]);

@@ -79,6 +79,7 @@ src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 docs/               README images (screenshots and the New Year's Eve GIF from the web build)
+marketing/          App Store and Google Play screenshots; marketing/tools captures and composes them
 ```
 
 ### Run
