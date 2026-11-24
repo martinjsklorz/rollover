@@ -99,6 +99,7 @@ src/i18n/           the app's languages (one file each, translated from language
 src/tv.ts           TV helpers: sizes doubled on Apple TV, the remote's Back button, overscan margins
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 docs/               README images (screenshots and the New Year's Eve GIF from the web build)
+marketing/          App Store and Google Play screenshots; marketing/tools captures and composes them
 ```
 
 ### Run
