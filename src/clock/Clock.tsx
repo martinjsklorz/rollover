@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
+import { useStrings } from '../i18n'
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
 import { useLayoutSize, type Size } from '../useLayoutSize'
@@ -37,6 +38,7 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
   // the greeting goes in the space below the digits
   const [faceHeight, setFaceHeight] = useState(0)
   const name = settings.name.trim()
+  const t = useStrings()
   return (
     <>
       {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
@@ -49,7 +51,7 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
         </View>
       </View>
       {afterMidnight && settings.occasion === 'birthday' && faceHeight > 0 && (
-        <Greeting text={name ? `Happy birthday, ${name}!` : 'Happy birthday!'} color={theme.text} size={size} faceHeight={faceHeight} />
+        <Greeting text={name ? t.clock.birthdayName(name) : t.clock.birthday} color={theme.text} size={size} faceHeight={faceHeight} />
       )}
     </>
   )
@@ -75,8 +77,8 @@ function Greeting({ text, color, size, faceHeight }: { text: string; color: stri
     return () => fade.stop()
   }, [opacity])
   const space = (size.height - faceHeight) / 2
-  // light type is about 0.55 em per character; keep the line within 90 % of the width
-  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / (text.length * 0.55), size.height * 0.08)
+  // keep the line within 90 % of the width
+  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / textWidthEm(text), size.height * 0.08)
   // no room on a very small preview
   if (fontSize < 8) return null
   return (
@@ -87,6 +89,12 @@ function Greeting({ text, color, size, faceHeight }: { text: string; color: stri
     </View>
   )
 }
+
+/** CJK and Hangul characters are about 1 em wide */
+const WIDE = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE30-\uFE4F\uFF00-\uFF60\uFFE0-\uFFE6]/
+
+/** Rough width of a line in em: light type is about 0.55 em per character, wide characters about 1 em. */
+const textWidthEm = (text: string) => [...text].reduce((em, c) => em + (WIDE.test(c) ? 1 : 0.55), 0)
 
 /* ---------- simple: thin white digits ---------- */
 

@@ -1,12 +1,15 @@
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
+import { useLanguage } from '../i18n'
 import { SettingsProvider } from '../settings'
+import { useDocumentLanguage } from '../web'
 import { useTVMenuKey } from '../tv'
 
 // keep the (black) launch screen up until the saved settings are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {})
 
 export default function RootLayout() {
+  useDocumentLanguage(useLanguage())
   useTVMenuKey()
   return (
     <SettingsProvider onReady={() => SplashScreen.hideAsync().catch(() => {})}>

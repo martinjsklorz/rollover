@@ -1,7 +1,10 @@
+import { useMemo } from 'react'
 import { NAME_MAX, type MidnightAnimation, type Settings } from '../settings'
+import { useStrings, type Strings } from '../i18n'
+import en from '../i18n/languages/en'
 import { formatTime, loopTime } from '../clock/time'
 import { OCCASIONS, OCCASION_IDS } from '../occasions'
-import { THEMES, THEME_IDS, themeOf } from '../theme'
+import { THEME_IDS, themeId } from '../theme'
 
 export type Choice = {
   label: string
@@ -40,120 +43,130 @@ export type Step = {
 
 const SECONDS = [5, 10, 30, 60]
 
-const ANIMATION_NAMES: Record<MidnightAnimation, string> = {
-  fireworks: 'Fireworks',
-  confetti: 'Confetti',
-  balloons: 'Balloons',
-  none: 'No animation',
-}
-
 const offersAnimation = (animation: MidnightAnimation) => (s: Settings) => OCCASIONS[s.occasion].animations.includes(animation)
 
 /**
- * One page per setting. Add a setting by adding a step here.
+ * One page per setting, in the language of `t`. Add a setting by adding a step here.
  * Keep each `id: '…',` on a line of its own: CI reads them to publish a page per step (.github/workflows/ci.yml).
  */
-export const STEPS: Step[] = [
-  {
-    id: 'occasion',
-    name: 'Occasion',
-    title: "What's the occasion?",
-    subtitle: 'It sets the colors and the midnight animation.',
-    choices: OCCASION_IDS.map((o) => ({ label: OCCASIONS[o].name, hint: OCCASIONS[o].hint, value: { occasion: o } })),
-    summary: (s) => OCCASIONS[s.occasion].name,
-  },
-  {
-    id: 'name',
-    name: 'Name',
-    title: 'Whose birthday?',
-    subtitle: 'Shown under the clock at midnight. Leave it empty for just “Happy birthday!”',
-    text: { setting: 'name', label: 'Name', placeholder: 'Their name', maxLength: NAME_MAX },
-    when: (s) => s.occasion === 'birthday',
-    summary: (s) => s.name.trim() || 'No name',
-  },
-  {
-    id: 'format',
-    name: 'Format',
-    title: '24-hour or AM/PM?',
-    choices: [
-      { label: '24-hour', hint: '23:59:59 → 00:00:00', value: { hour12: false } },
-      { label: '12-hour', hint: '11:59:59 PM → 12:00:00 AM', value: { hour12: true } },
-    ],
-    summary: (s) => (s.hour12 ? '12-hour' : '24-hour'),
-  },
-  {
-    id: 'style',
-    name: 'Style',
-    title: 'Pick a style',
-    choices: [
-      { label: 'Simple', hint: 'Thin white digits', value: { style: 'simple' } },
-      { label: 'Flip clock', hint: 'Split-flap cards', value: { style: 'flip' } },
-    ],
-    summary: (s) => (s.style === 'flip' ? 'Flip clock' : 'Simple'),
-  },
-  {
-    id: 'theme',
-    name: 'Theme',
-    title: 'Pick a theme',
-    subtitle: (s) => `Colors for ${s.occasion === 'birthday' ? 'the birthday' : "New Year's Eve"}.`,
-    choices: THEME_IDS.map((id) => ({
-      label: THEMES[id].name,
-      hint: THEMES[id].hint,
-      value: { theme: id },
-      when: (s: Settings) => OCCASIONS[s.occasion].themes.includes(id),
-    })),
-    // Classic has a single theme
-    when: (s) => OCCASIONS[s.occasion].themes.length > 1,
-    summary: (s) => themeOf(s.theme).name,
-  },
-  {
-    id: 'before',
-    name: 'Before midnight',
-    title: 'How long before midnight?',
-    subtitle: 'Time to get ready before the clock rolls over.',
-    choices: SECONDS.map((sec) => ({
-      label: `${sec} seconds`,
-      hint: (s: Settings) => `Starts at ${formatTime(loopTime(sec, 0), s.hour12)}`,
-      value: { before: sec },
-    })),
-    summary: (s) => `${s.before} seconds`,
-  },
-  {
-    id: 'after',
-    name: 'After midnight',
-    title: 'How long after midnight?',
-    subtitle: 'Then the clock starts over.',
-    choices: SECONDS.map((sec) => ({
-      label: `${sec} seconds`,
-      hint: (s: Settings) => `Until ${formatTime(sec, s.hour12)}, then repeats`,
-      value: { after: sec },
-    })),
-    summary: (s) => `${s.after} seconds`,
-  },
-  {
-    id: 'animation',
-    name: 'Midnight animation',
-    title: 'Midnight animation',
-    subtitle: 'It plays in the seconds after midnight, every time the clock rolls over.',
-    choices: [
-      {
-        label: 'Balloons',
-        hint: (s: Settings) => `Balloons float up at ${formatTime(0, s.hour12)}`,
-        value: { animation: 'balloons' },
-        when: offersAnimation('balloons'),
-      },
-      {
-        label: 'Fireworks',
-        hint: (s: Settings) => `Rockets go up at ${formatTime(0, s.hour12)}`,
-        value: { animation: 'fireworks' },
-        when: offersAnimation('fireworks'),
-      },
-      { label: 'Confetti', hint: (s: Settings) => `Confetti pops at ${formatTime(0, s.hour12)}`, value: { animation: 'confetti' } },
-      { label: 'None', hint: 'Just the clock', value: { animation: 'none' } },
-    ],
-    summary: (s) => ANIMATION_NAMES[s.animation],
-  },
-]
+export const stepsIn = (t: Strings): Step[] => {
+  const animationNames: Record<MidnightAnimation, string> = {
+    fireworks: t.animation.fireworks,
+    confetti: t.animation.confetti,
+    balloons: t.animation.balloons,
+    none: t.animation.noneSummary,
+  }
+  return [
+    {
+      id: 'occasion',
+      name: t.occasion.name,
+      title: t.occasion.title,
+      subtitle: t.occasion.subtitle,
+      choices: OCCASION_IDS.map((o) => ({ label: t.occasions[o].name, hint: t.occasions[o].hint, value: { occasion: o } })),
+      summary: (s) => t.occasions[s.occasion].name,
+    },
+    {
+      id: 'name',
+      name: t.name.name,
+      title: t.name.title,
+      subtitle: t.name.subtitle,
+      text: { setting: 'name', label: t.name.label, placeholder: t.name.placeholder, maxLength: NAME_MAX },
+      when: (s) => s.occasion === 'birthday',
+      summary: (s) => s.name.trim() || t.name.none,
+    },
+    {
+      id: 'format',
+      name: t.format.name,
+      title: t.format.title,
+      choices: [
+        { label: t.format.hour24, hint: '23:59:59 → 00:00:00', value: { hour12: false } },
+        { label: t.format.hour12, hint: '11:59:59 PM → 12:00:00 AM', value: { hour12: true } },
+      ],
+      summary: (s) => (s.hour12 ? t.format.hour12 : t.format.hour24),
+    },
+    {
+      id: 'style',
+      name: t.style.name,
+      title: t.style.title,
+      choices: [
+        { label: t.style.simple, hint: t.style.simpleHint, value: { style: 'simple' } },
+        { label: t.style.flip, hint: t.style.flipHint, value: { style: 'flip' } },
+      ],
+      summary: (s) => (s.style === 'flip' ? t.style.flip : t.style.simple),
+    },
+    {
+      id: 'theme',
+      name: t.theme.name,
+      title: t.theme.title,
+      subtitle: (s) => (s.occasion === 'birthday' ? t.theme.subtitle.birthday : t.theme.subtitle.newyear),
+      choices: THEME_IDS.map((id) => ({
+        label: t.themes[id].name,
+        hint: t.themes[id].hint,
+        value: { theme: id },
+        when: (s: Settings) => OCCASIONS[s.occasion].themes.includes(id),
+      })),
+      // Classic has a single theme
+      when: (s) => OCCASIONS[s.occasion].themes.length > 1,
+      summary: (s) => t.themes[themeId(s.theme)].name,
+    },
+    {
+      id: 'before',
+      name: t.before.name,
+      title: t.before.title,
+      subtitle: t.before.subtitle,
+      choices: SECONDS.map((sec) => ({
+        label: t.seconds(sec),
+        hint: (s: Settings) => t.before.hint(formatTime(loopTime(sec, 0), s.hour12)),
+        value: { before: sec },
+      })),
+      summary: (s) => t.seconds(s.before),
+    },
+    {
+      id: 'after',
+      name: t.after.name,
+      title: t.after.title,
+      subtitle: t.after.subtitle,
+      choices: SECONDS.map((sec) => ({
+        label: t.seconds(sec),
+        hint: (s: Settings) => t.after.hint(formatTime(sec, s.hour12)),
+        value: { after: sec },
+      })),
+      summary: (s) => t.seconds(s.after),
+    },
+    {
+      id: 'animation',
+      name: t.animation.name,
+      title: t.animation.title,
+      subtitle: t.animation.subtitle,
+      choices: [
+        {
+          label: t.animation.balloons,
+          hint: (s: Settings) => t.animation.balloonsHint(formatTime(0, s.hour12)),
+          value: { animation: 'balloons' },
+          when: offersAnimation('balloons'),
+        },
+        {
+          label: t.animation.fireworks,
+          hint: (s: Settings) => t.animation.fireworksHint(formatTime(0, s.hour12)),
+          value: { animation: 'fireworks' },
+          when: offersAnimation('fireworks'),
+        },
+        { label: t.animation.confetti, hint: (s: Settings) => t.animation.confettiHint(formatTime(0, s.hour12)), value: { animation: 'confetti' } },
+        { label: t.animation.none, hint: t.animation.noneHint, value: { animation: 'none' } },
+      ],
+      summary: (s) => animationNames[s.animation],
+    },
+  ]
+}
+
+/** All the steps in the app's language; stepsFor picks the ones the settings show. */
+export function useSteps() {
+  const t = useStrings()
+  return useMemo(() => stepsIn(t), [t])
+}
+
+/** Every step's id in order, for routing; the same in every language. */
+export const STEP_IDS = stepsIn(en).map((step) => step.id)
 
 export const isSelected = (choice: Choice, s: Settings) =>
   (Object.keys(choice.value) as (keyof Settings)[]).every((k) => choice.value[k] === s[k])
@@ -162,28 +175,29 @@ export const hintText = (choice: Choice, s: Settings) =>
   typeof choice.hint === 'function' ? choice.hint(s) : choice.hint
 
 /** The wizard's pages for these settings: the name page only for a birthday, no theme page for Classic. */
-export const stepsFor = (s: Settings) => STEPS.filter((step) => !step.when || step.when(s))
+export const stepsFor = (steps: Step[], s: Settings) => steps.filter((step) => !step.when || step.when(s))
 
 /** The choices a step offers for these settings. */
 export const choicesFor = (step: Step, s: Settings) => (step.choices ?? []).filter((c) => !c.when || c.when(s))
 
 export const subtitleText = (step: Step, s: Settings) => (typeof step.subtitle === 'function' ? step.subtitle(s) : step.subtitle)
 
-const summaryOf = (id: string, s: Settings) => STEPS.find((step) => step.id === id)!.summary(s)
-
 /**
  * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple")
- * and the loop, from 23:59:50 to 00:00:10.
+ * and the loop, from 23:59:50 to 00:00:10. `steps` are all the steps, in the app's language.
  */
-export const describe = (s: Settings) => ({
-  occasion: [
-    OCCASIONS[s.occasion].name,
-    s.occasion === 'birthday' && s.name.trim(),
-    OCCASIONS[s.occasion].themes.length > 1 && themeOf(s.theme).name,
-  ]
-    .filter(Boolean)
-    .join(' · '),
-  look: `${summaryOf('format', s)} · ${summaryOf('style', s)}`,
-  from: formatTime(loopTime(s.before, 0), s.hour12),
-  to: formatTime(s.after, s.hour12),
-})
+export const describe = (s: Settings, steps: Step[]) => {
+  const summaryOf = (id: string) => steps.find((step) => step.id === id)!.summary(s)
+  return {
+    occasion: [
+      summaryOf('occasion'),
+      s.occasion === 'birthday' && s.name.trim(),
+      OCCASIONS[s.occasion].themes.length > 1 && summaryOf('theme'),
+    ]
+      .filter(Boolean)
+      .join(' · '),
+    look: `${summaryOf('format')} · ${summaryOf('style')}`,
+    from: formatTime(loopTime(s.before, 0), s.hour12),
+    to: formatTime(s.after, s.hour12),
+  }
+}

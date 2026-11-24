@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import Head from 'expo-router/head'
 import Clock from '../clock/Clock'
+import { useStrings } from '../i18n'
 import { useSettings } from '../settings'
 import { useLayoutSize } from '../useLayoutSize'
 import { useSettled } from '../useSettled'
@@ -45,6 +46,7 @@ export function WizardPage({
   footer: ReactNode
 }) {
   const { settings, previewStartedAt } = useSettings()
+  const t = useStrings()
   const { width, height } = useScreenSize()
   const short = height < SHORT
   const wide = width > height
@@ -73,7 +75,7 @@ export function WizardPage({
         {pad2(index + 1)}
         <Text style={styles.stepOf}> / {pad2(count)}</Text>
       </Text>
-      <Text style={styles.srOnly}>{`Step ${index + 1} of ${count}`}</Text>
+      <Text style={styles.srOnly}>{t.wizard.stepOf(index + 1, count)}</Text>
     </View>
   )
   const text = (

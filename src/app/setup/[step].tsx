@@ -1,14 +1,16 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router'
 import { useSettings } from '../../settings'
-import { choicesFor, hintText, isSelected, stepsFor, subtitleText } from '../../wizard/steps'
+import { useStrings } from '../../i18n'
+import { choicesFor, hintText, isSelected, stepsFor, subtitleText, useSteps } from '../../wizard/steps'
 import { Button, List, OptionRow, TextInputRow, WizardPage } from '../../wizard/ui'
 
 /** One wizard page per setting, defined in src/wizard/steps.ts. */
 export default function SetupStep() {
   const { step: id } = useLocalSearchParams<{ step: string }>()
   const { settings, update } = useSettings()
+  const t = useStrings()
   // the pages depend on the occasion: the name page for a birthday, no theme page for Classic
-  const steps = stepsFor(settings)
+  const steps = stepsFor(useSteps(), settings)
   const index = steps.findIndex((s) => s.id === id)
   if (index < 0) return <Redirect href="/" />
 
@@ -31,8 +33,8 @@ export default function SetupStep() {
       subtitle={subtitleText(step, settings)}
       footer={
         <>
-          <Button title="Back" onPress={back} />
-          <Button title="Next" primary onPress={next} />
+          <Button title={t.wizard.back} onPress={back} />
+          <Button title={t.wizard.next} primary onPress={next} />
         </>
       }
     >

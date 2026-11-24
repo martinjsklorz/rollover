@@ -37,6 +37,13 @@
       ],
       ["expo-router", { "sitemap": false }],
       [
+        "expo-localization",
+        {
+          "supportsRTL": false,
+          "supportedLocales": ["en", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "uk", "zh-Hans", "zh-Hant"]
+        }
+      ],
+      [
         "@react-native-tvos/config-tv",
         {
           "androidTVBanner": "./assets/tv/android-banner.png",

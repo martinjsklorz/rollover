@@ -6,12 +6,15 @@ import Head from 'expo-router/head'
 import { useSettings } from '../settings'
 import { tvMargins, sizedStyles, useScreenSize } from '../tv'
 import { enterFullscreen } from '../web'
-import { STEPS, describe } from '../wizard/steps'
+import { useStrings } from '../i18n'
+import { STEP_IDS, describe, useSteps } from '../wizard/steps'
 import { Button, colors } from '../wizard/ui'
 
 /** First screen: the logo, Start with the previous settings, or the setup wizard. */
 export default function Home() {
   const { saved, beginSetup, restoreSaved } = useSettings()
+  const t = useStrings()
+  const steps = useSteps()
   const { width, height } = useScreenSize()
   // Phone on its side: too short to stack, so brand and actions sit side by side.
   const sideBySide = width > height && height < 500
@@ -24,10 +27,10 @@ export default function Home() {
     enterFullscreen()
     router.push('/clock')
   }
-  const summary = saved && describe(saved)
+  const summary = saved && describe(saved, steps)
   const setup = () => {
     beginSetup()
-    router.push(`/setup/${STEPS[0].id}`)
+    router.push(`/setup/${STEP_IDS[0]}`)
   }
 
   return (
@@ -41,7 +44,7 @@ export default function Home() {
         <Text style={styles.name} accessibilityLabel="Rollover">
           rollover
         </Text>
-        <Text style={styles.tagline}>Midnight, again and again.</Text>
+        <Text style={styles.tagline}>{t.home.tagline}</Text>
       </View>
       <View style={[styles.actionsArea, sideBySide && styles.actionsSide, centered && styles.actionsCentered]}>
         <View style={styles.actions}>
@@ -50,15 +53,15 @@ export default function Home() {
               <View style={styles.summary} accessible>
                 <Text style={styles.summaryText}>{summary.occasion}</Text>
                 <Text style={styles.summaryText}>{summary.look}</Text>
-                <Text style={styles.summaryText} accessibilityLabel={`from ${summary.from} to ${summary.to}`}>
+                <Text style={styles.summaryText} accessibilityLabel={t.home.fromTo(summary.from, summary.to)}>
                   {summary.from} → {summary.to}
                 </Text>
               </View>
-              <Button title="Start" primary preferredFocus onPress={start} style={styles.button} />
-              <Button title="New setup" onPress={setup} style={styles.button} />
+              <Button title={t.home.start} primary preferredFocus onPress={start} style={styles.button} />
+              <Button title={t.home.newSetup} onPress={setup} style={styles.button} />
             </>
           ) : (
-            <Button title="Set up the clock" primary preferredFocus onPress={setup} style={styles.button} />
+            <Button title={t.home.setUp} primary preferredFocus onPress={setup} style={styles.button} />
           )}
         </View>
       </View>

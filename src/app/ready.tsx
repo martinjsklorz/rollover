@@ -3,33 +3,30 @@ import { router } from 'expo-router'
 import { useSettings } from '../settings'
 import { isTV, sizedStyles } from '../tv'
 import { canKeepAwake, enterFullscreen } from '../web'
-import { stepsFor } from '../wizard/steps'
+import { useStrings } from '../i18n'
+import { stepsFor, useSteps } from '../wizard/steps'
 import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
 
 /** Last wizard page: a summary of the choices and the Start button. */
 export default function Ready() {
   const { settings, save } = useSettings()
-  const steps = stepsFor(settings)
+  const t = useStrings()
+  const steps = stepsFor(useSteps(), settings)
   return (
     <WizardPage
-      name="Ready"
+      name={t.ready.title}
       index={steps.length}
       count={steps.length + 1}
-      title="Ready"
-      subtitle={
-        isTV
-          ? 'Press Start. Press Back on the remote to come back here.'
-          : 'Place your phone, then tap Start. Tap the clock twice to come back here.' +
-            (canKeepAwake ? '' : ' This browser may let the screen go dark; turn off auto-lock to keep it on.')
-      }
+      title={t.ready.title}
+      subtitle={isTV ? t.ready.subtitleTV : canKeepAwake ? t.ready.subtitle : `${t.ready.subtitle} ${t.ready.mayDim}`}
       footer={
         <>
           <Button
-            title="Back"
+            title={t.wizard.back}
             onPress={() => (router.canGoBack() ? router.back() : router.replace(`/setup/${steps[steps.length - 1].id}`))}
           />
           <Button
-            title="Start"
+            title={t.ready.start}
             primary
             preferredFocus
             onPress={() => {
@@ -49,7 +46,7 @@ export default function Ready() {
             role="button"
             label={step.name}
             accessibilityLabel={`${step.name}: ${step.summary(settings)}`}
-            accessibilityHint={`Change ${step.name.toLowerCase()}`}
+            accessibilityHint={t.ready.change(step.name)}
             onPress={() => router.dismissTo(`/setup/${step.id}`)}
             right={
               <>

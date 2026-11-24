@@ -4,9 +4,8 @@ import type { ThemeId } from './theme'
 /** What the midnight is for. Picked first in the wizard; it decides which themes and animations are offered. */
 export type Occasion = 'classic' | 'newyear' | 'birthday'
 
+/** Names and hints are in src/i18n (`occasions`). */
 type OccasionInfo = {
-  name: string
-  hint: string
   /** themes offered for it, the first is the default. With only one, the wizard skips the theme page. */
   themes: ThemeId[]
   /** midnight animations offered for it, the first is the default */
@@ -15,20 +14,14 @@ type OccasionInfo = {
 
 export const OCCASIONS: Record<Occasion, OccasionInfo> = {
   classic: {
-    name: 'Classic',
-    hint: 'Any midnight, white and ember',
     themes: ['classic'],
     animations: ['fireworks', 'confetti', 'none'],
   },
   newyear: {
-    name: "New Year's Eve",
-    hint: 'Gold, ice blue or neon',
     themes: ['champagne', 'midnight', 'party'],
     animations: ['fireworks', 'confetti', 'none'],
   },
   birthday: {
-    name: 'Birthday',
-    hint: 'Candy colors, balloons and a name',
     themes: ['bubblegum', 'sky', 'sprinkles'],
     animations: ['balloons', 'confetti', 'none'],
   },
