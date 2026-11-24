@@ -56,6 +56,7 @@ const zhHans: Strings = {
     hour24: '24 小时制',
     hour12: '12 小时制',
   },
+  dayPeriod: { am: '上午', pm: '下午', position: 'before', spaced: false },
   style: {
     name: '样式',
     title: '选择样式',

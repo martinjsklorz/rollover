@@ -30,7 +30,7 @@ const SCENES = [
   { id: 'fireworks', settings: { ...base }, path: '/clock', at: '00:00:00', frames: [500, 700, 900, 1100, 1300, 1600, 1900, 2200] },
   { id: 'countdown', settings: { ...base, theme: 'champagne', animation: 'none' }, path: '/clock', at: '23:59:57', frames: [400] },
   { id: 'flip', settings: { ...base, theme: 'midnight', style: 'flip' }, path: '/clock', at: '00:00:00', frames: [500, 800, 1100, 1400, 1700, 2000] },
-  { id: 'confetti', settings: { ...base, theme: 'party', hour12: true, animation: 'confetti' }, path: '/clock', at: '12:00:00 AM', frames: [300, 500, 700, 900, 1200, 1500] },
+  { id: 'confetti', settings: { ...base, theme: 'party', hour12: true, animation: 'confetti' }, path: '/clock', at: '12:00:00\u00a0AM', frames: [300, 500, 700, 900, 1200, 1500] },
   { id: 'wizard', settings: { ...base, theme: 'champagne' }, draft: true, path: '/setup/theme', at: '00:00:00', frames: [600, 900, 1200, 1500] },
   { id: 'home', settings: { ...base, before: 10, after: 10 }, path: '/', frames: [300] },
   // the phone turned sideways, for the full-screen slide

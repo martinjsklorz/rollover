@@ -56,6 +56,7 @@ const id: Strings = {
     hour24: '24 jam',
     hour12: '12 jam',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Gaya',
     title: 'Pilih gaya',

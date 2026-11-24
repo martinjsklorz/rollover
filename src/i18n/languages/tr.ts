@@ -56,6 +56,7 @@ const tr: Strings = {
     hour24: '24 saat',
     hour12: '12 saat',
   },
+  dayPeriod: { am: 'ÖÖ', pm: 'ÖS', position: 'before', spaced: true },
   style: {
     name: 'Stil',
     title: 'Bir stil seç',
