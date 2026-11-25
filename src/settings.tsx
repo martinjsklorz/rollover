@@ -7,8 +7,8 @@ import { THEME_IDS, type ThemeId } from './theme'
 export type ClockStyle = 'simple' | 'flip'
 
 /** what plays over the clock after midnight */
-export type MidnightAnimation = 'fireworks' | 'confetti' | 'balloons' | 'none'
-const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'balloons', 'none']
+export type MidnightAnimation = 'fireworks' | 'confetti' | 'balloons' | 'lanterns' | 'none'
+const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'balloons', 'lanterns', 'none']
 
 /** longest birthday name, so the greeting fits on one line */
 export const NAME_MAX = 20

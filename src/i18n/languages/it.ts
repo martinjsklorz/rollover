@@ -1,5 +1,37 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Topo',
+  ox: 'Bue',
+  tiger: 'Tigre',
+  rabbit: 'Coniglio',
+  dragon: 'Drago',
+  snake: 'Serpente',
+  horse: 'Cavallo',
+  goat: 'Capra',
+  monkey: 'Scimmia',
+  rooster: 'Gallo',
+  dog: 'Cane',
+  pig: 'Maiale',
+}
+
+/** With the article: anno del Cavallo, anno della Capra */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'del Topo',
+  ox: 'del Bue',
+  tiger: 'della Tigre',
+  rabbit: 'del Coniglio',
+  dragon: 'del Drago',
+  snake: 'del Serpente',
+  horse: 'del Cavallo',
+  goat: 'della Capra',
+  monkey: 'della Scimmia',
+  rooster: 'del Gallo',
+  dog: 'del Cane',
+  pig: 'del Maiale',
+}
+
 const it: Strings = {
   home: {
     tagline: 'Mezzanotte, ancora e ancora.',
@@ -31,7 +63,9 @@ const it: Strings = {
     birthday: 'Buon compleanno!',
     birthdayName: (name) => `Buon compleanno, ${name}!`,
     newYear: (year) => `Buon anno ${year}!`,
+    lunarNewYear: (animal) => `Buon anno ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} secondi`,
   occasion: {
     name: 'Occasione',
@@ -42,6 +76,7 @@ const it: Strings = {
     classic: { name: 'Classico', hint: 'Qualsiasi mezzanotte, bianco e brace' },
     newyear: { name: 'Capodanno', hint: 'Oro, azzurro ghiaccio o neon' },
     birthday: { name: 'Compleanno', hint: 'Colori caramella, palloncini e un nome' },
+    lunar: { name: 'Capodanno lunare', hint: 'Rosso e oro, lanterne e zodiaco' },
   },
   name: {
     name: 'Nome',
@@ -78,7 +113,11 @@ const it: Strings = {
   theme: {
     name: 'Tema',
     title: 'Scegli un tema',
-    subtitle: { newyear: 'Colori per Capodanno.', birthday: 'Colori per il compleanno.' },
+    subtitle: {
+      newyear: 'Colori per Capodanno.',
+      birthday: 'Colori per il compleanno.',
+      lunar: 'Colori per il Capodanno lunare.',
+    },
   },
   themes: {
     classic: { name: 'Classico', hint: 'Cifre bianche, scintille brace e bianche' },
@@ -88,6 +127,9 @@ const it: Strings = {
     bubblegum: { name: 'Bubblegum', hint: 'Cifre rosa; rosa, lilla e oro' },
     sky: { name: 'Cielo', hint: 'Cifre azzurre; azzurro, menta e limone' },
     sprinkles: { name: 'Codette', hint: 'Cifre bianche; tutti i pastelli' },
+    lantern: { name: 'Lanterna', hint: 'Cifre rosse; rosso, oro e bianco caldo' },
+    gilded: { name: 'Dorato', hint: 'Cifre dorate; rosso e oro' },
+    plum: { name: 'Fiori di pruno', hint: 'Cifre rosa; rosa, bianco e oro' },
   },
   before: {
     name: 'Prima di mezzanotte',
@@ -107,6 +149,8 @@ const it: Strings = {
     subtitle: 'Parte nei secondi dopo mezzanotte, ogni volta che l’orologio scatta.',
     balloons: 'Palloncini',
     balloonsHint: (time) => `I palloncini salgono alle ${time}`,
+    lanterns: 'Lanterne',
+    lanternsHint: (time) => `Le lanterne salgono alle ${time}`,
     fireworks: 'Fuochi d’artificio',
     fireworksHint: (time) => `I razzi partono alle ${time}`,
     confetti: 'Coriandoli',

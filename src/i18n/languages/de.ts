@@ -1,5 +1,37 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Ratte',
+  ox: 'Büffel',
+  tiger: 'Tiger',
+  rabbit: 'Hase',
+  dragon: 'Drache',
+  snake: 'Schlange',
+  horse: 'Pferd',
+  goat: 'Ziege',
+  monkey: 'Affe',
+  rooster: 'Hahn',
+  dog: 'Hund',
+  pig: 'Schwein',
+}
+
+/** Genitive with the article: Jahr des Pferdes, Jahr der Ziege */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'der Ratte',
+  ox: 'des Büffels',
+  tiger: 'des Tigers',
+  rabbit: 'des Hasen',
+  dragon: 'des Drachen',
+  snake: 'der Schlange',
+  horse: 'des Pferdes',
+  goat: 'der Ziege',
+  monkey: 'des Affen',
+  rooster: 'des Hahns',
+  dog: 'des Hundes',
+  pig: 'des Schweins',
+}
+
 const de: Strings = {
   home: {
     tagline: 'Mitternacht, immer und immer wieder.',
@@ -31,7 +63,9 @@ const de: Strings = {
     birthday: 'Alles Gute zum Geburtstag!',
     birthdayName: (name) => `Alles Gute zum Geburtstag, ${name}!`,
     newYear: (year) => `Frohes neues Jahr ${year}!`,
+    lunarNewYear: (animal) => `Frohes Jahr ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} Sekunden`,
   occasion: {
     name: 'Anlass',
@@ -42,6 +76,7 @@ const de: Strings = {
     classic: { name: 'Klassisch', hint: 'Jede Mitternacht, in Weiß und Glutrot' },
     newyear: { name: 'Silvester', hint: 'Gold, Eisblau oder Neon' },
     birthday: { name: 'Geburtstag', hint: 'Bonbonfarben, Luftballons und ein Name' },
+    lunar: { name: 'Mondneujahr', hint: 'Rot und Gold, Laternen und Tierkreis' },
   },
   name: {
     name: 'Name',
@@ -78,7 +113,11 @@ const de: Strings = {
   theme: {
     name: 'Farbe',
     title: 'Wähle ein Farbschema',
-    subtitle: { newyear: 'Farben für Silvester.', birthday: 'Farben für den Geburtstag.' },
+    subtitle: {
+      newyear: 'Farben für Silvester.',
+      birthday: 'Farben für den Geburtstag.',
+      lunar: 'Farben für das Mondneujahr.',
+    },
   },
   themes: {
     classic: { name: 'Klassisch', hint: 'Weiße Ziffern, glutroter und weißer Funkenregen' },
@@ -88,6 +127,9 @@ const de: Strings = {
     bubblegum: { name: 'Kaugummi', hint: 'Rosa Ziffern; Rosa, Flieder und Gold' },
     sky: { name: 'Himmel', hint: 'Blaue Ziffern; Blau, Mint und Zitronengelb' },
     sprinkles: { name: 'Streusel', hint: 'Weiße Ziffern; alle Pastelltöne' },
+    lantern: { name: 'Laterne', hint: 'Rote Ziffern; Rot, Gold und Warmweiß' },
+    gilded: { name: 'Vergoldet', hint: 'Goldene Ziffern; Rot und Gold' },
+    plum: { name: 'Pflaumenblüte', hint: 'Rosa Ziffern; Rosa, Weiß und Gold' },
   },
   before: {
     name: 'Vor Mitternacht',
@@ -107,6 +149,8 @@ const de: Strings = {
     subtitle: 'Sie läuft in den Sekunden nach Mitternacht, jedes Mal, wenn die Uhr umspringt.',
     balloons: 'Luftballons',
     balloonsHint: (time) => `Luftballons steigen um ${time}`,
+    lanterns: 'Laternen',
+    lanternsHint: (time) => `Laternen steigen um ${time}`,
     fireworks: 'Feuerwerk',
     fireworksHint: (time) => `Raketen steigen um ${time}`,
     confetti: 'Konfetti',

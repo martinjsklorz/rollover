@@ -8,6 +8,7 @@ import Balloons from './Balloons'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { greetingFor } from './greeting'
+import Lanterns from './Lanterns'
 import { formatTime, loopTime, periodText, timeParts, useLoop, type DayPeriod, type TimeParts } from './time'
 
 // react-native-web has no native animation driver
@@ -56,6 +57,7 @@ function LoopingFace({ settings, startedAt, size, announce }: { settings: Settin
       {afterMidnight && settings.animation === 'fireworks' && <Fireworks size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'confetti' && <Confetti size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'balloons' && <Balloons size={size} colors={theme.accents} />}
+      {afterMidnight && settings.animation === 'lanterns' && <Lanterns size={size} colors={theme.accents} />}
       {/* screen readers get the time as one name, not the digits and colons one by one */}
       <View role="timer" aria-label={formatTime(time, settings.hour12, t.dayPeriod)}>
         <View aria-hidden onLayout={(e) => setFaceHeight(e.nativeEvent.layout.height)}>
@@ -74,7 +76,7 @@ function LoopingFace({ settings, startedAt, size, announce }: { settings: Settin
   )
 }
 
-/* ---------- greeting: "Happy New Year 2027!", "Happy birthday, Mia!", a Classic message ---------- */
+/* ---------- greeting: "Happy New Year 2027!", "Happy birthday, Mia!", "Happy Year of the Goat!", a Classic message ---------- */
 
 const GREETING_DELAY_MS = 300
 const GREETING_FADE_MS = 900

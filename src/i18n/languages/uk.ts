@@ -7,6 +7,38 @@ const seconds = (n: number) => {
   return `${n} ${one ? 'секунда' : few ? 'секунди' : 'секунд'}`
 }
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Щур',
+  ox: 'Бик',
+  tiger: 'Тигр',
+  rabbit: 'Кролик',
+  dragon: 'Дракон',
+  snake: 'Змія',
+  horse: 'Кінь',
+  goat: 'Коза',
+  monkey: 'Мавпа',
+  rooster: 'Півень',
+  dog: 'Собака',
+  pig: 'Свиня',
+}
+
+/** Genitive: рік Коня, рік Кози */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Щура',
+  ox: 'Бика',
+  tiger: 'Тигра',
+  rabbit: 'Кролика',
+  dragon: 'Дракона',
+  snake: 'Змії',
+  horse: 'Коня',
+  goat: 'Кози',
+  monkey: 'Мавпи',
+  rooster: 'Півня',
+  dog: 'Собаки',
+  pig: 'Свині',
+}
+
 const uk: Strings = {
   home: {
     tagline: 'Північ, знову і знову.',
@@ -38,7 +70,9 @@ const uk: Strings = {
     birthday: 'З днем народження!',
     birthdayName: (name) => `З днем народження, ${name}!`,
     newYear: (year) => `З Новим ${year} роком!`,
+    lunarNewYear: (animal) => `З Новим роком ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds,
   occasion: {
     name: 'Привід',
@@ -49,6 +83,7 @@ const uk: Strings = {
     classic: { name: 'Класика', hint: 'Будь-яка північ, білий і вогняний' },
     newyear: { name: 'Новий рік', hint: 'Золото, крижана блакить або неон' },
     birthday: { name: 'День народження', hint: 'Цукеркові кольори, кульки та ім’я' },
+    lunar: { name: 'Місячний Новий рік', hint: 'Червоний і золотий, ліхтарики та зодіак' },
   },
   name: {
     name: 'Ім’я',
@@ -85,7 +120,11 @@ const uk: Strings = {
   theme: {
     name: 'Тема',
     title: 'Виберіть тему',
-    subtitle: { newyear: 'Кольори для Нового року.', birthday: 'Кольори для дня народження.' },
+    subtitle: {
+      newyear: 'Кольори для Нового року.',
+      birthday: 'Кольори для дня народження.',
+      lunar: 'Кольори для Місячного Нового року.',
+    },
   },
   themes: {
     classic: { name: 'Класика', hint: 'Білі цифри, вогняні й білі іскри' },
@@ -95,6 +134,9 @@ const uk: Strings = {
     bubblegum: { name: 'Жуйка', hint: 'Рожеві цифри; рожевий, бузковий і золотий' },
     sky: { name: 'Небо', hint: 'Блакитні цифри; блакитний, м’ятний і лимонний' },
     sprinkles: { name: 'Посипка', hint: 'Білі цифри; усі пастельні' },
+    lantern: { name: 'Ліхтар', hint: 'Червоні цифри; червоний, золотий і теплий білий' },
+    gilded: { name: 'Позолота', hint: 'Золоті цифри; червоний і золотий' },
+    plum: { name: 'Цвіт сливи', hint: 'Рожеві цифри; рожевий, білий і золотий' },
   },
   before: {
     name: 'До півночі',
@@ -114,6 +156,8 @@ const uk: Strings = {
     subtitle: 'Вона грає в перші секунди після півночі, щоразу, коли годинник переходить через північ.',
     balloons: 'Кульки',
     balloonsHint: (time) => `Кульки злітають о ${time}`,
+    lanterns: 'Ліхтарики',
+    lanternsHint: (time) => `Ліхтарики злітають о ${time}`,
     fireworks: 'Феєрверк',
     fireworksHint: (time) => `Ракети злітають о ${time}`,
     confetti: 'Конфеті',

@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Fare',
+  ox: 'Öküz',
+  tiger: 'Kaplan',
+  rabbit: 'Tavşan',
+  dragon: 'Ejderha',
+  snake: 'Yılan',
+  horse: 'At',
+  goat: 'Keçi',
+  monkey: 'Maymun',
+  rooster: 'Horoz',
+  dog: 'Köpek',
+  pig: 'Domuz',
+}
+
 const tr: Strings = {
   home: {
     tagline: 'Gece yarısı, tekrar tekrar.',
@@ -31,7 +47,9 @@ const tr: Strings = {
     birthday: 'İyi ki doğdun!',
     birthdayName: (name) => `İyi ki doğdun, ${name}!`,
     newYear: (year) => `Mutlu yıllar ${year}!`,
+    lunarNewYear: (animal) => `Mutlu ${zodiac[animal]} Yılı!`,
   },
+  zodiac,
   seconds: (n) => `${n} saniye`,
   occasion: {
     name: 'Etkinlik',
@@ -42,6 +60,7 @@ const tr: Strings = {
     classic: { name: 'Klasik', hint: 'Herhangi bir gece yarısı, beyaz ve kor' },
     newyear: { name: 'Yılbaşı gecesi', hint: 'Altın, buz mavisi ya da neon' },
     birthday: { name: 'Doğum günü', hint: 'Şeker renkleri, balonlar ve bir isim' },
+    lunar: { name: 'Ay Yeni Yılı', hint: 'Kırmızı ve altın, fenerler ve Çin burçları' },
   },
   name: {
     name: 'İsim',
@@ -78,7 +97,11 @@ const tr: Strings = {
   theme: {
     name: 'Tema',
     title: 'Bir tema seç',
-    subtitle: { newyear: 'Yılbaşı gecesi için renkler.', birthday: 'Doğum günü için renkler.' },
+    subtitle: {
+      newyear: 'Yılbaşı gecesi için renkler.',
+      birthday: 'Doğum günü için renkler.',
+      lunar: 'Ay Yeni Yılı için renkler.',
+    },
   },
   themes: {
     classic: { name: 'Klasik', hint: 'Beyaz rakamlar, kor ve beyaz kıvılcımlar' },
@@ -88,6 +111,9 @@ const tr: Strings = {
     bubblegum: { name: 'Sakız', hint: 'Pembe rakamlar; pembe, lila ve altın' },
     sky: { name: 'Gökyüzü', hint: 'Mavi rakamlar; mavi, nane ve limon' },
     sprinkles: { name: 'Şeker serpintisi', hint: 'Beyaz rakamlar; tüm pasteller' },
+    lantern: { name: 'Fener', hint: 'Kırmızı rakamlar; kırmızı, altın ve sıcak beyaz' },
+    gilded: { name: 'Yaldız', hint: 'Altın rakamlar; kırmızı ve altın' },
+    plum: { name: 'Erik çiçeği', hint: 'Pembe rakamlar; pembe, beyaz ve altın' },
   },
   before: {
     name: 'Gece yarısından önce',
@@ -107,6 +133,8 @@ const tr: Strings = {
     subtitle: 'Saat her gece yarısını geçtiğinde, sonraki saniyelerde oynar.',
     balloons: 'Balonlar',
     balloonsHint: (time) => `Saat ${time} olunca balonlar yükselir`,
+    lanterns: 'Fenerler',
+    lanternsHint: (time) => `Saat ${time} olunca fenerler yükselir`,
     fireworks: 'Havai fişek',
     fireworksHint: (time) => `Saat ${time} olunca roketler fırlar`,
     confetti: 'Konfeti',

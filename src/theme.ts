@@ -12,9 +12,9 @@ export const colors = {
 }
 
 /**
- * Clock themes. Each belongs to an occasion (src/occasions.ts): Classic, New Year's Eve or Birthday.
+ * Clock themes. Each belongs to an occasion (src/occasions.ts): Classic, New Year's Eve, Birthday or Lunar New Year.
  * The background stays true black in every theme (see brand/README.md); a theme colors the
- * digits, the flip cards, the birthday greeting and the midnight animation. Names and hints are in src/i18n (`themes`).
+ * digits, the flip cards, the greeting and the midnight animation. Names and hints are in src/i18n (`themes`).
  */
 export type ClockTheme = {
   /** digits */
@@ -25,7 +25,7 @@ export type ClockTheme = {
   surface: string
   /** soft glow around the simple digits */
   glow?: boolean
-  /** firework, confetti and balloon colors, picked at random */
+  /** firework, confetti and balloon colors, picked at random. Lanterns take their paper from the first two. */
   accents: string[]
 }
 
@@ -76,6 +76,27 @@ export const THEMES = {
     muted: colors.muted,
     surface: colors.surface,
     accents: ['#FF8FC7', '#7CC8FF', '#FFE08A', '#8CE6B0', '#C9A7FF', '#FFB07A'],
+  },
+  // Lunar New Year: lantern red and gold. No glow; red first, so the lanterns are red.
+  lantern: {
+    // a crimson red, clear of ember's orange
+    text: '#FF4D5A',
+    muted: '#B0565D',
+    surface: '#2A0C10',
+    accents: ['#F0303A', '#C81E2C', '#FFC94A', '#FFF1DC'],
+  },
+  gilded: {
+    // deeper and redder than Champagne's pale gold
+    text: '#FFBA45',
+    muted: '#B07E3A',
+    surface: '#2A1607',
+    accents: ['#E8262E', '#C41E3A', '#FFBA45', '#FFE3A0', '#FFFFFF'],
+  },
+  plum: {
+    text: '#FFD3E3',
+    muted: '#A87E8F',
+    surface: '#2A1620',
+    accents: ['#FF9CC0', '#E8487A', '#FFFFFF', '#F5C451'],
   },
 } satisfies Record<string, ClockTheme>
 

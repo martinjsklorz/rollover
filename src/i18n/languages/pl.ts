@@ -7,6 +7,38 @@ const seconds = (n: number) => {
   return `${n} ${few ? 'sekundy' : 'sekund'}`
 }
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Szczur',
+  ox: 'Bawół',
+  tiger: 'Tygrys',
+  rabbit: 'Królik',
+  dragon: 'Smok',
+  snake: 'Wąż',
+  horse: 'Koń',
+  goat: 'Koza',
+  monkey: 'Małpa',
+  rooster: 'Kogut',
+  dog: 'Pies',
+  pig: 'Świnia',
+}
+
+/** Genitive: Rok Konia, Rok Kozy */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Szczura',
+  ox: 'Bawołu',
+  tiger: 'Tygrysa',
+  rabbit: 'Królika',
+  dragon: 'Smoka',
+  snake: 'Węża',
+  horse: 'Konia',
+  goat: 'Kozy',
+  monkey: 'Małpy',
+  rooster: 'Koguta',
+  dog: 'Psa',
+  pig: 'Świni',
+}
+
 const pl: Strings = {
   home: {
     tagline: 'Północ, znowu i znowu.',
@@ -38,7 +70,9 @@ const pl: Strings = {
     birthday: 'Wszystkiego najlepszego!',
     birthdayName: (name) => `Wszystkiego najlepszego, ${name}!`,
     newYear: (year) => `Szczęśliwego Nowego Roku ${year}!`,
+    lunarNewYear: (animal) => `Szczęśliwego Roku ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds,
   occasion: {
     name: 'Okazja',
@@ -49,6 +83,7 @@ const pl: Strings = {
     classic: { name: 'Klasyczna', hint: 'Każda północ, biel i żar' },
     newyear: { name: 'Sylwester', hint: 'Złoto, lodowy błękit albo neon' },
     birthday: { name: 'Urodziny', hint: 'Cukierkowe kolory, balony i imię' },
+    lunar: { name: 'Księżycowy Nowy Rok', hint: 'Czerwień i złoto, lampiony i zodiak' },
   },
   name: {
     name: 'Imię',
@@ -85,7 +120,11 @@ const pl: Strings = {
   theme: {
     name: 'Motyw',
     title: 'Wybierz motyw',
-    subtitle: { newyear: 'Kolory na sylwestra.', birthday: 'Kolory na urodziny.' },
+    subtitle: {
+      newyear: 'Kolory na sylwestra.',
+      birthday: 'Kolory na urodziny.',
+      lunar: 'Kolory na Księżycowy Nowy Rok.',
+    },
   },
   themes: {
     classic: { name: 'Klasyczny', hint: 'Białe cyfry, żarzące się i białe iskry' },
@@ -95,6 +134,9 @@ const pl: Strings = {
     bubblegum: { name: 'Guma balonowa', hint: 'Różowe cyfry; róż, liliowy i złoto' },
     sky: { name: 'Niebo', hint: 'Niebieskie cyfry; błękit, mięta i cytryna' },
     sprinkles: { name: 'Posypka', hint: 'Białe cyfry; wszystkie pastele' },
+    lantern: { name: 'Lampion', hint: 'Czerwone cyfry; czerwień, złoto i ciepła biel' },
+    gilded: { name: 'Złocenie', hint: 'Złote cyfry; czerwień i złoto' },
+    plum: { name: 'Kwiat śliwy', hint: 'Różowe cyfry; róż, biel i złoto' },
   },
   before: {
     name: 'Przed północą',
@@ -114,6 +156,8 @@ const pl: Strings = {
     subtitle: 'Odtwarza się w sekundach po północy, za każdym razem, gdy zegar przeskoczy.',
     balloons: 'Balony',
     balloonsHint: (time) => `Balony wzlatują o ${time}`,
+    lanterns: 'Lampiony',
+    lanternsHint: (time) => `Lampiony wzlatują o ${time}`,
     fireworks: 'Fajerwerki',
     fireworksHint: (time) => `Rakiety startują o ${time}`,
     confetti: 'Konfetti',
