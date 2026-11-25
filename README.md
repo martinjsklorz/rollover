@@ -174,10 +174,15 @@ never lyrics or someone else's recording:
 | Birthday | "Happy Birthday to You" | Melody of "Good Morning to All" (Hill sisters, 1893). Declared public domain in the US in 2016 (*Marya v. Warner/Chappell*); expired in the EU on 1 January 2017 ([Wikipedia](https://en.wikipedia.org/wiki/Happy_Birthday_to_You)) |
 | Lunar New Year | "Mo Li Hua" (Jasmine Flower), the first verse (its repeated opening line played once) | Traditional Chinese folk song, first printed in the West in John Barrow's *Travels in China*, 1804 ([Wikipedia](https://en.wikipedia.org/wiki/Mo_Li_Hua)) |
 
-`tools/musicbox/build.mjs` holds the melodies as note data and renders them with plain JavaScript (a sine,
-a quiet octave and a tine's inharmonic partial, a 2 ms attack with a tiny pluck, decaying over about a second,
-slightly detuned) into `assets/sounds/<occasion>.wav`, 16-bit mono at 22.05 kHz, peak −3 dBFS.
-Change a tune or the sound there, then rebuild the files:
+`tools/musicbox/musicbox.py` holds the melodies as note data and renders them with the Python standard library
+(no packages): each tine is a decaying sum of a steel beam's inharmonic partials, struck by a pin's knock 10 ms
+before the tone, panned by pitch, in a small box-and-room reverb, and never exact, like a real one: every tine is
+a few cents out of tune (always the same tine, the same amount), a hard pluck starts a little sharp and settles,
+pins strike up to 16 ms early or late, the cylinder's speed wobbles with its governor and slows as the spring
+runs down, and the touch varies. All of it plays over a quiet clockwork whirr that winds down after the last
+note. Happy Birthday has a waltz accompaniment; the other tunes are the melody alone. It writes
+`assets/sounds/<occasion>.wav`, 16-bit stereo at 44.1 kHz, peak −0.9 dBFS, the silent tail trimmed.
+Change a tune or the sound there, then rebuild the files (needs `python3`):
 
 ```bash
 pnpm sounds
