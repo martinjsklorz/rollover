@@ -66,6 +66,7 @@ const ja: Strings = {
     hour24: '24時間制',
     hour12: '12時間制',
   },
+  dayPeriod: { am: '午前', pm: '午後', position: 'before', spaced: false },
   style: {
     name: 'スタイル',
     title: 'スタイルを選択',

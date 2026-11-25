@@ -48,7 +48,8 @@ pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fad
 - **Your own line at midnight.** On Classic, add a short message, like "We did it!", and it fades in
   under the digits at midnight.
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
-- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
+- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM (午後11:59:59, 오후 11:59:59 …),
+  starting from the way your phone shows the time.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
 - **Fireworks, confetti or balloons.** At the stroke of midnight, rockets go up and burst over the clock,
   confetti pops from the corners and rains down, or balloons float up, until the loop starts over.
@@ -78,7 +79,7 @@ The wizard has one page per setting, with a live preview on every page. It start
 | New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | "Happy New Year 2027!" under the clock at midnight (the year that begins) |
 | Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name page; "Happy birthday, Mia!" under the clock at midnight |
 
-Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
+Then: 24-hour or 12-hour (the first time, preset to the device's choice), simple or flip-clock style, the theme, how long before midnight and how long
 after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
 00:00:00 until the loop starts over.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,

@@ -66,6 +66,7 @@ const hi: Strings = {
     hour24: '24 घंटे',
     hour12: '12 घंटे',
   },
+  dayPeriod: { am: 'am', pm: 'pm', position: 'after', spaced: true },
   style: {
     name: 'स्टाइल',
     title: 'स्टाइल चुनें',

@@ -1,6 +1,6 @@
 /**
  * The English strings: the source every other language translates, and the fallback.
- * Times like "23:59:50" and AM/PM come in already formatted and stay as they are in every language.
+ * Times like "23:59:50" or "11:59:50 PM" come in already formatted, with this language's AM/PM (dayPeriod).
  */
 const en = {
   home: {
@@ -87,6 +87,11 @@ const en = {
     hour24: '24-hour',
     hour12: '12-hour',
   },
+  /**
+   * AM and PM in this language, from CLDR (Intl's formatToParts), and where they go: "11:59 PM", "午後11:59".
+   * `spaced`: a space between the marker and the time (none in Chinese and Japanese).
+   */
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after' as 'before' | 'after', spaced: true },
   style: {
     name: 'Style',
     title: 'Pick a style',

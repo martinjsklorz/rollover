@@ -66,6 +66,7 @@ const fr: Strings = {
     hour24: '24 heures',
     hour12: '12 heures',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Style',
     title: 'Choisissez un style',

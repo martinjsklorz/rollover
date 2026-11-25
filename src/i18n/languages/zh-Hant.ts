@@ -66,6 +66,7 @@ const zhHant: Strings = {
     hour24: '24 小時制',
     hour12: '12 小時制',
   },
+  dayPeriod: { am: '上午', pm: '下午', position: 'before', spaced: false },
   style: {
     name: '樣式',
     title: '選擇樣式',

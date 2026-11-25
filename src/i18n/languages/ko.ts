@@ -66,6 +66,7 @@ const ko: Strings = {
     hour24: '24시간제',
     hour12: '12시간제',
   },
+  dayPeriod: { am: '오전', pm: '오후', position: 'before', spaced: true },
   style: {
     name: '스타일',
     title: '스타일 선택',

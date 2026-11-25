@@ -66,6 +66,7 @@ const nl: Strings = {
     hour24: '24-uurs',
     hour12: '12-uurs',
   },
+  dayPeriod: { am: 'a.m.', pm: 'p.m.', position: 'after', spaced: true },
   style: {
     name: 'Stijl',
     title: 'Kies een stijl',

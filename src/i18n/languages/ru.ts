@@ -73,6 +73,7 @@ const ru: Strings = {
     hour24: '24 часа',
     hour12: '12 часов',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Стиль',
     title: 'Выберите стиль',

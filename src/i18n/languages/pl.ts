@@ -73,6 +73,7 @@ const pl: Strings = {
     hour24: '24-godzinny',
     hour12: '12-godzinny',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Styl',
     title: 'Wybierz styl',
