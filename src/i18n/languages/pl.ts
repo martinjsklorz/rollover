@@ -166,6 +166,21 @@ const pl: Strings = {
     noneHint: 'Tylko zegar',
     noneSummary: 'Bez animacji',
   },
+  sound: {
+    name: 'Dźwięk',
+    title: 'Dźwięk o północy',
+    subtitle: 'Pozytywka gra krótką melodię o północy, za każdym razem, gdy zegar przeskoczy.',
+    musicbox: 'Pozytywka',
+    musicboxShort: 'Pozytywka',
+    musicboxHint: {
+      classic: (time) => `Gra kuranty z Westminsteru o ${time}`,
+      newyear: (time) => `Gra „Auld Lang Syne” o ${time}`,
+      birthday: (time) => `Gra „Happy Birthday” o ${time}`,
+      lunar: (time) => `Gra „Kwiat jaśminu” o ${time}`,
+    },
+    off: 'Cisza',
+    offHint: 'Bez dźwięku',
+  },
 }
 
 export default pl

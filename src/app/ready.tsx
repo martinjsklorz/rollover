@@ -1,6 +1,7 @@
 import { Text } from 'react-native'
 import { router } from 'expo-router'
 import { useSettings } from '../settings'
+import { prepareTune } from '../sound'
 import { isTV, sizedStyles } from '../tv'
 import { canKeepAwake, enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
@@ -31,6 +32,9 @@ export default function Ready() {
             preferredFocus
             onPress={() => {
               save()
+              // inside the tap, and before full screen (which uses up the tap): a browser only lets
+              // the first midnight's tune play after a user gesture
+              prepareTune(settings)
               enterFullscreen()
               router.push('/clock')
             }}

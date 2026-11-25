@@ -143,6 +143,21 @@ const zhHans: Strings = {
     noneHint: '只显示时钟',
     noneSummary: '无动画',
   },
+  sound: {
+    name: '声音',
+    title: '午夜音乐',
+    subtitle: '每次时钟跨过午夜，八音盒都会奏响一段短曲。',
+    musicbox: '八音盒',
+    musicboxShort: '八音盒',
+    musicboxHint: {
+      classic: (time) => `${time} 奏响威斯敏斯特钟声`,
+      newyear: (time) => `${time} 奏响《友谊地久天长》`,
+      birthday: (time) => `${time} 奏响《生日快乐》`,
+      lunar: (time) => `${time} 奏响《茉莉花》`,
+    },
+    off: '静音',
+    offHint: '没有声音',
+  },
 }
 
 export default zhHans

@@ -10,6 +10,9 @@ export type ClockStyle = 'simple' | 'flip'
 export type MidnightAnimation = 'fireworks' | 'confetti' | 'balloons' | 'lanterns' | 'none'
 const ANIMATIONS: MidnightAnimation[] = ['fireworks', 'confetti', 'balloons', 'lanterns', 'none']
 
+/** what plays once at 00:00:00: the occasion's music box tune (src/sound.ts), or nothing */
+export type Sound = 'musicbox' | 'off'
+
 /** longest birthday name, so the greeting fits on one line */
 export const NAME_MAX = 20
 /** longest Classic message, so it fits on one line under the clock */
@@ -28,6 +31,8 @@ export type Settings = {
   theme: ThemeId
   /** plays from 00:00:00 until the loop starts over */
   animation: MidnightAnimation
+  /** off unless chosen in the wizard */
+  sound: Sound
   /** seconds shown before midnight, e.g. 5 → starts at 23:59:55 */
   before: number
   /** seconds shown after midnight, e.g. 10 → runs until 00:00:10, then repeats */
@@ -60,6 +65,7 @@ const DEFAULT_SETTINGS: Omit<Settings, 'hour12'> = {
   style: 'simple',
   theme: 'classic',
   animation: 'fireworks',
+  sound: 'off',
   before: 10,
   after: 10,
 }
@@ -130,6 +136,7 @@ function parse(raw: string | null): Settings | null {
           ? 'fireworks'
           : 'none'
         : DEFAULT_SETTINGS.animation,
+    sound: v.sound === 'musicbox' || v.sound === 'off' ? v.sound : DEFAULT_SETTINGS.sound,
     before: seconds(v.before, DEFAULT_SETTINGS.before),
     after: seconds(v.after, DEFAULT_SETTINGS.after),
   })

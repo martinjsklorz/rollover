@@ -159,6 +159,21 @@ const de: Strings = {
     noneHint: 'Nur die Uhr',
     noneSummary: 'Keine Animation',
   },
+  sound: {
+    name: 'Ton',
+    title: 'Ton um Mitternacht',
+    subtitle: 'Um Mitternacht spielt eine Spieluhr eine kurze Melodie, jedes Mal, wenn die Uhr umspringt.',
+    musicbox: 'Spieluhr',
+    musicboxShort: 'Spieluhr',
+    musicboxHint: {
+      classic: (time) => `Spielt den Westminsterschlag um ${time}`,
+      newyear: (time) => `Spielt „Auld Lang Syne“ um ${time}`,
+      birthday: (time) => `Spielt „Happy Birthday“ um ${time}`,
+      lunar: (time) => `Spielt „Jasminblüte“ um ${time}`,
+    },
+    off: 'Lautlos',
+    offHint: 'Kein Ton',
+  },
 }
 
 export default de

@@ -160,6 +160,21 @@ const pt: Strings = {
     noneHint: 'Só o relógio',
     noneSummary: 'Sem animação',
   },
+  sound: {
+    name: 'Som',
+    title: 'Som à meia-noite',
+    subtitle: 'Uma caixinha de música toca uma melodia curta à meia-noite, toda vez que o relógio vira.',
+    musicbox: 'Caixinha de música',
+    musicboxShort: 'Caixinha de música',
+    musicboxHint: {
+      classic: (time) => `Toca o carrilhão de Westminster às ${time}`,
+      newyear: (time) => `Toca “Auld Lang Syne” às ${time}`,
+      birthday: (time) => `Toca “Parabéns pra você” às ${time}`,
+      lunar: (time) => `Toca “Flor de jasmim” às ${time}`,
+    },
+    off: 'Silencioso',
+    offHint: 'Sem som',
+  },
 }
 
 export default pt

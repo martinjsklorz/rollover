@@ -159,6 +159,21 @@ const hi: Strings = {
     noneHint: 'सिर्फ़ घड़ी',
     noneSummary: 'कोई एनिमेशन नहीं',
   },
+  sound: {
+    name: 'आवाज़',
+    title: 'आधी रात की आवाज़',
+    subtitle: 'हर बार घड़ी के आधी रात पार करने पर, एक म्यूज़िक बॉक्स छोटी-सी धुन बजाता है।',
+    musicbox: 'म्यूज़िक बॉक्स',
+    musicboxShort: 'म्यूज़िक बॉक्स',
+    musicboxHint: {
+      classic: (time) => `${time} पर वेस्टमिंस्टर की घंटियों की धुन बजती है`,
+      newyear: (time) => `${time} पर “ऑल्ड लैंग साइन” बजता है`,
+      birthday: (time) => `${time} पर “हैप्पी बर्थडे” बजता है`,
+      lunar: (time) => `${time} पर “चमेली का फूल” बजता है`,
+    },
+    off: 'बिना आवाज़',
+    offHint: 'कोई धुन नहीं',
+  },
 }
 
 export default hi

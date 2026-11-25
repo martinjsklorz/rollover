@@ -1,6 +1,8 @@
-import { Redirect, router, useLocalSearchParams } from 'expo-router'
+import { useCallback } from 'react'
+import { Redirect, router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useSettings } from '../../settings'
 import { useStrings } from '../../i18n'
+import { stopTune } from '../../sound'
 import { choicesFor, hintText, isSelected, stepsFor, subtitleText, useSteps } from '../../wizard/steps'
 import { Button, List, OptionRow, TextInputRow, WizardPage } from '../../wizard/ui'
 
@@ -11,6 +13,8 @@ export default function SetupStep() {
   const t = useStrings()
   // the pages depend on the occasion: the name page for a birthday, the message page and no theme page for Classic
   const steps = stepsFor(useSteps(), settings)
+  // leaving the page ends the sound page's sample
+  useFocusEffect(useCallback(() => () => stopTune(), []))
   const index = steps.findIndex((s) => s.id === id)
   if (index < 0) return <Redirect href="/" />
 
@@ -58,7 +62,10 @@ export default function SetupStep() {
               hint={hintText(choice, settings)}
               selected={isSelected(choice, settings)}
               tabbable={anySelected ? isSelected(choice, settings) : i === 0}
-              onPress={() => update(choice.value)}
+              onPress={() => {
+                update(choice.value)
+                choice.onPress?.({ ...settings, ...choice.value })
+              }}
             />
           ))}
         </List>

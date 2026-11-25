@@ -143,6 +143,21 @@ const ja: Strings = {
     noneHint: '時計だけ',
     noneSummary: 'アニメーションなし',
   },
+  sound: {
+    name: 'サウンド',
+    title: '0時のサウンド',
+    subtitle: '時計が0時を回るたびに、オルゴールが短い曲を奏でます。',
+    musicbox: 'オルゴール',
+    musicboxShort: 'オルゴール',
+    musicboxHint: {
+      classic: (time) => `${time}にウェストミンスターの鐘を奏でます`,
+      newyear: (time) => `${time}に「蛍の光」を奏でます`,
+      birthday: (time) => `${time}に「ハッピーバースデー」を奏でます`,
+      lunar: (time) => `${time}に「茉莉花」を奏でます`,
+    },
+    off: '音なし',
+    offHint: '音は鳴りません',
+  },
 }
 
 export default ja

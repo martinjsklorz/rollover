@@ -57,6 +57,9 @@ Plum blossom digits, red paper lanterns rise at midnight, and the coming year's 
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
 - **Fireworks, confetti, balloons or lanterns.** At the stroke of midnight, rockets go up and burst over the clock,
   confetti pops from the corners and rains down, or balloons or lanterns float up, until the loop starts over.
+- **A music box, if you like.** Off unless you turn it on: at 00:00:00 a music box plays the Westminster
+  chimes, "Auld Lang Syne", "Happy Birthday" or "Jasmine Flower", depending on the occasion. It plays alongside
+  your party music instead of stopping it, and through the TV's speakers on a TV.
 - **In your language.** English, Chinese, Spanish, Hindi, Portuguese, French, German, Japanese, Russian,
   Korean, Indonesian, Turkish, Italian, Polish, Ukrainian and Dutch, following your phone or browser.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
@@ -84,9 +87,10 @@ The wizard has one page per setting, with a live preview on every page. It start
 | Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name page; "Happy birthday, Mia!" under the clock at midnight |
 | Lunar New Year | Lantern, Gilded, Plum blossom | lanterns, fireworks, confetti, none | "Happy Year of the Goat!" under the clock at midnight (the coming year's zodiac animal) |
 
-Then: 24-hour or 12-hour (the first time, preset to the device's choice), simple or flip-clock style, the theme, how long before midnight and how long
-after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
-00:00:00 until the loop starts over.
+Then: 24-hour or 12-hour (the first time, preset to the device's choice), simple or flip-clock style, the theme,
+how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10), the midnight animation, and the
+sound. The animation plays over the clock from 00:00:00 until the loop starts over; the sound is the occasion's
+music box tune, once at 00:00:00 (see [Sound](#sound)), or silence.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
 and two taps go back to the setup (the first shows a hint, so a stray touch doesn't end a take).
 On a TV, Select works like a tap and the remote's Back button goes back right away.
@@ -103,11 +107,13 @@ src/wizard/ui.tsx   wizard page layout, option cards, buttons
 src/clock/          the clock face (simple / flip), the loop timing, the greeting at midnight, the midnight
                     fireworks, confetti, balloons and lanterns
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
+src/sound.ts        the music box: one tune per occasion, played at 00:00:00 on the full-screen clock
 src/theme.ts        brand colors used by the app, and the clock themes
 src/i18n/           the app's languages (one file each, translated from languages/en.ts) and the device-language pick
 src/tv.ts           TV helpers: sizes doubled on Apple TV, the remote's Back button, overscan margins
 brand/              logo, colors, type and usage rules (brand/README.md); brand/tools builds the icons
 docs/               README images (screenshots and the New Year's Eve GIF from the web build)
+tools/musicbox/     renders the music box tunes into assets/sounds/ (see Sound)
 marketing/          App Store and Google Play screenshots; marketing/tools captures and composes them
 ```
 
@@ -148,9 +154,49 @@ pnpm dlx eas-cli@latest update             # ship JS changes to installed apps
 ```
 
 OTA updates cover JavaScript and assets. A change to native code (a new native module,
-a permission) needs a new store build.
+a permission) needs a new store build. The sound (`expo-audio`, a native module) is one: builds made before it
+can't get it over the air, so ship it with a new store build, and use a new development build
+(`pnpm exec expo run:ios|android`, or `pnpm dlx eas-cli@latest build --profile development`) to try it.
+Expo Go already includes `expo-audio`.
 
 `ios/` and `android/` are generated (`expo prebuild`) and not committed. Native settings live in `app.json`.
+
+### Sound
+
+The only sound is a music box, once at 00:00:00, and it's off by default (`sound: 'musicbox' | 'off'`).
+Each occasion has its tune, all traditional melodies in the public domain. Only the melody is used,
+never lyrics or someone else's recording:
+
+| Occasion | Tune | Public domain |
+| --- | --- | --- |
+| Classic | The Westminster Quarters, the full-hour chime | Written in 1793 for Great St Mary's, Cambridge ([Wikipedia](https://en.wikipedia.org/wiki/Westminster_Quarters)) |
+| New Year's Eve | "Auld Lang Syne", the first phrase | Traditional Scots melody, the standard tune since George Thomson's *Select Songs of Scotland*, 1799 ([Wikipedia](https://en.wikipedia.org/wiki/Auld_Lang_Syne)) |
+| Birthday | "Happy Birthday to You" | Melody of "Good Morning to All" (Hill sisters, 1893). Declared public domain in the US in 2016 (*Marya v. Warner/Chappell*); expired in the EU on 1 January 2017 ([Wikipedia](https://en.wikipedia.org/wiki/Happy_Birthday_to_You)) |
+| Lunar New Year | "Mo Li Hua" (Jasmine Flower), the first verse (its repeated opening line played once) | Traditional Chinese folk song, first printed in the West in John Barrow's *Travels in China*, 1804 ([Wikipedia](https://en.wikipedia.org/wiki/Mo_Li_Hua)) |
+
+`tools/musicbox/build.mjs` holds the melodies as note data and renders them with plain JavaScript (a sine,
+a quiet octave and a tine's inharmonic partial, a 2 ms attack with a tiny pluck, decaying over about a second,
+slightly detuned) into `assets/sounds/<occasion>.wav`, 16-bit mono at 22.05 kHz, peak −3 dBFS.
+Change a tune or the sound there, then rebuild the files:
+
+```bash
+pnpm sounds
+```
+
+`src/sound.ts` plays them with `expo-audio`:
+
+- **When.** On the tick the clock shows 00:00:00, when the midnight animation starts. If the loop starts over
+  before the tune ends, it fades out over 300 ms. It stops when you leave the clock or the app goes to the
+  background. The wizard preview is always silent; picking Music box on the sound page plays the tune once.
+- **With other audio.** It mixes with music that's already playing (`interruptionMode: 'mixWithOthers'`),
+  plays with the iPhone's silent switch on (the user turned it on), and never plays in the background.
+- **Permissions.** The `expo-audio` plugin in `app.json` turns off its defaults for recording and background
+  playback, so there's no microphone permission (`NSMicrophoneUsageDescription`, `RECORD_AUDIO`) and no
+  background audio mode or service.
+- **Web.** Browsers only let a page start sound after a tap, and Safari on iPhone asks it of each audio element.
+  Start (on the home screen and the last wizard page) unlocks the player inside the tap, before going
+  full screen, which would use the tap up. A clock opened directly by its URL stays silent.
+- **TV.** `expo-audio` supports tvOS and Android TV, so the tune plays through the TV's speakers.
 
 ### TV
 
