@@ -9,7 +9,7 @@ export default function SetupStep() {
   const { step: id } = useLocalSearchParams<{ step: string }>()
   const { settings, update } = useSettings()
   const t = useStrings()
-  // the pages depend on the occasion: the name page for a birthday, no theme page for Classic
+  // the pages depend on the occasion: the name page for a birthday, the message page and no theme page for Classic
   const steps = stepsFor(useSteps(), settings)
   const index = steps.findIndex((s) => s.id === id)
   if (index < 0) return <Redirect href="/" />
@@ -43,6 +43,7 @@ export default function SetupStep() {
           label={step.text.label}
           placeholder={step.text.placeholder}
           maxLength={step.text.maxLength}
+          autoCapitalize={step.text.autoCapitalize}
           value={settings[step.text.setting]}
           onChange={(value) => update({ [step.text!.setting]: value })}
           onSubmit={next}

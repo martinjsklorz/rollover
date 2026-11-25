@@ -18,7 +18,7 @@ const zodiac: Record<ZodiacAnimal, string> = {
 
 /**
  * The English strings: the source every other language translates, and the fallback.
- * Times like "23:59:50" and AM/PM come in already formatted and stay as they are in every language.
+ * Times like "23:59:50" or "11:59:50 PM" come in already formatted, with this language's AM/PM (dayPeriod).
  */
 const en = {
   home: {
@@ -60,6 +60,8 @@ const en = {
     /** birthday greeting under the digits at midnight, without and with a name */
     birthday: 'Happy birthday!',
     birthdayName: (name: string) => `Happy birthday, ${name}!`,
+    /** New Year's Eve greeting under the digits at midnight, with the year that begins */
+    newYear: (year: number) => `Happy New Year ${year}!`,
     /**
      * Lunar New Year greeting, for the animal of the coming year. Phrase it as is natural in the language;
      * it may use `zodiac`, or its own forms of the names where the grammar needs them (e.g. a genitive).
@@ -91,12 +93,31 @@ const en = {
     /** on the summary page when it was left empty */
     none: 'No name',
   },
+  /** Classic's message page: an optional line under the clock at midnight */
+  message: {
+    name: 'Message',
+    title: 'A message for midnight?',
+    subtitle: 'Shown under the clock at midnight. Leave it empty for just the clock.',
+    /** names the text field for screen readers */
+    label: 'Message',
+    /** an example, shown while the field is empty */
+    placeholder: 'We did it!',
+    /** on the summary page when it was left empty */
+    none: 'No message',
+    /** the message in quotes, on the summary page */
+    quote: (text: string) => `“${text}”`,
+  },
   format: {
     name: 'Format',
     title: '24-hour or AM/PM?',
     hour24: '24-hour',
     hour12: '12-hour',
   },
+  /**
+   * AM and PM in this language, from CLDR (Intl's formatToParts), and where they go: "11:59 PM", "午後11:59".
+   * `spaced`: a space between the marker and the time (none in Chinese and Japanese).
+   */
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after' as 'before' | 'after', spaced: true },
   style: {
     name: 'Style',
     title: 'Pick a style',

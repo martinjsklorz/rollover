@@ -40,6 +40,7 @@ again: 23:59:55, 00:00:00, fireworks, and once more from the top. As often as yo
 | White digits, ember fireworks | Gold digits, golden fireworks | Ice-blue split-flap cards |
 
 Plus **Party**, in neon pink with fireworks in every color (that's the one at the top).
+On New Year's Eve, "Happy New Year 2027!" fades in under the digits at midnight, always with the year that begins.
 
 **Birthday?** Pick it as the occasion and the clock goes candy-colored (Bubblegum pink, Sky blue or
 pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fades in under the digits.
@@ -48,8 +49,11 @@ pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fad
 Plum blossom digits, red paper lanterns rise at midnight, and the coming year's zodiac animal greets it:
 "Happy Year of the Goat!", or 羊年大吉！
 
+- **Your own line at midnight.** On Classic, add a short message, like "We did it!", and it fades in
+  under the digits at midnight.
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
-- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
+- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM (午後11:59:59, 오후 11:59:59 …),
+  starting from the way your phone shows the time.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
 - **Fireworks, confetti, balloons or lanterns.** At the stroke of midnight, rockets go up and burst over the clock,
   confetti pops from the corners and rains down, or balloons or lanterns float up, until the loop starts over.
@@ -75,12 +79,12 @@ The wizard has one page per setting, with a live preview on every page. It start
 
 | Occasion | Themes | Animations (first is the default) | Extra |
 | --- | --- | --- | --- |
-| Classic | Classic only, so no theme page | fireworks, confetti, none | |
-| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | |
-| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name, shown under the clock at midnight |
-| Lunar New Year | Lantern, Gilded, Plum blossom | lanterns, fireworks, confetti, none | the coming year's zodiac animal, shown under the clock at midnight |
+| Classic | Classic only, so no theme page | fireworks, confetti, none | an optional message page; the message shows under the clock at midnight |
+| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | "Happy New Year 2027!" under the clock at midnight (the year that begins) |
+| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name page; "Happy birthday, Mia!" under the clock at midnight |
+| Lunar New Year | Lantern, Gilded, Plum blossom | lanterns, fireworks, confetti, none | "Happy Year of the Goat!" under the clock at midnight (the coming year's zodiac animal) |
 
-Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
+Then: 24-hour or 12-hour (the first time, preset to the device's choice), simple or flip-clock style, the theme, how long before midnight and how long
 after it (5 to 60 s each, e.g. −5 / +10), and the midnight animation. It plays over the clock from
 00:00:00 until the loop starts over.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
@@ -96,8 +100,8 @@ src/app/            screens (Expo Router): index (home), setup/[step], ready, cl
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
 src/occasions.ts    Classic, New Year's Eve, Birthday, Lunar New Year: the themes and animations each one offers
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip), the loop timing, the greeting under the digits (birthday,
-                    Lunar New Year zodiac), the midnight fireworks, confetti, balloons and lanterns
+src/clock/          the clock face (simple / flip), the loop timing, the greeting at midnight, the midnight
+                    fireworks, confetti, balloons and lanterns
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/theme.ts        brand colors used by the app, and the clock themes
 src/i18n/           the app's languages (one file each, translated from languages/en.ts) and the device-language pick

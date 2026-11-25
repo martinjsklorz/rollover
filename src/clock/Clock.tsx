@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
+import { AccessibilityInfo, Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import { useStrings } from '../i18n'
 import type { Settings } from '../settings'
 import { colors, themeOf, type ClockTheme } from '../theme'
@@ -9,7 +9,7 @@ import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { greetingFor } from './greeting'
 import Lanterns from './Lanterns'
-import { formatTime, loopTime, timeParts, useLoop, type TimeParts } from './time'
+import { formatTime, loopTime, periodText, timeParts, useLoop, type DayPeriod, type TimeParts } from './time'
 
 // react-native-web has no native animation driver
 const useNativeDriver = Platform.OS !== 'web'
@@ -19,27 +19,38 @@ const useNativeDriver = Platform.OS !== 'web'
  * so the same component is used for the wizard preview and the full screen.
  * The loop runs from `startedAt`; pass a new value to restart it.
  * `sizeKey` remembers the size, so a clock in the same spot on the next screen shows from its first frame.
+ * `preview`: the wizard's small preview, hidden from screen readers, so its greeting isn't announced.
  */
-export default function Clock({ settings, startedAt, sizeKey }: { settings: Settings; startedAt: number; sizeKey?: string }) {
+export default function Clock({
+  settings,
+  startedAt,
+  sizeKey,
+  preview = false,
+}: {
+  settings: Settings
+  startedAt: number
+  sizeKey?: string
+  preview?: boolean
+}) {
   const [size, onLayout] = useLayoutSize(sizeKey)
   return (
     <View style={styles.fill} onLayout={onLayout}>
       {/* key: a new start shows its first second right away, not the old loop's for a frame */}
-      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} />}
+      {size && <LoopingFace key={startedAt} settings={settings} startedAt={startedAt} size={size} announce={!preview} />}
     </View>
   )
 }
 
-function LoopingFace({ settings, startedAt, size }: { settings: Settings; startedAt: number; size: Size }) {
+function LoopingFace({ settings, startedAt, size, announce }: { settings: Settings; startedAt: number; size: Size; announce: boolean }) {
   const elapsed = useLoop(settings.before + settings.after, startedAt)
   const time = loopTime(settings.before, elapsed)
+  const t = useStrings()
   const parts = timeParts(time, settings.hour12)
   const theme = themeOf(settings.theme)
   // from 00:00:00 until the loop starts over
   const afterMidnight = elapsed >= settings.before
   // the greeting goes in the space below the digits
   const [faceHeight, setFaceHeight] = useState(0)
-  const t = useStrings()
   const greeting = afterMidnight ? greetingFor(settings, t, new Date()) : null
   return (
     <>
@@ -48,24 +59,40 @@ function LoopingFace({ settings, startedAt, size }: { settings: Settings; starte
       {afterMidnight && settings.animation === 'balloons' && <Balloons size={size} colors={theme.accents} />}
       {afterMidnight && settings.animation === 'lanterns' && <Lanterns size={size} colors={theme.accents} />}
       {/* screen readers get the time as one name, not the digits and colons one by one */}
-      <View role="timer" aria-label={formatTime(time, settings.hour12)}>
+      <View role="timer" aria-label={formatTime(time, settings.hour12, t.dayPeriod)}>
         <View aria-hidden onLayout={(e) => setFaceHeight(e.nativeEvent.layout.height)}>
-          {settings.style === 'flip' ? <FlipFace parts={parts} size={size} theme={theme} /> : <SimpleFace parts={parts} size={size} theme={theme} />}
+          {settings.style === 'flip' ? (
+            <FlipFace parts={parts} dayPeriod={t.dayPeriod} size={size} theme={theme} />
+          ) : (
+            <SimpleFace parts={parts} dayPeriod={t.dayPeriod} size={size} theme={theme} />
+          )}
         </View>
       </View>
-      {greeting && faceHeight > 0 && <Greeting text={greeting} color={theme.text} size={size} faceHeight={faceHeight} />}
+      {/* always there, so screen readers on the web and Android read the greeting when it appears (iOS: see Greeting) */}
+      <View style={StyleSheet.absoluteFill} aria-live={announce ? 'polite' : 'off'} pointerEvents="none">
+        {greeting && faceHeight > 0 && <Greeting text={greeting} color={theme.text} size={size} faceHeight={faceHeight} announce={announce} />}
+      </View>
     </>
   )
 }
 
-/* ---------- greeting: e.g. the birthday's or the Lunar New Year's ---------- */
+/* ---------- greeting: "Happy New Year 2027!", "Happy birthday, Mia!", "Happy Year of the Goat!", a Classic message ---------- */
 
 const GREETING_DELAY_MS = 300
 const GREETING_FADE_MS = 900
 
 /** One line under the digits, fading in at midnight. Sized to the space between the digits and the bottom edge. */
-function Greeting({ text, color, size, faceHeight }: { text: string; color: string; size: Size; faceHeight: number }) {
+function Greeting({ text, color, size, faceHeight, announce }: { text: string; color: string; size: Size; faceHeight: number; announce: boolean }) {
   const [opacity] = useState(() => new Animated.Value(0))
+  // fits the space under the digits and stays within 90 % of the width
+  const space = (size.height - faceHeight) / 2
+  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / textWidthEm(text), size.height * 0.08)
+  // no room on a very small preview
+  const shown = fontSize >= 8
+  useEffect(() => {
+    // iOS has no live regions: announce it. The web and Android read it from the live region around it.
+    if (announce && shown && Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(text)
+  }, [announce, shown, text])
   useEffect(() => {
     const fade = Animated.timing(opacity, {
       toValue: 1,
@@ -77,11 +104,7 @@ function Greeting({ text, color, size, faceHeight }: { text: string; color: stri
     fade.start()
     return () => fade.stop()
   }, [opacity])
-  const space = (size.height - faceHeight) / 2
-  // keep the line within 90 % of the width
-  const fontSize = Math.min(space * 0.42, (size.width * 0.9) / textWidthEm(text), size.height * 0.08)
-  // no room on a very small preview
-  if (fontSize < 8) return null
+  if (!shown) return null
   return (
     <View style={[styles.greeting, { top: size.height - space, height: space }]} pointerEvents="none">
       <Animated.Text style={[styles.greetingText, { color, fontSize, opacity }]} numberOfLines={1}>
@@ -99,46 +122,65 @@ const textWidthEm = (text: string) => [...text].reduce((em, c) => em + (WIDE.tes
 
 /* ---------- simple: thin white digits ---------- */
 
-/** measured digit widths, kept for the next clock so it doesn't start hidden */
-const measuredWidthPerPoint: { hour12?: number; hour24?: number } = {}
+/** AM/PM in the app's language, and the face's parts */
+type FaceProps = { parts: TimeParts; dayPeriod: DayPeriod; size: Size; theme: ClockTheme }
 
-function SimpleFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
-  // The digits' width per point of font size depends on the font, so it's measured: the first
+/** AM/PM next to the simple digits: its size and its gap to them, in em of the digits' font size */
+const MARKER_SIZE = 0.3
+const MARKER_GAP = 0.12
+
+/** measured widths per point by format ('24h', or the 12-hour markers), kept for the next clock so it doesn't start hidden */
+const measuredWidthPerPoint = new Map<string, number>()
+
+function SimpleFace({ parts, dayPeriod, size, theme }: FaceProps) {
+  const marker = periodText(parts, dayPeriod)
+  // The face's width per point of font size depends on the font, so it's measured: the first
   // render uses a safe guess (hidden), then the digits are sized to fill the width.
-  const format = parts.ampm ? 'hour12' : 'hour24'
-  const [widthPerPoint, setWidthPerPoint] = useState(() => measuredWidthPerPoint[format] ?? null)
-  const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (parts.ampm ? 6.2 : 5)), size.height * 0.5)
+  // The guess for 12-hour adds the wider of AM and PM: "PM" is about 1.1 em, "午後" or "오후" 2 em.
+  const format = marker ? `${dayPeriod.am} ${dayPeriod.pm}` : '24h'
+  const markerEm = MARKER_GAP + MARKER_SIZE * Math.max(textWidthEm(dayPeriod.am), textWidthEm(dayPeriod.pm))
+  const [widthPerPoint, setWidthPerPoint] = useState(() => measuredWidthPerPoint.get(format) ?? null)
+  const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (marker ? 5.75 + markerEm : 5)), size.height * 0.5)
   const onLayout = (e: LayoutChangeEvent) => {
     // hidden (see Clock): a 0 width would count as unmeasured and hide the digits for good
     if (!e.nativeEvent.layout.width || !fontSize) return
     const measured = e.nativeEvent.layout.width / fontSize
     // AM and PM differ slightly in width; don't resize the digits for that
     if (!widthPerPoint || Math.abs(measured - widthPerPoint) / widthPerPoint > 0.03) {
-      measuredWidthPerPoint[format] = measured
+      measuredWidthPerPoint.set(format, measured)
       setWidthPerPoint(measured)
     }
   }
   const color = { color: theme.text }
   const glow = theme.glow && { textShadowColor: theme.text, textShadowRadius: fontSize * 0.12, textShadowOffset: { width: 0, height: 0 } }
+  const before = dayPeriod.position === 'before'
+  const gap = fontSize * MARKER_GAP
+  const markerText = marker !== '' && (
+    <Text style={[styles.simpleMarker, color, { fontSize: fontSize * MARKER_SIZE }, before ? { marginRight: gap } : { marginLeft: gap }]}>
+      {marker}
+    </Text>
+  )
   return (
     <View style={[styles.row, !widthPerPoint && styles.measuring]} onLayout={onLayout}>
+      {before && markerText}
       <Text style={[styles.simple, color, glow, { fontSize }]} numberOfLines={1}>
         {parts.hh}:{parts.mm}:{parts.ss}
       </Text>
-      {parts.ampm !== '' && <Text style={[styles.simpleAmPm, color, { fontSize: fontSize * 0.3, marginLeft: fontSize * 0.12 }]}>{parts.ampm}</Text>}
+      {!before && markerText}
     </View>
   )
 }
 
 /* ---------- flip: split-flap cards ---------- */
 
-function FlipFace({ parts, size, theme }: { parts: TimeParts; size: Size; theme: ClockTheme }) {
+function FlipFace({ parts, dayPeriod, size, theme }: FaceProps) {
   const gapRatio = 0.12
   const cardWidth = Math.min((size.width * 0.92) / (3 + 2 * gapRatio), (size.height * 0.8) / 1.2)
   const gap = cardWidth * gapRatio
   return (
     <View style={[styles.row, { alignItems: 'center', gap }]}>
-      <FlipCard value={parts.hh} width={cardWidth} theme={theme} corner={parts.ampm} />
+      {/* AM/PM in the hour card's top left corner, whichever side of the time the language puts it */}
+      <FlipCard value={parts.hh} width={cardWidth} theme={theme} corner={periodText(parts, dayPeriod)} />
       <FlipCard value={parts.mm} width={cardWidth} theme={theme} />
       <FlipCard value={parts.ss} width={cardWidth} theme={theme} />
     </View>
@@ -256,7 +298,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center' },
   measuring: { opacity: 0 },
   simple: { color: colors.text, fontWeight: '100', fontVariant: ['tabular-nums'], flexShrink: 0 },
-  simpleAmPm: { color: colors.text, fontWeight: '300' },
+  simpleMarker: { color: colors.text, fontWeight: '300' },
   half: { position: 'absolute', left: 0, right: 0, overflow: 'hidden', backgroundColor: colors.surface, backfaceVisibility: 'hidden' },
   face: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
   shade: { backgroundColor: colors.bg },
