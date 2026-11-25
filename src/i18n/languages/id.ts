@@ -30,6 +30,7 @@ const id: Strings = {
     pressAgain: 'Tekan lagi untuk kembali',
     birthday: 'Selamat ulang tahun!',
     birthdayName: (name) => `Selamat ulang tahun, ${name}!`,
+    newYear: (year) => `Selamat Tahun Baru ${year}!`,
   },
   seconds: (n) => `${n} detik`,
   occasion: {
@@ -49,6 +50,15 @@ const id: Strings = {
     label: 'Nama',
     placeholder: 'Namanya',
     none: 'Tanpa nama',
+  },
+  message: {
+    name: 'Pesan',
+    title: 'Ada pesan untuk tengah malam?',
+    subtitle: 'Ditampilkan di bawah jam saat tengah malam. Biarkan kosong untuk jam saja.',
+    label: 'Pesan',
+    placeholder: 'Kita berhasil!',
+    none: 'Tanpa pesan',
+    quote: (text) => `“${text}”`,
   },
   format: {
     name: 'Format',

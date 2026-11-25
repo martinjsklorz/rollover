@@ -30,6 +30,7 @@ const tr: Strings = {
     pressAgain: 'Geri dönmek için tekrar bas',
     birthday: 'İyi ki doğdun!',
     birthdayName: (name) => `İyi ki doğdun, ${name}!`,
+    newYear: (year) => `Mutlu yıllar ${year}!`,
   },
   seconds: (n) => `${n} saniye`,
   occasion: {
@@ -49,6 +50,15 @@ const tr: Strings = {
     label: 'İsim',
     placeholder: 'Onun adı',
     none: 'İsim yok',
+  },
+  message: {
+    name: 'Mesaj',
+    title: 'Gece yarısı için bir mesaj?',
+    subtitle: 'Gece yarısı saatin altında görünür. Sadece saat için boş bırak.',
+    label: 'Mesaj',
+    placeholder: 'Başardık!',
+    none: 'Mesaj yok',
+    quote: (text) => `“${text}”`,
   },
   format: {
     name: 'Biçim',

@@ -30,6 +30,7 @@ const hi: Strings = {
     pressAgain: 'वापस जाने के लिए फिर से दबाएँ',
     birthday: 'जन्मदिन मुबारक!',
     birthdayName: (name) => `जन्मदिन मुबारक, ${name}!`,
+    newYear: (year) => `नव वर्ष ${year} की शुभकामनाएँ!`,
   },
   seconds: (n) => `${n} सेकंड`,
   occasion: {
@@ -49,6 +50,15 @@ const hi: Strings = {
     label: 'नाम',
     placeholder: 'उनका नाम',
     none: 'कोई नाम नहीं',
+  },
+  message: {
+    name: 'संदेश',
+    title: 'आधी रात के लिए कोई संदेश?',
+    subtitle: 'आधी रात को घड़ी के नीचे दिखता है। सिर्फ़ घड़ी के लिए खाली छोड़ दें।',
+    label: 'संदेश',
+    placeholder: 'हमने कर दिखाया!',
+    none: 'कोई संदेश नहीं',
+    quote: (text) => `“${text}”`,
   },
   format: {
     name: 'फ़ॉर्मैट',

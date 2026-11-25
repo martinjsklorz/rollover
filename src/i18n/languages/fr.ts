@@ -30,6 +30,7 @@ const fr: Strings = {
     pressAgain: 'Appuyez encore pour revenir',
     birthday: 'Joyeux anniversaire !',
     birthdayName: (name) => `Joyeux anniversaire, ${name} !`,
+    newYear: (year) => `Bonne année ${year} !`,
   },
   seconds: (n) => `${n} secondes`,
   occasion: {
@@ -49,6 +50,15 @@ const fr: Strings = {
     label: 'Prénom',
     placeholder: 'Son prénom',
     none: 'Sans prénom',
+  },
+  message: {
+    name: 'Message',
+    title: 'Un message pour minuit ?',
+    subtitle: 'Affiché sous l’horloge à minuit. Laissez vide pour n’afficher que l’horloge.',
+    label: 'Message',
+    placeholder: 'On l’a fait !',
+    none: 'Sans message',
+    quote: (text) => `« ${text} »`,
   },
   format: {
     name: 'Format',

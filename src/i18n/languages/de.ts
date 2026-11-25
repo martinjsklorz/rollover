@@ -30,6 +30,7 @@ const de: Strings = {
     pressAgain: 'Noch einmal drücken, um zurückzugehen',
     birthday: 'Alles Gute zum Geburtstag!',
     birthdayName: (name) => `Alles Gute zum Geburtstag, ${name}!`,
+    newYear: (year) => `Frohes neues Jahr ${year}!`,
   },
   seconds: (n) => `${n} Sekunden`,
   occasion: {
@@ -49,6 +50,15 @@ const de: Strings = {
     label: 'Name',
     placeholder: 'Name des Geburtstagskinds',
     none: 'Kein Name',
+  },
+  message: {
+    name: 'Botschaft',
+    title: 'Eine Botschaft zu Mitternacht?',
+    subtitle: 'Erscheint um Mitternacht unter der Uhr. Lass es leer, dann bleibt es bei der Uhr.',
+    label: 'Botschaft',
+    placeholder: 'Wir haben’s geschafft!',
+    none: 'Keine Botschaft',
+    quote: (text) => `„${text}“`,
   },
   format: {
     name: 'Format',

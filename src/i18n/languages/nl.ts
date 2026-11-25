@@ -30,6 +30,7 @@ const nl: Strings = {
     pressAgain: 'Druk nog een keer om terug te gaan',
     birthday: 'Hartelijk gefeliciteerd!',
     birthdayName: (name) => `Hartelijk gefeliciteerd, ${name}!`,
+    newYear: (year) => `Gelukkig nieuwjaar ${year}!`,
   },
   seconds: (n) => `${n} seconden`,
   occasion: {
@@ -49,6 +50,15 @@ const nl: Strings = {
     label: 'Naam',
     placeholder: 'Naam van de jarige',
     none: 'Geen naam',
+  },
+  message: {
+    name: 'Bericht',
+    title: 'Een bericht voor middernacht?',
+    subtitle: 'Verschijnt om middernacht onder de klok. Laat leeg voor alleen de klok.',
+    label: 'Bericht',
+    placeholder: 'Het is gelukt!',
+    none: 'Geen bericht',
+    quote: (text) => `‘${text}’`,
   },
   format: {
     name: 'Notatie',

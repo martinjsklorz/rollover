@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { NAME_MAX, type MidnightAnimation, type Settings } from '../settings'
+import { MESSAGE_MAX, NAME_MAX, type MidnightAnimation, type Settings } from '../settings'
 import { useStrings, type Strings } from '../i18n'
 import en from '../i18n/languages/en'
 import { formatTime, loopTime } from '../clock/time'
@@ -19,11 +19,13 @@ export type Choice = {
 /** A text field instead of choices. */
 export type TextField = {
   /** the setting it edits */
-  setting: 'name'
+  setting: 'name' | 'message'
   /** names the field for screen readers */
   label: string
   placeholder: string
   maxLength: number
+  /** a name starts every word with a capital, a message only the first */
+  autoCapitalize: 'words' | 'sentences'
 }
 
 export type Step = {
@@ -35,7 +37,7 @@ export type Step = {
   /** the options; a step has these or a text field */
   choices?: Choice[]
   text?: TextField
-  /** shown only when this holds, e.g. the name page for a birthday */
+  /** shown only when this holds, e.g. the name page for a birthday, the message page for Classic */
   when?: (s: Settings) => boolean
   /** text for the summary on the last page */
   summary: (s: Settings) => string
@@ -73,9 +75,24 @@ export const stepsIn = (t: Strings): Step[] => {
       name: t.name.name,
       title: t.name.title,
       subtitle: t.name.subtitle,
-      text: { setting: 'name', label: t.name.label, placeholder: t.name.placeholder, maxLength: NAME_MAX },
+      text: { setting: 'name', label: t.name.label, placeholder: t.name.placeholder, maxLength: NAME_MAX, autoCapitalize: 'words' },
       when: (s) => s.occasion === 'birthday',
       summary: (s) => s.name.trim() || t.name.none,
+    },
+    {
+      id: 'message',
+      name: t.message.name,
+      title: t.message.title,
+      subtitle: t.message.subtitle,
+      text: {
+        setting: 'message',
+        label: t.message.label,
+        placeholder: t.message.placeholder,
+        maxLength: MESSAGE_MAX,
+        autoCapitalize: 'sentences',
+      },
+      when: (s) => s.occasion === 'classic',
+      summary: (s) => (s.message.trim() ? t.message.quote(s.message.trim()) : t.message.none),
     },
     {
       id: 'format',
@@ -177,7 +194,7 @@ export const isSelected = (choice: Choice, s: Settings) =>
 export const hintText = (choice: Choice, s: Settings) =>
   typeof choice.hint === 'function' ? choice.hint(s) : choice.hint
 
-/** The wizard's pages for these settings: the name page only for a birthday, no theme page for Classic. */
+/** The wizard's pages for these settings: the name page only for a birthday, the message page only for Classic, no theme page for Classic. */
 export const stepsFor = (steps: Step[], s: Settings) => steps.filter((step) => !step.when || step.when(s))
 
 /** The choices a step offers for these settings. */
@@ -186,7 +203,7 @@ export const choicesFor = (step: Step, s: Settings) => (step.choices ?? []).filt
 export const subtitleText = (step: Step, s: Settings) => (typeof step.subtitle === 'function' ? step.subtitle(s) : step.subtitle)
 
 /**
- * The settings in three short lines: the occasion ("Birthday · Mia · Sky"), the look ("24-hour · Simple")
+ * The settings in three short lines: the occasion ("Birthday · Mia · Sky", "Classic · “We did it!”"), the look ("24-hour · Simple")
  * and the loop, from 23:59:50 to 00:00:10. `steps` are all the steps, in the app's language `t`.
  */
 export const describe = (s: Settings, steps: Step[], t: Strings) => {
@@ -195,6 +212,7 @@ export const describe = (s: Settings, steps: Step[], t: Strings) => {
     occasion: [
       summaryOf('occasion'),
       s.occasion === 'birthday' && s.name.trim(),
+      s.occasion === 'classic' && s.message.trim() && summaryOf('message'),
       OCCASIONS[s.occasion].themes.length > 1 && summaryOf('theme'),
     ]
       .filter(Boolean)
