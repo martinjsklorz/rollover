@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: '鼠',
+  ox: '牛',
+  tiger: '虎',
+  rabbit: '兔',
+  dragon: '龍',
+  snake: '蛇',
+  horse: '馬',
+  goat: '羊',
+  monkey: '猴',
+  rooster: '雞',
+  dog: '狗',
+  pig: '豬',
+}
+
 const zhHant: Strings = {
   home: {
     tagline: '午夜，一次又一次。',
@@ -30,7 +46,10 @@ const zhHant: Strings = {
     pressAgain: '再按一下即可返回',
     birthday: '生日快樂！',
     birthdayName: (name) => `${name}，生日快樂！`,
+    newYear: (year) => `${year}新年快樂！`,
+    lunarNewYear: (animal) => `${zodiac[animal]}年大吉！`,
   },
+  zodiac,
   seconds: (n) => `${n} 秒`,
   occasion: {
     name: '場合',
@@ -41,6 +60,7 @@ const zhHant: Strings = {
     classic: { name: '經典', hint: '任何午夜，白色與餘燼色' },
     newyear: { name: '跨年夜', hint: '金色、冰藍或霓虹' },
     birthday: { name: '生日', hint: '糖果色、氣球和名字' },
+    lunar: { name: '農曆新年', hint: '紅與金、燈籠和生肖' },
   },
   name: {
     name: '名字',
@@ -50,12 +70,22 @@ const zhHant: Strings = {
     placeholder: '壽星的名字',
     none: '無名字',
   },
+  message: {
+    name: '寄語',
+    title: '午夜要顯示一句話嗎？',
+    subtitle: '午夜時顯示在時鐘下方。留空則只顯示時鐘。',
+    label: '寄語',
+    placeholder: '我們做到了！',
+    none: '無寄語',
+    quote: (text) => `「${text}」`,
+  },
   format: {
     name: '格式',
     title: '24 小時制還是 AM/PM？',
     hour24: '24 小時制',
     hour12: '12 小時制',
   },
+  dayPeriod: { am: '上午', pm: '下午', position: 'before', spaced: false },
   style: {
     name: '樣式',
     title: '選擇樣式',
@@ -67,7 +97,11 @@ const zhHant: Strings = {
   theme: {
     name: '主題',
     title: '選擇主題',
-    subtitle: { newyear: '跨年夜的配色。', birthday: '生日的配色。' },
+    subtitle: {
+      newyear: '跨年夜的配色。',
+      birthday: '生日的配色。',
+      lunar: '農曆新年的配色。',
+    },
   },
   themes: {
     classic: { name: '經典', hint: '白色數字，餘燼色與白色火花' },
@@ -77,6 +111,9 @@ const zhHant: Strings = {
     bubblegum: { name: '泡泡糖', hint: '粉紅色數字；粉紅、淡紫與金色' },
     sky: { name: '天空', hint: '藍色數字；藍色、薄荷與檸檬' },
     sprinkles: { name: '彩糖', hint: '白色數字；各種粉彩色' },
+    lantern: { name: '紅燈籠', hint: '紅色數字；紅、金與暖白' },
+    gilded: { name: '鎏金', hint: '金色數字；紅與金' },
+    plum: { name: '梅花', hint: '粉色數字；粉、白與金' },
   },
   before: {
     name: '午夜前',
@@ -96,6 +133,8 @@ const zhHant: Strings = {
     subtitle: '每次時鐘跨過午夜，都會在之後的幾秒內播放。',
     balloons: '氣球',
     balloonsHint: (time) => `${time} 氣球升空`,
+    lanterns: '燈籠',
+    lanternsHint: (time) => `${time} 燈籠升起`,
     fireworks: '煙火',
     fireworksHint: (time) => `${time} 煙火升空`,
     confetti: '彩紙',
@@ -114,6 +153,7 @@ const zhHant: Strings = {
       classic: (time) => `${time} 奏出西敏寺鐘聲`,
       newyear: (time) => `${time} 奏出《友誼萬歲》`,
       birthday: (time) => `${time} 奏出《生日快樂》`,
+      lunar: (time) => `${time} 奏出《茉莉花》`,
     },
     off: '靜音',
     offHint: '沒有聲音',

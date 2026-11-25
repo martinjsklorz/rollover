@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Tikus',
+  ox: 'Kerbau',
+  tiger: 'Macan',
+  rabbit: 'Kelinci',
+  dragon: 'Naga',
+  snake: 'Ular',
+  horse: 'Kuda',
+  goat: 'Kambing',
+  monkey: 'Monyet',
+  rooster: 'Ayam',
+  dog: 'Anjing',
+  pig: 'Babi',
+}
+
 const id: Strings = {
   home: {
     tagline: 'Tengah malam, lagi dan lagi.',
@@ -30,7 +46,10 @@ const id: Strings = {
     pressAgain: 'Tekan lagi untuk kembali',
     birthday: 'Selamat ulang tahun!',
     birthdayName: (name) => `Selamat ulang tahun, ${name}!`,
+    newYear: (year) => `Selamat Tahun Baru ${year}!`,
+    lunarNewYear: (animal) => `Selamat Tahun ${zodiac[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} detik`,
   occasion: {
     name: 'Acara',
@@ -41,6 +60,7 @@ const id: Strings = {
     classic: { name: 'Klasik', hint: 'Tengah malam mana pun, putih dan bara' },
     newyear: { name: 'Malam Tahun Baru', hint: 'Emas, biru es, atau neon' },
     birthday: { name: 'Ulang tahun', hint: 'Warna permen, balon, dan sebuah nama' },
+    lunar: { name: 'Tahun Baru Imlek', hint: 'Merah dan emas, lampion dan shio' },
   },
   name: {
     name: 'Nama',
@@ -50,12 +70,22 @@ const id: Strings = {
     placeholder: 'Namanya',
     none: 'Tanpa nama',
   },
+  message: {
+    name: 'Pesan',
+    title: 'Ada pesan untuk tengah malam?',
+    subtitle: 'Ditampilkan di bawah jam saat tengah malam. Biarkan kosong untuk jam saja.',
+    label: 'Pesan',
+    placeholder: 'Kita berhasil!',
+    none: 'Tanpa pesan',
+    quote: (text) => `“${text}”`,
+  },
   format: {
     name: 'Format',
     title: '24 jam atau AM/PM?',
     hour24: '24 jam',
     hour12: '12 jam',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Gaya',
     title: 'Pilih gaya',
@@ -67,7 +97,11 @@ const id: Strings = {
   theme: {
     name: 'Tema',
     title: 'Pilih tema',
-    subtitle: { newyear: 'Warna untuk malam Tahun Baru.', birthday: 'Warna untuk ulang tahun.' },
+    subtitle: {
+      newyear: 'Warna untuk malam Tahun Baru.',
+      birthday: 'Warna untuk ulang tahun.',
+      lunar: 'Warna untuk Tahun Baru Imlek.',
+    },
   },
   themes: {
     classic: { name: 'Klasik', hint: 'Angka putih, percikan bara dan putih' },
@@ -77,6 +111,9 @@ const id: Strings = {
     bubblegum: { name: 'Permen karet', hint: 'Angka merah muda; merah muda, lila, dan emas' },
     sky: { name: 'Langit', hint: 'Angka biru; biru, mint, dan lemon' },
     sprinkles: { name: 'Meses', hint: 'Angka putih; semua warna pastel' },
+    lantern: { name: 'Lampion merah', hint: 'Angka merah; merah, emas, dan putih hangat' },
+    gilded: { name: 'Keemasan', hint: 'Angka emas; merah dan emas' },
+    plum: { name: 'Bunga plum', hint: 'Angka merah muda; merah muda, putih, dan emas' },
   },
   before: {
     name: 'Sebelum tengah malam',
@@ -96,6 +133,8 @@ const id: Strings = {
     subtitle: 'Diputar beberapa detik setelah tengah malam, setiap kali jam melewati tengah malam.',
     balloons: 'Balon',
     balloonsHint: (time) => `Balon melayang pukul ${time}`,
+    lanterns: 'Lampion',
+    lanternsHint: (time) => `Lampion naik pukul ${time}`,
     fireworks: 'Kembang api',
     fireworksHint: (time) => `Roket meluncur pukul ${time}`,
     confetti: 'Konfeti',
@@ -114,6 +153,7 @@ const id: Strings = {
       classic: (time) => `Memainkan lonceng Westminster pukul ${time}`,
       newyear: (time) => `Memainkan “Auld Lang Syne” pukul ${time}`,
       birthday: (time) => `Memainkan “Happy Birthday” pukul ${time}`,
+      lunar: (time) => `Memainkan “Bunga Melati” pukul ${time}`,
     },
     off: 'Senyap',
     offHint: 'Tanpa suara',

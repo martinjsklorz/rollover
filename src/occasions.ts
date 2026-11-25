@@ -2,7 +2,7 @@ import type { MidnightAnimation, Settings } from './settings'
 import type { ThemeId } from './theme'
 
 /** What the midnight is for. Picked first in the wizard; it decides which themes and animations are offered. */
-export type Occasion = 'classic' | 'newyear' | 'birthday'
+export type Occasion = 'classic' | 'newyear' | 'birthday' | 'lunar'
 
 /** Names and hints are in src/i18n (`occasions`). */
 type OccasionInfo = {
@@ -24,6 +24,11 @@ export const OCCASIONS: Record<Occasion, OccasionInfo> = {
   birthday: {
     themes: ['bubblegum', 'sky', 'sprinkles'],
     animations: ['balloons', 'confetti', 'none'],
+  },
+  // Spring Festival, Seollal, Tết: the countdown on Lunar New Year's Eve
+  lunar: {
+    themes: ['lantern', 'gilded', 'plum'],
+    animations: ['lanterns', 'fireworks', 'confetti', 'none'],
   },
 }
 

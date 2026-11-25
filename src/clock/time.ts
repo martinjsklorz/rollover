@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Strings } from '../i18n'
 
 const DAY = 24 * 3600
 
@@ -30,17 +31,30 @@ export function loopTime(before: number, elapsed: number) {
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-export type TimeParts = { hh: string; mm: string; ss: string; ampm: '' | 'AM' | 'PM' }
+/** AM/PM in one language: the words, and whether they go before or after the time (see languages/en.ts) */
+export type DayPeriod = Strings['dayPeriod']
+
+/** `period` is which half of the day, not its name: the name comes from the language's DayPeriod */
+export type TimeParts = { hh: string; mm: string; ss: string; period: '' | 'am' | 'pm' }
 
 export function timeParts(t: number, hour12: boolean): TimeParts {
   const h = Math.floor(t / 3600)
   const mm = pad(Math.floor(t / 60) % 60)
   const ss = pad(t % 60)
-  if (!hour12) return { hh: pad(h), mm, ss, ampm: '' }
-  return { hh: pad(h % 12 || 12), mm, ss, ampm: h < 12 ? 'AM' : 'PM' }
+  if (!hour12) return { hh: pad(h), mm, ss, period: '' }
+  return { hh: pad(h % 12 || 12), mm, ss, period: h < 12 ? 'am' : 'pm' }
 }
 
-export function formatTime(t: number, hour12: boolean) {
+/** The AM/PM marker for these parts in this language, '' on a 24-hour clock. */
+export const periodText = (p: TimeParts, dayPeriod: DayPeriod) => (p.period ? dayPeriod[p.period] : '')
+
+/** e.g. "23:59:50", "11:59:50 PM", "午後11:59:50", "오후 11:59:50" */
+export function formatTime(t: number, hour12: boolean, dayPeriod: DayPeriod) {
   const p = timeParts(t, hour12)
-  return `${p.hh}:${p.mm}:${p.ss}${p.ampm ? ' ' + p.ampm : ''}`
+  const time = `${p.hh}:${p.mm}:${p.ss}`
+  const marker = periodText(p, dayPeriod)
+  if (!marker) return time
+  // a no-break space, so a hint never wraps between the time and its marker
+  const space = dayPeriod.spaced ? '\u00a0' : ''
+  return dayPeriod.position === 'before' ? marker + space + time : time + space + marker
 }

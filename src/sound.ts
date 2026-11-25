@@ -12,6 +12,7 @@ const TUNES: Record<Occasion, number> = {
   classic: require('../assets/sounds/classic.wav'),
   newyear: require('../assets/sounds/newyear.wav'),
   birthday: require('../assets/sounds/birthday.wav'),
+  lunar: require('../assets/sounds/lunar.wav'),
 }
 
 /** how long a tune that's still playing takes to fade out when the loop starts over, or the clock closes */

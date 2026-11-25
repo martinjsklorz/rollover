@@ -1,5 +1,37 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'चूहा',
+  ox: 'बैल',
+  tiger: 'बाघ',
+  rabbit: 'खरगोश',
+  dragon: 'ड्रैगन',
+  snake: 'साँप',
+  horse: 'घोड़ा',
+  goat: 'बकरी',
+  monkey: 'बंदर',
+  rooster: 'मुर्गा',
+  dog: 'कुत्ता',
+  pig: 'सूअर',
+}
+
+/** Oblique forms before के: घोड़े के वर्ष */
+const oblique: Record<keyof Strings['zodiac'], string> = {
+  rat: 'चूहे',
+  ox: 'बैल',
+  tiger: 'बाघ',
+  rabbit: 'खरगोश',
+  dragon: 'ड्रैगन',
+  snake: 'साँप',
+  horse: 'घोड़े',
+  goat: 'बकरी',
+  monkey: 'बंदर',
+  rooster: 'मुर्गे',
+  dog: 'कुत्ते',
+  pig: 'सूअर',
+}
+
 const hi: Strings = {
   home: {
     tagline: 'आधी रात, बार-बार।',
@@ -30,7 +62,10 @@ const hi: Strings = {
     pressAgain: 'वापस जाने के लिए फिर से दबाएँ',
     birthday: 'जन्मदिन मुबारक!',
     birthdayName: (name) => `जन्मदिन मुबारक, ${name}!`,
+    newYear: (year) => `नव वर्ष ${year} की शुभकामनाएँ!`,
+    lunarNewYear: (animal) => `${oblique[animal]} के वर्ष की शुभकामनाएँ!`,
   },
+  zodiac,
   seconds: (n) => `${n} सेकंड`,
   occasion: {
     name: 'मौक़ा',
@@ -41,6 +76,7 @@ const hi: Strings = {
     classic: { name: 'क्लासिक', hint: 'कोई भी आधी रात, सफ़ेद और अंगारे जैसा' },
     newyear: { name: 'नए साल की पूर्व संध्या', hint: 'सुनहरा, बर्फ़ीला नीला या नियॉन' },
     birthday: { name: 'जन्मदिन', hint: 'कैंडी जैसे रंग, गुब्बारे और एक नाम' },
+    lunar: { name: 'चंद्र नव वर्ष', hint: 'लाल और सुनहरा, लालटेनें और राशि-पशु' },
   },
   name: {
     name: 'नाम',
@@ -50,12 +86,22 @@ const hi: Strings = {
     placeholder: 'उनका नाम',
     none: 'कोई नाम नहीं',
   },
+  message: {
+    name: 'संदेश',
+    title: 'आधी रात के लिए कोई संदेश?',
+    subtitle: 'आधी रात को घड़ी के नीचे दिखता है। सिर्फ़ घड़ी के लिए खाली छोड़ दें।',
+    label: 'संदेश',
+    placeholder: 'हमने कर दिखाया!',
+    none: 'कोई संदेश नहीं',
+    quote: (text) => `“${text}”`,
+  },
   format: {
     name: 'फ़ॉर्मैट',
     title: '24 घंटे या AM/PM?',
     hour24: '24 घंटे',
     hour12: '12 घंटे',
   },
+  dayPeriod: { am: 'am', pm: 'pm', position: 'after', spaced: true },
   style: {
     name: 'स्टाइल',
     title: 'स्टाइल चुनें',
@@ -67,7 +113,11 @@ const hi: Strings = {
   theme: {
     name: 'थीम',
     title: 'थीम चुनें',
-    subtitle: { newyear: 'नए साल की पूर्व संध्या के लिए रंग।', birthday: 'जन्मदिन के लिए रंग।' },
+    subtitle: {
+      newyear: 'नए साल की पूर्व संध्या के लिए रंग।',
+      birthday: 'जन्मदिन के लिए रंग।',
+      lunar: 'चंद्र नव वर्ष के लिए रंग।',
+    },
   },
   themes: {
     classic: { name: 'क्लासिक', hint: 'सफ़ेद अंक, अंगारे जैसी और सफ़ेद चमक' },
@@ -77,6 +127,9 @@ const hi: Strings = {
     bubblegum: { name: 'बबलगम', hint: 'गुलाबी अंक; गुलाबी, बकाइन और सुनहरा' },
     sky: { name: 'आसमानी', hint: 'नीले अंक; नीला, पुदीना और नींबू' },
     sprinkles: { name: 'स्प्रिंकल्स', hint: 'सफ़ेद अंक; हर पेस्टल रंग' },
+    lantern: { name: 'लाल लालटेन', hint: 'लाल अंक; लाल, सुनहरा और हल्का सफ़ेद' },
+    gilded: { name: 'स्वर्णिम', hint: 'सुनहरे अंक; लाल और सुनहरा' },
+    plum: { name: 'आलूबुखारे के फूल', hint: 'गुलाबी अंक; गुलाबी, सफ़ेद और सुनहरा' },
   },
   before: {
     name: 'आधी रात से पहले',
@@ -96,6 +149,8 @@ const hi: Strings = {
     subtitle: 'हर बार घड़ी के आधी रात पार करने पर, उसके बाद के सेकंडों में चलता है।',
     balloons: 'गुब्बारे',
     balloonsHint: (time) => `${time} पर गुब्बारे ऊपर उड़ते हैं`,
+    lanterns: 'लालटेनें',
+    lanternsHint: (time) => `${time} पर लालटेनें ऊपर उठती हैं`,
     fireworks: 'आतिशबाज़ी',
     fireworksHint: (time) => `${time} पर रॉकेट उड़ते हैं`,
     confetti: 'कॉन्फ़ेटी',
@@ -114,6 +169,7 @@ const hi: Strings = {
       classic: (time) => `${time} पर वेस्टमिंस्टर की घंटियों की धुन बजती है`,
       newyear: (time) => `${time} पर “ऑल्ड लैंग साइन” बजता है`,
       birthday: (time) => `${time} पर “हैप्पी बर्थडे” बजता है`,
+      lunar: (time) => `${time} पर “चमेली का फूल” बजता है`,
     },
     off: 'बिना आवाज़',
     offHint: 'कोई धुन नहीं',

@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: '쥐',
+  ox: '소',
+  tiger: '호랑이',
+  rabbit: '토끼',
+  dragon: '용',
+  snake: '뱀',
+  horse: '말',
+  goat: '양',
+  monkey: '원숭이',
+  rooster: '닭',
+  dog: '개',
+  pig: '돼지',
+}
+
 const ko: Strings = {
   home: {
     tagline: '자정을, 몇 번이고 다시.',
@@ -30,7 +46,10 @@ const ko: Strings = {
     pressAgain: '한 번 더 누르면 돌아갑니다',
     birthday: '생일 축하해요!',
     birthdayName: (name) => `${name}, 생일 축하해요!`,
+    newYear: (year) => `${year}년 새해 복 많이 받으세요!`,
+    lunarNewYear: (animal) => `${zodiac[animal]}의 해, 새해 복 많이 받으세요!`,
   },
+  zodiac,
   seconds: (n) => `${n}초`,
   occasion: {
     name: '행사',
@@ -41,6 +60,7 @@ const ko: Strings = {
     classic: { name: '클래식', hint: '어떤 자정이든, 흰색과 불씨색' },
     newyear: { name: '새해 전야', hint: '골드, 아이스 블루 또는 네온' },
     birthday: { name: '생일', hint: '캔디 색상, 풍선, 그리고 이름' },
+    lunar: { name: '설날', hint: '빨강과 금색, 등불과 열두 띠' },
   },
   name: {
     name: '이름',
@@ -50,12 +70,22 @@ const ko: Strings = {
     placeholder: '이름 입력',
     none: '이름 없음',
   },
+  message: {
+    name: '메시지',
+    title: '자정에 띄울 메시지가 있나요?',
+    subtitle: '자정에 시계 아래에 표시됩니다. 비워 두면 시계만 표시됩니다.',
+    label: '메시지',
+    placeholder: '우리가 해냈어!',
+    none: '메시지 없음',
+    quote: (text) => `“${text}”`,
+  },
   format: {
     name: '형식',
     title: '24시간제 아니면 AM/PM?',
     hour24: '24시간제',
     hour12: '12시간제',
   },
+  dayPeriod: { am: '오전', pm: '오후', position: 'before', spaced: true },
   style: {
     name: '스타일',
     title: '스타일 선택',
@@ -67,7 +97,11 @@ const ko: Strings = {
   theme: {
     name: '테마',
     title: '테마 선택',
-    subtitle: { newyear: '새해 전야를 위한 색.', birthday: '생일을 위한 색.' },
+    subtitle: {
+      newyear: '새해 전야를 위한 색.',
+      birthday: '생일을 위한 색.',
+      lunar: '설날을 위한 색.',
+    },
   },
   themes: {
     classic: { name: '클래식', hint: '흰색 숫자, 불씨색과 흰색 불꽃' },
@@ -77,6 +111,9 @@ const ko: Strings = {
     bubblegum: { name: '버블검', hint: '분홍 숫자, 분홍·라일락·골드' },
     sky: { name: '스카이', hint: '파란 숫자, 파랑·민트·레몬' },
     sprinkles: { name: '스프링클', hint: '흰색 숫자, 모든 파스텔' },
+    lantern: { name: '초롱', hint: '빨간 숫자, 빨강·금색·따뜻한 흰색' },
+    gilded: { name: '금박', hint: '금색 숫자, 빨강과 금색' },
+    plum: { name: '매화', hint: '분홍 숫자, 분홍·흰색·금색' },
   },
   before: {
     name: '자정 전',
@@ -96,6 +133,8 @@ const ko: Strings = {
     subtitle: '시계가 자정을 넘길 때마다 그 후 몇 초 동안 재생됩니다.',
     balloons: '풍선',
     balloonsHint: (time) => `${time}에 풍선이 떠오릅니다`,
+    lanterns: '등불',
+    lanternsHint: (time) => `${time}에 등불이 떠오릅니다`,
     fireworks: '불꽃놀이',
     fireworksHint: (time) => `${time}에 폭죽이 올라갑니다`,
     confetti: '색종이',
@@ -114,6 +153,7 @@ const ko: Strings = {
       classic: (time) => `${time}에 웨스트민스터 차임을 연주합니다`,
       newyear: (time) => `${time}에 ‘석별의 정’을 연주합니다`,
       birthday: (time) => `${time}에 ‘생일 축하합니다’를 연주합니다`,
+      lunar: (time) => `${time}에 ‘모리화’를 연주합니다`,
     },
     off: '무음',
     offHint: '소리 없음',

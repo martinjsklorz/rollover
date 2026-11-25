@@ -1,6 +1,38 @@
 import type { Strings } from './en'
 
 /** Brazilian Portuguese, the variant most speakers use; also shown for pt-PT. */
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Rato',
+  ox: 'Boi',
+  tiger: 'Tigre',
+  rabbit: 'Coelho',
+  dragon: 'Dragão',
+  snake: 'Serpente',
+  horse: 'Cavalo',
+  goat: 'Cabra',
+  monkey: 'Macaco',
+  rooster: 'Galo',
+  dog: 'Cão',
+  pig: 'Porco',
+}
+
+/** With the article: Ano do Cavalo, Ano da Cabra */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'do Rato',
+  ox: 'do Boi',
+  tiger: 'do Tigre',
+  rabbit: 'do Coelho',
+  dragon: 'do Dragão',
+  snake: 'da Serpente',
+  horse: 'do Cavalo',
+  goat: 'da Cabra',
+  monkey: 'do Macaco',
+  rooster: 'do Galo',
+  dog: 'do Cão',
+  pig: 'do Porco',
+}
+
 const pt: Strings = {
   home: {
     tagline: 'Meia-noite, de novo e de novo.',
@@ -31,7 +63,10 @@ const pt: Strings = {
     pressAgain: 'Pressione de novo para voltar',
     birthday: 'Feliz aniversário!',
     birthdayName: (name) => `Feliz aniversário, ${name}!`,
+    newYear: (year) => `Feliz Ano Novo ${year}!`,
+    lunarNewYear: (animal) => `Feliz Ano ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} segundos`,
   occasion: {
     name: 'Ocasião',
@@ -42,6 +77,7 @@ const pt: Strings = {
     classic: { name: 'Clássico', hint: 'Qualquer meia-noite, branco e brasa' },
     newyear: { name: 'Réveillon', hint: 'Dourado, azul-gelo ou neon' },
     birthday: { name: 'Aniversário', hint: 'Cores de bala, balões e um nome' },
+    lunar: { name: 'Ano-Novo Lunar', hint: 'Vermelho e dourado, lanternas e zodíaco' },
   },
   name: {
     name: 'Nome',
@@ -51,12 +87,22 @@ const pt: Strings = {
     placeholder: 'Nome da pessoa',
     none: 'Sem nome',
   },
+  message: {
+    name: 'Mensagem',
+    title: 'Uma mensagem para a meia-noite?',
+    subtitle: 'Aparece abaixo do relógio à meia-noite. Deixe em branco para mostrar só o relógio.',
+    label: 'Mensagem',
+    placeholder: 'Conseguimos!',
+    none: 'Sem mensagem',
+    quote: (text) => `“${text}”`,
+  },
   format: {
     name: 'Formato',
     title: '24 horas ou AM/PM?',
     hour24: '24 horas',
     hour12: '12 horas',
   },
+  dayPeriod: { am: 'AM', pm: 'PM', position: 'after', spaced: true },
   style: {
     name: 'Estilo',
     title: 'Escolha um estilo',
@@ -68,7 +114,11 @@ const pt: Strings = {
   theme: {
     name: 'Tema',
     title: 'Escolha um tema',
-    subtitle: { newyear: 'Cores para o Réveillon.', birthday: 'Cores para o aniversário.' },
+    subtitle: {
+      newyear: 'Cores para o Réveillon.',
+      birthday: 'Cores para o aniversário.',
+      lunar: 'Cores para o Ano-Novo Lunar.',
+    },
   },
   themes: {
     classic: { name: 'Clássico', hint: 'Dígitos brancos, faíscas cor de brasa e brancas' },
@@ -78,6 +128,9 @@ const pt: Strings = {
     bubblegum: { name: 'Chiclete', hint: 'Dígitos rosa; rosa, lilás e dourado' },
     sky: { name: 'Céu', hint: 'Dígitos azuis; azul, menta e limão' },
     sprinkles: { name: 'Granulado', hint: 'Dígitos brancos; todos os tons pastel' },
+    lantern: { name: 'Lanterna', hint: 'Dígitos vermelhos; vermelho, dourado e branco quente' },
+    gilded: { name: 'Dourado', hint: 'Dígitos dourados; vermelho e dourado' },
+    plum: { name: 'Flor de ameixeira', hint: 'Dígitos rosa; rosa, branco e dourado' },
   },
   before: {
     name: 'Antes da meia-noite',
@@ -97,6 +150,8 @@ const pt: Strings = {
     subtitle: 'Ela aparece nos segundos depois da meia-noite, toda vez que o relógio vira.',
     balloons: 'Balões',
     balloonsHint: (time) => `Os balões sobem às ${time}`,
+    lanterns: 'Lanternas',
+    lanternsHint: (time) => `As lanternas sobem às ${time}`,
     fireworks: 'Fogos de artifício',
     fireworksHint: (time) => `Os fogos sobem às ${time}`,
     confetti: 'Confete',
@@ -115,6 +170,7 @@ const pt: Strings = {
       classic: (time) => `Toca o carrilhão de Westminster às ${time}`,
       newyear: (time) => `Toca “Auld Lang Syne” às ${time}`,
       birthday: (time) => `Toca “Parabéns pra você” às ${time}`,
+      lunar: (time) => `Toca “Flor de jasmim” às ${time}`,
     },
     off: 'Silencioso',
     offHint: 'Sem som',

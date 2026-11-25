@@ -1,5 +1,37 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'Rat',
+  ox: 'Os',
+  tiger: 'Tijger',
+  rabbit: 'Konijn',
+  dragon: 'Draak',
+  snake: 'Slang',
+  horse: 'Paard',
+  goat: 'Geit',
+  monkey: 'Aap',
+  rooster: 'Haan',
+  dog: 'Hond',
+  pig: 'Varken',
+}
+
+/** With the article: Jaar van het Paard, Jaar van de Geit */
+const ofThe: Record<keyof Strings['zodiac'], string> = {
+  rat: 'de Rat',
+  ox: 'de Os',
+  tiger: 'de Tijger',
+  rabbit: 'het Konijn',
+  dragon: 'de Draak',
+  snake: 'de Slang',
+  horse: 'het Paard',
+  goat: 'de Geit',
+  monkey: 'de Aap',
+  rooster: 'de Haan',
+  dog: 'de Hond',
+  pig: 'het Varken',
+}
+
 const nl: Strings = {
   home: {
     tagline: 'Middernacht, steeds weer opnieuw.',
@@ -30,7 +62,10 @@ const nl: Strings = {
     pressAgain: 'Druk nog een keer om terug te gaan',
     birthday: 'Hartelijk gefeliciteerd!',
     birthdayName: (name) => `Hartelijk gefeliciteerd, ${name}!`,
+    newYear: (year) => `Gelukkig nieuwjaar ${year}!`,
+    lunarNewYear: (animal) => `Gelukkig Jaar van ${ofThe[animal]}!`,
   },
+  zodiac,
   seconds: (n) => `${n} seconden`,
   occasion: {
     name: 'Gelegenheid',
@@ -41,6 +76,7 @@ const nl: Strings = {
     classic: { name: 'Klassiek', hint: 'Elke middernacht, wit en gloeiend' },
     newyear: { name: 'Oudejaarsavond', hint: 'Goud, ijsblauw of neon' },
     birthday: { name: 'Verjaardag', hint: 'Snoepkleuren, ballonnen en een naam' },
+    lunar: { name: 'Maannieuwjaar', hint: 'Rood en goud, lampionnen en dierenriem' },
   },
   name: {
     name: 'Naam',
@@ -50,12 +86,22 @@ const nl: Strings = {
     placeholder: 'Naam van de jarige',
     none: 'Geen naam',
   },
+  message: {
+    name: 'Bericht',
+    title: 'Een bericht voor middernacht?',
+    subtitle: 'Verschijnt om middernacht onder de klok. Laat leeg voor alleen de klok.',
+    label: 'Bericht',
+    placeholder: 'Het is gelukt!',
+    none: 'Geen bericht',
+    quote: (text) => `‘${text}’`,
+  },
   format: {
     name: 'Notatie',
     title: '24-uurs of AM/PM?',
     hour24: '24-uurs',
     hour12: '12-uurs',
   },
+  dayPeriod: { am: 'a.m.', pm: 'p.m.', position: 'after', spaced: true },
   style: {
     name: 'Stijl',
     title: 'Kies een stijl',
@@ -67,7 +113,11 @@ const nl: Strings = {
   theme: {
     name: 'Thema',
     title: 'Kies een thema',
-    subtitle: { newyear: 'Kleuren voor oudejaarsavond.', birthday: 'Kleuren voor de verjaardag.' },
+    subtitle: {
+      newyear: 'Kleuren voor oudejaarsavond.',
+      birthday: 'Kleuren voor de verjaardag.',
+      lunar: 'Kleuren voor Maannieuwjaar.',
+    },
   },
   themes: {
     classic: { name: 'Klassiek', hint: 'Witte cijfers, gloeiende en witte vonken' },
@@ -77,6 +127,9 @@ const nl: Strings = {
     bubblegum: { name: 'Kauwgom', hint: 'Roze cijfers; roze, lila en goud' },
     sky: { name: 'Lucht', hint: 'Blauwe cijfers; blauw, mint en citroen' },
     sprinkles: { name: 'Hagelslag', hint: 'Witte cijfers; alle pasteltinten' },
+    lantern: { name: 'Lampion', hint: 'Rode cijfers; rood, goud en warm wit' },
+    gilded: { name: 'Verguld', hint: 'Gouden cijfers; rood en goud' },
+    plum: { name: 'Pruimenbloesem', hint: 'Roze cijfers; roze, wit en goud' },
   },
   before: {
     name: 'Voor middernacht',
@@ -96,6 +149,8 @@ const nl: Strings = {
     subtitle: 'Die speelt in de seconden na middernacht, elke keer dat de klok omslaat.',
     balloons: 'Ballonnen',
     balloonsHint: (time) => `Ballonnen stijgen op om ${time}`,
+    lanterns: 'Lampionnen',
+    lanternsHint: (time) => `Lampionnen stijgen op om ${time}`,
     fireworks: 'Vuurwerk',
     fireworksHint: (time) => `Vuurpijlen gaan om ${time} de lucht in`,
     confetti: 'Confetti',
@@ -114,6 +169,7 @@ const nl: Strings = {
       classic: (time) => `Speelt de Westminsterslag om ${time}`,
       newyear: (time) => `Speelt ‘Auld Lang Syne’ om ${time}`,
       birthday: (time) => `Speelt ‘Happy Birthday’ om ${time}`,
+      lunar: (time) => `Speelt ‘Jasmijnbloem’ om ${time}`,
     },
     off: 'Stil',
     offHint: 'Geen geluid',

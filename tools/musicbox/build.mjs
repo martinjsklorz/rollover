@@ -52,6 +52,20 @@ const TUNES = {
       ['Bb5', 0.75], ['Bb5', 0.25], ['A5', 1], ['F5', 1], ['G5', 1], ['F5', 2],
     ],
   },
+  // "Mo Li Hua" (Jasmine Flower), the traditional Chinese folk song (first printed in the West in John
+  // Barrow's Travels in China, 1804): "好一朵美丽的茉莉花", "芬芳美丽满枝桠", "又香又白人人夸",
+  // in 2/4, pentatonic on F. The opening line is sung twice; here it's played once.
+  lunar: {
+    beat: 0.34,
+    notes: [
+      ['A5', 1], ['A5', 0.5], ['C6', 0.5], ['D6', 0.5], ['F6', 0.5], ['F6', 0.5], ['D6', 0.5],
+      ['C6', 1], ['C6', 0.5], ['D6', 0.5], ['C6', 2],
+      ['C6', 1], ['C6', 1], ['C6', 1], ['A5', 0.5], ['C6', 0.5],
+      ['D6', 1], ['D6', 1], ['C6', 2],
+      ['A5', 1], ['G5', 0.5], ['A5', 0.5], ['C6', 1], ['A5', 0.5], ['G5', 0.5],
+      ['F5', 1], ['F5', 0.5], ['G5', 0.5], ['F5', 2],
+    ],
+  },
 }
 
 /* ---------- the sound of a music box ---------- */

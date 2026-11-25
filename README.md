@@ -40,18 +40,26 @@ again: 23:59:55, 00:00:00, fireworks, and once more from the top. As often as yo
 | White digits, ember fireworks | Gold digits, golden fireworks | Ice-blue split-flap cards |
 
 Plus **Party**, in neon pink with fireworks in every color (that's the one at the top).
+On New Year's Eve, "Happy New Year 2027!" fades in under the digits at midnight, always with the year that begins.
 
 **Birthday?** Pick it as the occasion and the clock goes candy-colored (Bubblegum pink, Sky blue or
 pastel Sprinkles), balloons float up at midnight, and "Happy birthday, Mia!" fades in under the digits.
 
+**Lunar New Year?** For the Spring Festival, Seollal or Tết: red Lantern, warm Gilded gold or pink
+Plum blossom digits, red paper lanterns rise at midnight, and the coming year's zodiac animal greets it:
+"Happy Year of the Goat!", or 羊年大吉！
+
+- **Your own line at midnight.** On Classic, add a short message, like "We did it!", and it fades in
+  under the digits at midnight.
 - **Simple or flip clock.** Thin glowing digits, or split-flap cards that flip like the real thing.
-- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM.
+- **24-hour or 12-hour.** 23:59:59 → 00:00:00, or 11:59:59 PM → 12:00:00 AM (午後11:59:59, 오후 11:59:59 …),
+  starting from the way your phone shows the time.
 - **Your timing.** 5 to 60 seconds before midnight, 5 to 60 seconds after. Then it loops.
-- **Fireworks, confetti or balloons.** At the stroke of midnight, rockets go up and burst over the clock,
-  confetti pops from the corners and rains down, or balloons float up, until the loop starts over.
+- **Fireworks, confetti, balloons or lanterns.** At the stroke of midnight, rockets go up and burst over the clock,
+  confetti pops from the corners and rains down, or balloons or lanterns float up, until the loop starts over.
 - **A music box, if you like.** Off unless you turn it on: at 00:00:00 a music box plays the Westminster
-  chimes, "Auld Lang Syne" or "Happy Birthday", depending on the occasion. It plays alongside your party
-  music instead of stopping it, and through the TV's speakers on a TV.
+  chimes, "Auld Lang Syne", "Happy Birthday" or "Jasmine Flower", depending on the occasion. It plays alongside
+  your party music instead of stopping it, and through the TV's speakers on a TV.
 - **In your language.** English, Chinese, Spanish, Hindi, Portuguese, French, German, Japanese, Russian,
   Korean, Indonesian, Turkish, Italian, Polish, Ukrainian and Dutch, following your phone or browser.
 - **Made for the big screen.** Full screen, the screen stays on, true black for OLED. Prop up a
@@ -74,14 +82,15 @@ The wizard has one page per setting, with a live preview on every page. It start
 
 | Occasion | Themes | Animations (first is the default) | Extra |
 | --- | --- | --- | --- |
-| Classic | Classic only, so no theme page | fireworks, confetti, none | |
-| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | |
-| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name, shown under the clock at midnight |
+| Classic | Classic only, so no theme page | fireworks, confetti, none | an optional message page; the message shows under the clock at midnight |
+| New Year's Eve | Champagne, Midnight blue, Party | fireworks, confetti, none | "Happy New Year 2027!" under the clock at midnight (the year that begins) |
+| Birthday | Bubblegum, Sky, Sprinkles | balloons, confetti, none | a name page; "Happy birthday, Mia!" under the clock at midnight |
+| Lunar New Year | Lantern, Gilded, Plum blossom | lanterns, fireworks, confetti, none | "Happy Year of the Goat!" under the clock at midnight (the coming year's zodiac animal) |
 
-Then: 24-hour or 12-hour, simple or flip-clock style, the theme, how long before midnight and how long
-after it (5 to 60 s each, e.g. −5 / +10), the midnight animation, and the sound. The animation plays over
-the clock from 00:00:00 until the loop starts over; the sound is the occasion's music box tune, once at 00:00:00
-(see [Sound](#sound)), or silence.
+Then: 24-hour or 12-hour (the first time, preset to the device's choice), simple or flip-clock style, the theme,
+how long before midnight and how long after it (5 to 60 s each, e.g. −5 / +10), the midnight animation, and the
+sound. The animation plays over the clock from 00:00:00 until the loop starts over; the sound is the occasion's
+music box tune, once at 00:00:00 (see [Sound](#sound)), or silence.
 Then the clock runs full screen on a loop: the screen stays on, the system bars are hidden,
 and two taps go back to the setup (the first shows a hint, so a stray touch doesn't end a take).
 On a TV, Select works like a tap and the remote's Back button goes back right away.
@@ -93,10 +102,10 @@ Apple TV and Android TV with [react-native-tvos](https://github.com/react-native
 ```
 src/app/            screens (Expo Router): index (home), setup/[step], ready, clock
 src/wizard/steps.ts the wizard steps; add a setting by adding a step
-src/occasions.ts    Classic, New Year's Eve, Birthday: the themes and animations each one offers
+src/occasions.ts    Classic, New Year's Eve, Birthday, Lunar New Year: the themes and animations each one offers
 src/wizard/ui.tsx   wizard page layout, option cards, buttons
-src/clock/          the clock face (simple / flip), the loop timing, the birthday greeting, the midnight
-                    fireworks, confetti and balloons
+src/clock/          the clock face (simple / flip), the loop timing, the greeting at midnight, the midnight
+                    fireworks, confetti, balloons and lanterns
 src/settings.tsx    settings, defaults, saved on the device (AsyncStorage)
 src/sound.ts        the music box: one tune per occasion, played at 00:00:00 on the full-screen clock
 src/theme.ts        brand colors used by the app, and the clock themes
@@ -163,6 +172,7 @@ never lyrics or someone else's recording:
 | Classic | The Westminster Quarters, the full-hour chime | Written in 1793 for Great St Mary's, Cambridge ([Wikipedia](https://en.wikipedia.org/wiki/Westminster_Quarters)) |
 | New Year's Eve | "Auld Lang Syne", the first phrase | Traditional Scots melody, the standard tune since George Thomson's *Select Songs of Scotland*, 1799 ([Wikipedia](https://en.wikipedia.org/wiki/Auld_Lang_Syne)) |
 | Birthday | "Happy Birthday to You" | Melody of "Good Morning to All" (Hill sisters, 1893). Declared public domain in the US in 2016 (*Marya v. Warner/Chappell*); expired in the EU on 1 January 2017 ([Wikipedia](https://en.wikipedia.org/wiki/Happy_Birthday_to_You)) |
+| Lunar New Year | "Mo Li Hua" (Jasmine Flower), the first verse (its repeated opening line played once) | Traditional Chinese folk song, first printed in the West in John Barrow's *Travels in China*, 1804 ([Wikipedia](https://en.wikipedia.org/wiki/Mo_Li_Hua)) |
 
 `tools/musicbox/build.mjs` holds the melodies as note data and renders them with plain JavaScript (a sine,
 a quiet octave and a tine's inharmonic partial, a 2 ms attack with a tiny pluck, decaying over about a second,

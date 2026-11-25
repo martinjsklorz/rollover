@@ -1,5 +1,21 @@
 import type { Strings } from './en'
 
+/** The Chinese zodiac’s animals */
+const zodiac: Record<keyof Strings['zodiac'], string> = {
+  rat: 'ねずみ',
+  ox: 'うし',
+  tiger: 'とら',
+  rabbit: 'うさぎ',
+  dragon: 'たつ',
+  snake: 'へび',
+  horse: 'うま',
+  goat: 'ひつじ',
+  monkey: 'さる',
+  rooster: 'とり',
+  dog: 'いぬ',
+  pig: 'いのしし',
+}
+
 const ja: Strings = {
   home: {
     tagline: '真夜中を、何度でも。',
@@ -30,7 +46,10 @@ const ja: Strings = {
     pressAgain: 'もう一度押すと戻ります',
     birthday: 'お誕生日おめでとう！',
     birthdayName: (name) => `${name}、お誕生日おめでとう！`,
+    newYear: (year) => `${year}年 あけましておめでとう！`,
+    lunarNewYear: (animal) => `${zodiac[animal]}年、新年おめでとう！`,
   },
+  zodiac,
   seconds: (n) => `${n}秒`,
   occasion: {
     name: 'イベント',
@@ -41,6 +60,7 @@ const ja: Strings = {
     classic: { name: 'クラシック', hint: 'どんな真夜中にも、白と残り火色' },
     newyear: { name: '大晦日', hint: 'ゴールド、アイスブルー、ネオン' },
     birthday: { name: '誕生日', hint: 'キャンディカラー、風船、名前' },
+    lunar: { name: '旧正月', hint: '赤と金、ランタンと干支' },
   },
   name: {
     name: '名前',
@@ -50,12 +70,22 @@ const ja: Strings = {
     placeholder: '名前を入力',
     none: '名前なし',
   },
+  message: {
+    name: 'メッセージ',
+    title: '0時に表示するメッセージは？',
+    subtitle: '0時に時計の下に表示されます。空欄なら時計だけになります。',
+    label: 'メッセージ',
+    placeholder: 'やったね！',
+    none: 'メッセージなし',
+    quote: (text) => `「${text}」`,
+  },
   format: {
     name: '表示形式',
     title: '24時間制？ それとも AM/PM？',
     hour24: '24時間制',
     hour12: '12時間制',
   },
+  dayPeriod: { am: '午前', pm: '午後', position: 'before', spaced: false },
   style: {
     name: 'スタイル',
     title: 'スタイルを選択',
@@ -67,7 +97,11 @@ const ja: Strings = {
   theme: {
     name: 'テーマ',
     title: 'テーマを選択',
-    subtitle: { newyear: '大晦日のための色。', birthday: '誕生日のための色。' },
+    subtitle: {
+      newyear: '大晦日のための色。',
+      birthday: '誕生日のための色。',
+      lunar: '旧正月のための色。',
+    },
   },
   themes: {
     classic: { name: 'クラシック', hint: '白い数字、残り火色と白のきらめき' },
@@ -77,6 +111,9 @@ const ja: Strings = {
     bubblegum: { name: 'バブルガム', hint: 'ピンクの数字、ピンク・ライラック・ゴールド' },
     sky: { name: 'スカイ', hint: '青い数字、ブルー・ミント・レモン' },
     sprinkles: { name: 'スプリンクル', hint: '白い数字、すべてのパステル' },
+    lantern: { name: '紅ランタン', hint: '赤い数字、赤・金・暖かい白' },
+    gilded: { name: '金箔', hint: '金色の数字、赤と金' },
+    plum: { name: '梅の花', hint: 'ピンクの数字、ピンク・白・金' },
   },
   before: {
     name: '0時前',
@@ -96,6 +133,8 @@ const ja: Strings = {
     subtitle: '時計が0時を回るたびに、その後の数秒間に再生されます。',
     balloons: '風船',
     balloonsHint: (time) => `${time}に風船が舞い上がります`,
+    lanterns: 'ランタン',
+    lanternsHint: (time) => `${time}にランタンが昇ります`,
     fireworks: '花火',
     fireworksHint: (time) => `${time}に花火が上がります`,
     confetti: '紙吹雪',
@@ -114,6 +153,7 @@ const ja: Strings = {
       classic: (time) => `${time}にウェストミンスターの鐘を奏でます`,
       newyear: (time) => `${time}に「蛍の光」を奏でます`,
       birthday: (time) => `${time}に「ハッピーバースデー」を奏でます`,
+      lunar: (time) => `${time}に「茉莉花」を奏でます`,
     },
     off: '音なし',
     offHint: '音は鳴りません',
