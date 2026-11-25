@@ -39,7 +39,7 @@
     "tv:android": "EXPO_TV=1 expo prebuild --clean --platform android && EXPO_TV=1 expo run:android",
     "tv:ios": "EXPO_TV=1 expo prebuild --clean --platform ios && EXPO_TV=1 expo run:ios",
     "typecheck": "tsc --noEmit",
-    "sounds": "node tools/musicbox/build.mjs",
+    "sounds": "python3 tools/musicbox/musicbox.py",
     "lint": "expo lint"
   },
   "private": true

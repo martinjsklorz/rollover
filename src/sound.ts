@@ -6,7 +6,7 @@ import type { Settings } from './settings'
 
 /**
  * The music box tune each occasion plays at 00:00:00 when `settings.sound` is 'musicbox'.
- * Rendered by tools/musicbox/build.mjs; the melodies are traditional and in the public domain (README).
+ * Rendered by tools/musicbox/musicbox.py; the melodies are traditional and in the public domain (README).
  */
 const TUNES: Record<Occasion, number> = {
   classic: require('../assets/sounds/classic.wav'),
