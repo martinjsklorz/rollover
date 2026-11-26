@@ -9,7 +9,8 @@ import { tvMargins, sizedStyles, useScreenSize } from '../tv'
 import { enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
 import { STEP_IDS, describe, useSteps } from '../wizard/steps'
-import { Button, colors } from '../wizard/ui'
+import { colors } from '../theme'
+import { Button } from '../wizard/ui'
 
 /** First screen: the logo, Start with the previous settings, or the setup wizard. */
 export default function Home() {

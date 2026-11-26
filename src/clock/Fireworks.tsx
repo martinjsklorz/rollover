@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, View } from 'react-native'
-
-type Size = { width: number; height: number }
+import { Animated, Easing, StyleSheet, View } from 'react-native'
+import { pick, rand, useNativeDriver, type Size } from './motion'
 
 type Spark = { dx: number; dy: number; angle: string; color: string }
 
@@ -19,17 +18,12 @@ type Burst = {
   sparks: Spark[]
 }
 
-// react-native-web has no native animation driver
-const useNativeDriver = Platform.OS !== 'web'
 const RISE_MS = 650
 const BURST_MS = 1700
 /** bursts on screen at once; keeps the view count down */
 const MAX_BURSTS = 6
 /** rockets fired together the moment the clock hits midnight */
 const VOLLEY_MS = [0, 180, 360]
-
-const rand = (min: number, max: number) => min + Math.random() * (max - min)
-const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 
 function ring(count: number, radius: number, spread: [number, number], offset: number, color: string): Spark[] {
   return Array.from({ length: count }, (_, i) => {

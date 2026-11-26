@@ -13,8 +13,6 @@ import { noFocusRing, useFocusOnScreen } from '../web'
 import { colors } from '../theme'
 import { isTV, sizedStyles, tvMargins, tvScale, useScreenSize } from '../tv'
 
-export { colors }
-
 const pad2 = (n: number) => String(n).padStart(2, '0')
 
 /** Below this window height, type and spacing tighten so the options fit without scrolling. */
@@ -329,7 +327,9 @@ export function OptionRow({
     }
   }, [])
   const onKeyDown = (e: WebKeyEvent) => {
-    if (e.key === ' ' || e.key === 'Enter') {
+    // Space selects, as on any radio. Not Enter: Pressable already presses on Enter, so the
+    // option would be picked twice (on the sound page, its sample would start over).
+    if (e.key === ' ') {
       e.preventDefault()
       onPress()
       return

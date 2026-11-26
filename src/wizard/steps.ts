@@ -4,7 +4,7 @@ import { useStrings, type Strings } from '../i18n'
 import en from '../i18n/languages/en'
 import { formatTime, loopTime } from '../clock/time'
 import { OCCASIONS, OCCASION_IDS } from '../occasions'
-import { THEME_IDS, themeId } from '../theme'
+import { THEME_IDS } from '../theme'
 import { playTune, stopTune } from '../sound'
 
 export type Choice = {
@@ -131,7 +131,7 @@ export const stepsIn = (t: Strings): Step[] => {
       })),
       // Classic has a single theme
       when: (s) => OCCASIONS[s.occasion].themes.length > 1,
-      summary: (s) => t.themes[themeId(s.theme)].name,
+      summary: (s) => t.themes[s.theme].name,
     },
     {
       id: 'before',
@@ -181,8 +181,13 @@ export const stepsIn = (t: Strings): Step[] => {
           value: { animation: 'fireworks' },
           when: offersAnimation('fireworks'),
         },
-        { label: t.animation.confetti, hint: (s: Settings) => t.animation.confettiHint(time(0, s.hour12)), value: { animation: 'confetti' } },
-        { label: t.animation.none, hint: t.animation.noneHint, value: { animation: 'none' } },
+        {
+          label: t.animation.confetti,
+          hint: (s: Settings) => t.animation.confettiHint(time(0, s.hour12)),
+          value: { animation: 'confetti' },
+          when: offersAnimation('confetti'),
+        },
+        { label: t.animation.none, hint: t.animation.noneHint, value: { animation: 'none' }, when: offersAnimation('none') },
       ],
       summary: (s) => animationNames[s.animation],
     },

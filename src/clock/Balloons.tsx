@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, View } from 'react-native'
-
-type Size = { width: number; height: number }
+import { Animated, Easing, StyleSheet, View } from 'react-native'
+import { pick, rand, useNativeDriver, type Size } from './motion'
 
 type Balloon = {
   id: number
@@ -18,8 +17,6 @@ type Balloon = {
   color: string
 }
 
-// react-native-web has no native animation driver
-const useNativeDriver = Platform.OS !== 'web'
 /** balloons let go together the moment the clock hits midnight, spread across the width */
 const RELEASE = 9
 /** the release isn't all at once: each balloon lets go within this time */
@@ -32,9 +29,6 @@ const MAX_BALLOONS = 22
 const STRETCH = 1.2
 /** keyframe spacing in seconds */
 const DT = 0.1
-
-const rand = (min: number, max: number) => min + Math.random() * (max - min)
-const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 
 /**
  * One balloon rising from just below the bottom edge at `x` (its middle) until its string has left
