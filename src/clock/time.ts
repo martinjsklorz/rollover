@@ -14,7 +14,7 @@ export function useLoop(length: number, startedAt: number) {
     const tick = () => {
       setElapsed(elapsedSince(startedAt, length))
       // wake just after the next whole second since startedAt
-      id = setTimeout(tick, 1000 - ((Date.now() - startedAt) % 1000) + 5)
+      id = setTimeout(tick, 1000 - mod(Date.now() - startedAt, 1000) + 5)
     }
     tick()
     return () => clearTimeout(id)
@@ -22,7 +22,10 @@ export function useLoop(length: number, startedAt: number) {
   return elapsed
 }
 
-const elapsedSince = (startedAt: number, length: number) => Math.floor((Date.now() - startedAt) / 1000) % (length + 1)
+/** Remainder that is never negative, also when the device's clock is set back past `startedAt`. */
+const mod = (n: number, m: number) => ((n % m) + m) % m
+
+const elapsedSince = (startedAt: number, length: number) => mod(Math.floor((Date.now() - startedAt) / 1000), length + 1)
 
 /** Time of day in seconds: `before` seconds before midnight plus the elapsed loop time. */
 export function loopTime(before: number, elapsed: number) {

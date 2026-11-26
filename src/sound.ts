@@ -43,6 +43,8 @@ function playerFor(occasion: Occasion) {
     }).catch(() => {})
   }
   if (current?.occasion !== occasion) {
+    // a fade still running belongs to the old player, which is about to be removed
+    stopFading()
     current?.player.remove()
     current = { occasion, player: createAudioPlayer(TUNES[occasion]) }
   }

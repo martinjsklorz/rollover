@@ -103,8 +103,3 @@ export const THEMES = {
 export type ThemeId = keyof typeof THEMES
 
 export const THEME_IDS = Object.keys(THEMES) as ThemeId[]
-
-/** The id itself if it is a theme, Classic for an unknown one (e.g. settings saved by a newer version). */
-export const themeId = (id: string): ThemeId => (Object.hasOwn(THEMES, id) ? (id as ThemeId) : 'classic')
-
-export const themeOf = (id: string): ClockTheme => THEMES[themeId(id)]

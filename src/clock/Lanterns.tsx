@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, View } from 'react-native'
-
-type Size = { width: number; height: number }
+import { Animated, Easing, StyleSheet, View } from 'react-native'
+import { pick, rand, useNativeDriver, type Size } from './motion'
 
 type Lantern = {
   id: number
@@ -19,8 +18,6 @@ type Lantern = {
   opacity: number
 }
 
-// react-native-web has no native animation driver
-const useNativeDriver = Platform.OS !== 'web'
 /** lanterns let go together the moment the clock hits midnight, spread across the width */
 const RELEASE = 6
 /** each lantern lets go within this time; slower than balloons */
@@ -45,9 +42,6 @@ const TASSEL = 0.34
 const HEIGHT = LOOP + CAP + BODY + CORD + TASSEL
 /** where it swings from: the middle of the body */
 const PIVOT = (LOOP + CAP / 2 + BODY / 2) / HEIGHT
-
-const rand = (min: number, max: number) => min + Math.random() * (max - min)
-const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 
 /**
  * One lantern rising from just below the bottom edge at `x` (its middle) until its loop has left the

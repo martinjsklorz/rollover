@@ -6,7 +6,8 @@ import { isTV, sizedStyles } from '../tv'
 import { canKeepAwake, enterFullscreen } from '../web'
 import { useStrings } from '../i18n'
 import { stepsFor, useSteps } from '../wizard/steps'
-import { Button, List, Row, WizardPage, colors } from '../wizard/ui'
+import { colors } from '../theme'
+import { Button, List, Row, WizardPage } from '../wizard/ui'
 
 /** Last wizard page: a summary of the choices and the Start button. */
 export default function Ready() {

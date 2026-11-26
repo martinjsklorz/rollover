@@ -189,7 +189,9 @@ export function SettingsProvider({ children, onReady }: { children: ReactNode; o
       setSettings(saved ?? defaultSettings())
       setPreviewStartedAt(Date.now())
     },
-    restoreSaved: () => saved && setSettings(saved),
+    restoreSaved: () => {
+      if (saved) setSettings(saved)
+    },
     save: () => {
       setSaved(settings)
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settings)).catch(() => {})

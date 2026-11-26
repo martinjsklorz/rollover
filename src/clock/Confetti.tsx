@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, StyleSheet, View } from 'react-native'
-
-type Size = { width: number; height: number }
+import { Animated, Easing, StyleSheet, View } from 'react-native'
+import { pick, rand, useNativeDriver, type Size } from './motion'
 
 type Piece = {
   id: number
@@ -19,8 +18,6 @@ type Piece = {
   flips: number
 }
 
-// react-native-web has no native animation driver
-const useNativeDriver = Platform.OS !== 'web'
 /** pieces each corner shoots the moment the clock hits midnight */
 const CANNON = 36
 /** pieces on screen at once; keeps the view count down */
@@ -31,9 +28,6 @@ const DRAG = 2.5
 /** keyframe spacing in seconds */
 const DT = 0.1
 const MAX_LIFE = 10
-
-const rand = (min: number, max: number) => min + Math.random() * (max - min)
-const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 
 /**
  * One piece of paper: thrown from (x0, y0) at (vx, vy) px/s, slowed by the air, falling at

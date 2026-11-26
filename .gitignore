@@ -29,3 +29,6 @@ expo-env.d.ts
 
 # raw captures for the store screenshots (marketing/tools/capture.mjs)
 marketing/captures/
+
+# Python bytecode (tools/musicbox)
+__pycache__/

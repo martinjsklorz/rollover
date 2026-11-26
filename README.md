@@ -131,7 +131,7 @@ Add Expo modules with `pnpm exec expo install <package>`, so the versions match 
 
 ### CI and GitHub Pages
 
-`.github/workflows/ci.yml` runs on every push and pull request: typecheck, lint, `expo-doctor` and a
+`.github/workflows/ci.yml` runs on every pull request and every push to `main`: typecheck, lint, `expo-doctor` and a
 TV prebuild (which checks the TV config and artwork in `app.json`). Pushes to `main` also build iOS, Android and web. They publish the web build to GitHub Pages.
 
 The web build lives under `/rollover` (`experiments.baseUrl` in `app.json`). `public/index.html` is

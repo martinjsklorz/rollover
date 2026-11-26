@@ -2,17 +2,15 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { AccessibilityInfo, Animated, Easing, Platform, StyleSheet, Text, View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
 import { useStrings } from '../i18n'
 import type { Settings } from '../settings'
-import { colors, themeOf, type ClockTheme } from '../theme'
-import { useLayoutSize, type Size } from '../useLayoutSize'
+import { THEMES, colors, type ClockTheme } from '../theme'
+import { useLayoutSize } from '../useLayoutSize'
 import Balloons from './Balloons'
 import Confetti from './Confetti'
 import Fireworks from './Fireworks'
 import { greetingFor } from './greeting'
 import Lanterns from './Lanterns'
+import { useNativeDriver, type Size } from './motion'
 import { formatTime, loopTime, periodText, timeParts, useLoop, type DayPeriod, type TimeParts } from './time'
-
-// react-native-web has no native animation driver
-const useNativeDriver = Platform.OS !== 'web'
 
 /**
  * The looping clock. Fills its parent and sizes itself to fit,
@@ -76,7 +74,7 @@ function LoopingFace({
   const time = loopTime(settings.before, elapsed)
   const t = useStrings()
   const parts = timeParts(time, settings.hour12)
-  const theme = themeOf(settings.theme)
+  const theme = THEMES[settings.theme]
   // from 00:00:00 until the loop starts over
   const afterMidnight = elapsed >= settings.before
   // fires when that changes, not on the first render: a tick late (a throttled tab) still counts
@@ -158,7 +156,7 @@ const WIDE = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE30-\uFE4F
 /** Rough width of a line in em: light type is about 0.55 em per character, wide characters about 1 em. */
 const textWidthEm = (text: string) => [...text].reduce((em, c) => em + (WIDE.test(c) ? 1 : 0.55), 0)
 
-/* ---------- simple: thin white digits ---------- */
+/* ---------- simple: thin digits in the theme's color ---------- */
 
 /** AM/PM in the app's language, and the face's parts */
 type FaceProps = { parts: TimeParts; dayPeriod: DayPeriod; size: Size; theme: ClockTheme }
@@ -180,7 +178,7 @@ function SimpleFace({ parts, dayPeriod, size, theme }: FaceProps) {
   const [widthPerPoint, setWidthPerPoint] = useState(() => measuredWidthPerPoint.get(format) ?? null)
   const fontSize = Math.min((size.width * 0.94) / (widthPerPoint ?? (marker ? 5.75 + markerEm : 5)), size.height * 0.5)
   const onLayout = (e: LayoutChangeEvent) => {
-    // hidden (see Clock): a 0 width would count as unmeasured and hide the digits for good
+    // a hidden screen (web, see useLayoutSize) reports 0: that would count as unmeasured and hide the digits for good
     if (!e.nativeEvent.layout.width || !fontSize) return
     const measured = e.nativeEvent.layout.width / fontSize
     // AM and PM differ slightly in width; don't resize the digits for that
